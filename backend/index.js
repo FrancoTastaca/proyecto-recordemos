@@ -11,3 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
   });
+
+app.get('/', (req, res) => {
+    res.send('¡Hola, mundo!');
+});
