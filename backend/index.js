@@ -1,17 +1,20 @@
-const express = require('express');
-const bodyParser = require('body-parser');
+import app from './app.js';
+import sequelize from './config/bd.config.js';
+import pico from 'picocolors';
 
-const app = express();
-const port = 3000;
+import dotenv from 'dotenv';
+dotenv.config();
 
-// Middleware para analizar el cuerpo de las solicitudes
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+async function startServer() {
+  try {
+    await sequelize.authenticate();
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(pico.green(`El servidor está corriendo en el puerto ${port}`));
+    });
+  } catch (error) {
+    console.error(pico.red('No se pudo conectar a la base de datos:'), error);
+  }
+}
 
-app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
-  });
-
-app.get('/', (req, res) => {
-    res.send('¡Hola, mundo!');
-});
+startServer();
