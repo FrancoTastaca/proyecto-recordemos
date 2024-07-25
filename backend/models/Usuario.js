@@ -1,10 +1,11 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
-import Persona from './Persona.js';
+import bcrypt from 'bcryptjs';
 
 const Usuario = sequelize.define('Usuario', {
   ID: {
     type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true,
     allowNull: false
   },
@@ -12,11 +13,11 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING(45),
     allowNull: false
   },
-  codigo_acceso: {
+  contrasena: {
     type: DataTypes.STRING(45),
     allowNull: false
   },
-  mail: {
+  correo_electronico: {
     type: DataTypes.STRING(45),
     allowNull: false
   },
@@ -28,28 +29,20 @@ const Usuario = sequelize.define('Usuario', {
   tableName: 'Usuario',
   timestamps: false
 });
-// Define associations
-Usuario.belongsTo(Persona, { foreignKey: 'Persona_ID' });
 
-// Define CRUD functions
-Usuario.createUsuario = async (UsuarioData) => {
-    // Implement the logic to create a new Usuario here
+
+Usuario.register = async ({ nombre_usuario, email, password, Persona_ID }) => {
+  const hashedPassword = await bcrypt.hashSync(password, bcrypt.genSaltSync (12));
+  return Usuario.create({
+    nombre_usuario,
+    correo_electronico: email,
+    contrasena: hashedPassword,
+    Persona_ID
+  });
 };
 
-Usuario.getUsuarioById = async (UsuarioId) => {
-    // Implement the logic to get a Usuario by ID here
-};
-
-Usuario.getAllUsuarios = async () => {
-    // Implement the logic to get all Usuarios here
-};
-
-Usuario.updateUsuario = async (UsuarioId, updatedData) => {
-    // Implement the logic to update a Usuario here
-};
-
-Usuario.deleteUsuario = async (UsuarioId) => {
-    // Implement the logic to delete a Usuario here
+Usuario.prototype.validatePassword = async function(password) {
+  return bcrypt.compareSync(password, this.contrasena);
 };
 
 export default Usuario;

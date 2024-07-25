@@ -32,29 +32,46 @@ const Persona = sequelize.define('Persona', {
   timestamps: false
 });
 
-// Define associations
-Persona.associate = (models) => {
-    // Define associations here
-};
-// Define CRUD functions
-Persona.createPersona = async (PersonaData) => {
-    // Implement the logic to create a new Persona here
-};
-
-Persona.getPersonaById = async (PersonaId) => {
-    // Implement the logic to get a Persona by ID here
+Persona.createPersona = async (personaData) => {
+  try {
+    const persona = await Persona.create(personaData);
+    return persona;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Persona.getAllPersonas = async () => {
-    // Implement the logic to get all Personas here
+Persona.ByID = async (personaId) => {
+  try {
+    const persona = await Persona.findByPk(personaId);
+    return persona;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Persona.updatePersona = async (PersonaId, updatedData) => {
-    // Implement the logic to update a Persona here
+// Actualizar una persona
+Persona.updatePersona = async (personaId, personaData) => {
+  try {
+    const result = await Persona.update(personaData, {
+      where: { ID: personaId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Persona.deletePersona = async (PersonaId) => {
-    // Implement the logic to delete a Persona here
+// Eliminar una persona
+Persona.deletePersona = async (personaId) => {
+  try {
+    const result = await Persona.destroy({
+      where: { ID: personaId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export default Persona;

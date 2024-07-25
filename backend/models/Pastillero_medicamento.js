@@ -3,17 +3,17 @@ import sequelize from '../config/bd.config.js';
 import Medicamento from './Medicamento.js';
 import Pastillero from './Pastillero.js';
 
-const Pastillero_medicamento = sequelize.define('Pastillero_Pastillero_medicamento', {
+const Pastillero_medicamento = sequelize.define('Pastillero_medicamento', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false
   },
-  Pastillero_medicamento_ID: {
+  Medicamento_ID: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  imagen_url: {
+  Medicamento_imagen: {
     type: DataTypes.STRING(45),
     allowNull: true,
     defaultValue: null
@@ -23,33 +23,54 @@ const Pastillero_medicamento = sequelize.define('Pastillero_Pastillero_medicamen
     allowNull: false
   }
 }, {
-  tableName: 'Pastillero_Pastillero_medicamento',
+  tableName: 'Pastillero_medicamento',
   timestamps: false
 });
 
-
-Pastillero_medicamento.belongsTo(Medicamento, { foreignKey: 'Medicamento_ID' });
-Pastillero_medicamento.belongsTo(Pastillero, { foreignKey: 'Pastillero_ID' })
-
-// Define CRUD functions
-Pastillero_medicamento.createPastillero_medicamento = async (Pastillero_medicamentoData) => {
-    // Implement the logic to create a new Pastillero_medicamento here
-};
-
-Pastillero_medicamento.getPastillero_medicamentoById = async (Pastillero_medicamentoId) => {
-    // Implement the logic to get a Pastillero_medicamento by ID here
-};
-
-Pastillero_medicamento.getAllPastillero_medicamentos = async () => {
-    // Implement the logic to get all Pastillero_medicamentos here
-};
-
-Pastillero_medicamento.updatePastillero_medicamento = async (Pastillero_medicamentoId, updatedData) => {
-    // Implement the logic to update a Pastillero_medicamento here
+Pastillero_medicamento.createPastilleroMedicamento = async (MedicamentoID, imagen_url, PastilleroID) => {
+  try {
+    const dosis = await Pastillero_medicamento.create({
+        Medicamento_ID: MedicamentoID,
+        Medicamento_imagen: imagen_url,
+        Pastillero_ID: PastilleroID
+    });
+    return dosis;
+} catch (error) {
+    throw error;
+}
+}
+// Obtener un Pastillero_medicamento por ID
+Pastillero_medicamento.getById = async (Pastillero_medicamentoId) => {
+  try {
+    const pastilleroMedicamento = await Pastillero_medicamento.findByPk(Pastillero_medicamentoId);
+    return pastilleroMedicamento;
+  } catch (error) {
+    throw error;
+  }
 };
 
 Pastillero_medicamento.deletePastillero_medicamento = async (Pastillero_medicamentoId) => {
-    // Implement the logic to delete a Pastillero_medicamento here
+  try {
+    const result = await Pastillero_medicamento.destroy({
+      where: { ID: Pastillero_medicamentoId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Buscar todas las medicaciones de un Pastillero específico
+Pastillero_medicamento.getMedicacionesByPastilleroId = async (PastilleroID) => {
+  try {
+    const medicaciones = await Pastillero_medicamento.findAll({
+      where: { Pastillero_ID: PastilleroID },
+      include: [Medicamento]
+    });
+    return medicaciones;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export default Pastillero_medicamento;

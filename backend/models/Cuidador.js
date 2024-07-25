@@ -30,31 +30,43 @@ const Cuidador = sequelize.define('Cuidador', {
   timestamps: false
 });
 
-Cuidador.belongsTo(Persona, { foreignKey: 'Persona_ID' });
-
-// Define associations
-Cuidador.associate = (models) => {
-    // Define associations here
-};
-// Define CRUD functions
-Cuidador.createCuidador = async (CuidadorData) => {
-    // Implement the logic to create a new Cuidador here
+Cuidador.createCuidador = async (cuidadorData) => {
+  try {
+    const cuidador = await Cuidador.create(cuidadorData);
+    return cuidador;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Cuidador.getCuidadorById = async (CuidadorId) => {
-    // Implement the logic to get a Cuidador by ID here
+Cuidador.readCuidador = async (cuidadorId) => {
+  try {
+    const cuidador = await Cuidador.findByPk(cuidadorId);
+    return cuidador;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Cuidador.getAllCuidadors = async () => {
-    // Implement the logic to get all Cuidadors here
+Cuidador.updateCuidador = async (cuidadorId, cuidadorData) => {
+  try {
+    const result = await Cuidador.update(cuidadorData, {
+      where: { ID: cuidadorId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Cuidador.updateCuidador = async (CuidadorId, updatedData) => {
-    // Implement the logic to update a Cuidador here
+Cuidador.deleteCuidador = async (cuidadorId) => {
+  try {
+    const result = await Cuidador.destroy({
+      where: { ID: cuidadorId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
-
-Cuidador.deleteCuidador = async (CuidadorId) => {
-    // Implement the logic to delete a Cuidador here
-};
-
 export default Cuidador;

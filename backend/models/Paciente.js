@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
-import Persona from './Persona.js';
+
 const Paciente = sequelize.define('Paciente', {
   ID: {
     type: DataTypes.INTEGER,
@@ -25,30 +25,43 @@ const Paciente = sequelize.define('Paciente', {
   timestamps: false
 });
 
-Paciente.belongsTo(Persona, { foreignKey: 'Persona_ID' });
-// Define associations
-Paciente.associate = (models) => {
-    // Define associations here
-};
-// Define CRUD functions
-Paciente.createPaciente = async (PacienteData) => {
-    // Implement the logic to create a new Paciente here
-};
-
-Paciente.getPacienteById = async (PacienteId) => {
-    // Implement the logic to get a Paciente by ID here
+Paciente.createPaciente = async (pacienteData) => {
+  try {
+    const paciente = await Paciente.create(pacienteData);
+    return paciente;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Paciente.getAllPacientes = async () => {
-    // Implement the logic to get all Pacientes here
+Paciente.readPaciente = async (pacienteId) => {
+  try {
+    const paciente = await Paciente.findByPk(pacienteId);
+    return paciente;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Paciente.updatePaciente = async (PacienteId, updatedData) => {
-    // Implement the logic to update a Paciente here
+Paciente.updatePaciente = async (pacienteId, pacienteData) => {
+  try {
+    const result = await Paciente.update(pacienteData, {
+      where: { ID: pacienteId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Paciente.deletePaciente = async (PacienteId) => {
-    // Implement the logic to delete a Paciente here
+Paciente.deletePaciente = async (pacienteId) => {
+  try {
+    const result = await Paciente.destroy({
+      where: { ID: pacienteId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
-
 export default Paciente;

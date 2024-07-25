@@ -1,7 +1,5 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
-import Paciente  from './Paciente.js';
-import Cuidador from './Cuidador.js';
 
 const Pastillero = sequelize.define('Pastillero', {
   ID: {
@@ -40,32 +38,24 @@ const Pastillero = sequelize.define('Pastillero', {
   timestamps: false
 });
 
-Pastillero.belongsTo(Paciente, { foreignKey: 'Paciente_ID' });
-Pastillero.belongsTo(Cuidador, { foreignKey: 'Cuidador_ID' });
-
-// Define associations
-Pastillero.associate = (models) => {
-    // Define associations here
-};
-// Define CRUD functions
-Pastillero.createPastillero = async (PastilleroData) => {
-    // Implement the logic to create a new Pastillero here
+Pastillero.createPastillero = async (pastilleroData) => {
+  try {
+    const pastillero = await Pastillero.create(pastilleroData);
+    return pastillero;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Pastillero.getPastilleroById = async (PastilleroId) => {
-    // Implement the logic to get a Pastillero by ID here
-};
-
-Pastillero.getAllPastilleros = async () => {
-    // Implement the logic to get all Pastilleros here
-};
-
-Pastillero.updatePastillero = async (PastilleroId, updatedData) => {
-    // Implement the logic to update a Pastillero here
-};
-
-Pastillero.deletePastillero = async (PastilleroId) => {
-    // Implement the logic to delete a Pastillero here
+Pastillero.updatePastillero = async (pastilleroId, updatedData) => {
+  try {
+    const result = await Pastillero.update(updatedData, {
+      where: { ID: pastilleroId }
+    });
+    return result[0] === 1 ? await Pastillero.findByPk(pastilleroId) : null;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export default Pastillero;

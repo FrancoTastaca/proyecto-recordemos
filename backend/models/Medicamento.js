@@ -24,29 +24,26 @@ const Medicamento = sequelize.define('Medicamento', {
     timestamps: false
   });
 
-// Define associations
-Medicamento.associate = (models) => {
-    // Define associations here
-};
-// Define CRUD functions
-Medicamento.createMedicamento = async (medicamentoData) => {
-    // Implement the logic to create a new medicamento here
-};
-
-Medicamento.getMedicamentoById = async (medicamentoId) => {
-    // Implement the logic to get a medicamento by ID here
-};
+Medicamento.createMedicamento = async (principioActivo, marcaComercial, presentacion) => {
+  try {
+    const medicamento = await Medicamento.create({
+        principio_activo: principioActivo,
+        marca_comercial: marcaComercial,
+        presentacion: presentacion
+    });
+    return medicamento;
+} catch (error) {
+    throw error;
+}
+}
 
 Medicamento.getAllMedicamentos = async () => {
-    // Implement the logic to get all medicamentos here
-};
-
-Medicamento.updateMedicamento = async (medicamentoId, updatedData) => {
-    // Implement the logic to update a medicamento here
-};
-
-Medicamento.deleteMedicamento = async (medicamentoId) => {
-    // Implement the logic to delete a medicamento here
+  try {
+      const medicamentos = await Medicamento.findAll();
+      return medicamentos;
+  } catch (error) {
+      throw error;
+  }
 };
 
 export default Medicamento;

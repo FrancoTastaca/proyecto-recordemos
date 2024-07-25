@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
+import Pastillero from './Pastillero.js';
 
 const Historial_Dosis = sequelize.define('Historial_Dosis', {
   ID: {
@@ -16,7 +17,7 @@ const Historial_Dosis = sequelize.define('Historial_Dosis', {
     allowNull: false
   },
   estado: {
-    type: DataTypes.ENUM('Pendiente', 'Tomado', 'No Tomado'),
+    type: DataTypes.ENUM('Tomado', 'No Tomado'),
     allowNull: false
   },
   Pastillero_ID: {
@@ -28,29 +29,55 @@ const Historial_Dosis = sequelize.define('Historial_Dosis', {
   timestamps: false
 });
 
-// Define associations
-Historial_Dosis.associate = (models) => {
-    // Define associations here
+// Crear una entrada en el historial de dosis
+Historial_Dosis.createHistorialDosis = async (historialDosisData) => {
+  try {
+    const historialDosis = await Historial_Dosis.create(historialDosisData);
+    return historialDosis;
+  } catch (error) {
+    throw error;
+  }
 };
-// Define CRUD functions
-Historial_Dosis.createHistorial_Dosis = async (Historial_DosisData) => {
-    // Implement the logic to create a new Historial_Dosis here
+Historial_Dosis.getDosisByPaciente_Cuidador= async (Paciente_ID, Cuidador_ID) =>{
+  try {
+    const Historial_dosis = await Historial_Dosis.findAll({
+      include: [
+        {
+          model: Pastillero,
+          where: { Paciente_ID, Cuidador_ID },
+          include: [
+            { model: Paciente, attributes: ['nombre'] },
+            { model: Cuidador, attributes: ['nombre'] }
+          ]
+        }
+      ]
+    });
+    return Historial_dosis;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Historial_Dosis.getHistorial_DosisById = async (Historial_DosisId) => {
-    // Implement the logic to get a Historial_Dosis by ID here
+// Leer una entrada del historial de dosis por ID
+Historial_Dosis.readHistorialDosis = async (historialDosisId) => {
+  try {
+    const historialDosis = await Historial_Dosis.findByPk(historialDosisId);
+    return historialDosis;
+  } catch (error) {
+    throw error;
+  }
 };
 
-Historial_Dosis.getAllHistorial_Dosiss = async () => {
-    // Implement the logic to get all Historial_Dosiss here
-};
-
-Historial_Dosis.updateHistorial_Dosis = async (Historial_DosisId, updatedData) => {
-    // Implement the logic to update a Historial_Dosis here
-};
-
-Historial_Dosis.deleteHistorial_Dosis = async (Historial_DosisId) => {
-    // Implement the logic to delete a Historial_Dosis here
+// Actualizar una entrada en el historial de dosis
+Historial_Dosis.updateHistorialDosis = async (historialDosisId, historialDosisData) => {
+  try {
+    const result = await Historial_Dosis.update(historialDosisData, {
+      where: { ID: historialDosisId }
+    });
+    return result;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export default Historial_Dosis;
