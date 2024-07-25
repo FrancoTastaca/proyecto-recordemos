@@ -17,6 +17,7 @@ const sequelize = new Sequelize(database, user, password, {
     host: host,
     dialect: 'mysql',
     port: port,
+    //logging: false Si no quiero ver los logs de parte de la BD por sobre-informacion usar esta linea 
 });
 
 sequelize.authenticate()
