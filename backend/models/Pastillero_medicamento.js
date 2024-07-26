@@ -7,7 +7,8 @@ const Pastillero_medicamento = sequelize.define('Pastillero_medicamento', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
+    autoIncrement: true 
   },
   Medicamento_ID: {
     type: DataTypes.INTEGER,

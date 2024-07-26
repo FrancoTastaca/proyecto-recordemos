@@ -13,17 +13,23 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING(45),
     allowNull: false
   },
-  contrasena: {
+  password: {
     type: DataTypes.STRING(45),
-    allowNull: false
+    allowNull: false,
+    field: 'contrasena'
   },
-  correo_electronico: {
+  mail: {
     type: DataTypes.STRING(45),
-    allowNull: false
+    allowNull: false,
+    field: 'correo_electronico'
   },
   Persona_ID: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    references: {
+      model: 'Personas',
+      key: 'ID'
+    }
   }
 }, {
   tableName: 'Usuario',
@@ -35,7 +41,7 @@ Usuario.register = async ({ nombre_usuario, email, password, Persona_ID }) => {
   const hashedPassword = await bcrypt.hashSync(password, bcrypt.genSaltSync (12));
   return Usuario.create({
     nombre_usuario,
-    correo_electronico: email,
+    email,
     contrasena: hashedPassword,
     Persona_ID
   });

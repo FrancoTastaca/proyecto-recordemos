@@ -6,7 +6,8 @@ const Historial_Dosis = sequelize.define('Historial_Dosis', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
+    autoIncrement: true 
   },
   fecha: {
     type: DataTypes.DATE,

@@ -5,7 +5,8 @@ const Paciente = sequelize.define('Paciente', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
+    autoIncrement: true 
   },
   historial_medico: {
     type: DataTypes.TEXT,

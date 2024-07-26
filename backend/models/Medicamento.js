@@ -5,7 +5,8 @@ const Medicamento = sequelize.define('Medicamento', {
     ID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
+      autoIncrement: true 
     },
     principio_activo: {
       type: DataTypes.STRING(45),
