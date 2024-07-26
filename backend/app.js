@@ -12,12 +12,10 @@ const app = express();
 initAssociations();
 const inTest = false; // Define esta variable según sea necesario
 
-/*Configuración de CORS
 app.use(cors({
-  origin: 'http://localhost:19006', // Reemplaza esto con la URL de tu app Expo si es diferente
-  credentials: true
+  /*origin: 'http://localhost:19006', // Reemplaza esto con la URL de tu app Expo si es diferente
+  credentials: true*/
 }));
-*/
 
 // Configuración de la sesión
 app.use(session({

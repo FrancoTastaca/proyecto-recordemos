@@ -1,5 +1,5 @@
 import express from 'express';
-import Pastillero from '../models/Pastillero.js';
+import Pastillero from '../models/paciente.js';
 const router = express.Router();
 
 // GET /pastillero

@@ -1,63 +1,63 @@
 import express from 'express';
-import Usuario from '../models/Usuario.js';
+import Persona from '../models/persona.js';
 const router = express.Router();
 
-// GET /usuario
+// GET /persona
 router.get('/', async (req, res) => {
   try {
-    const usuarios = await Usuario.findAll();
-    res.json(usuarios);
+    const personas = await Persona.findAll();
+    res.json(personas);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// GET /usuario/:id
+// GET /persona/:id
 router.get('/:id', async (req, res) => {
   try {
-    const usuario = await Usuario.readUsuario(req.params.id);
-    if (usuario) {
-      res.json(usuario);
+    const persona = await Persona.readPersona(req.params.id);
+    if (persona) {
+      res.json(persona);
     } else {
-      res.status(404).json({ error: 'Usuario not found' });
+      res.status(404).json({ error: 'Persona not found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// POST /usuario
+// POST /persona
 router.post('/', async (req, res) => {
   try {
-    const nuevoUsuario = await Usuario.createUsuario(req.body);
-    res.status(201).json(nuevoUsuario);
+    const nuevaPersona = await Persona.createPersona(req.body);
+    res.status(201).json(nuevaPersona);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// PUT /usuario/:id
+// PUT /persona/:id
 router.put('/:id', async (req, res) => {
   try {
-    const usuarioActualizado = await Usuario.updateUsuario(req.params.id, req.body);
-    if (usuarioActualizado[0] === 1) {
-      res.json(await Usuario.readUsuario(req.params.id));
+    const personaActualizada = await Persona.updatePersona(req.params.id, req.body);
+    if (personaActualizada[0] === 1) {
+      res.json(await Persona.readPersona(req.params.id));
     } else {
-      res.status(404).json({ error: 'Usuario not found' });
+      res.status(404).json({ error: 'Persona not found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// DELETE /usuario/:id
+// DELETE /persona/:id
 router.delete('/:id', async (req, res) => {
   try {
-    const result = await Usuario.deleteUsuario(req.params.id);
+    const result = await Persona.deletePersona(req.params.id);
     if (result === 1) {
       res.status(204).end();
     } else {
-      res.status(404).json({ error: 'Usuario not found' });
+      res.status(404).json({ error: 'Persona not found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
