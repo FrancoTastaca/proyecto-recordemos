@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
         marginBottom: 50,
     },
     empezarButton: {
+        color: '#fff',
         width: '48%',
         fontSize: 20,
         marginTop: 20,

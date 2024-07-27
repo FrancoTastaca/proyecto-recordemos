@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import {View, StyleSheet, FlatList, Animated} from 'react-native';
 import CarouselItem from './CarouselItemScreen';
 import slides from '../data';
+import Paginator from './Paginator';
 
 export default Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(true);
@@ -18,7 +19,7 @@ export default Carousel = () => {
                     data={slides} 
                     renderItem={({ item }) => <CarouselItem item={item} />}
                     horizontal
-                    showsHorizontalScrollIndicator
+                    showsHorizontalScrollIndicator={false}
                     pagingEnabled
                     bounces={false} 
                     keyExtractor={(item) => item.id}
@@ -31,7 +32,7 @@ export default Carousel = () => {
                     ref={dataRef}
                 />    
             </View>
-            
+            <Paginator data={slides} scrollX={scrollX} /> 
         </View>
     );
 };
