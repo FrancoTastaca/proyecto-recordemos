@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {View, StyleSheet, FlatList, Animated} from 'react-native';
-import CarouselItem from './CarouselItem';
+import CarouselItem from './CarouselItemScreen';
 import slides from '../data';
 
 export default Carousel = () => {
