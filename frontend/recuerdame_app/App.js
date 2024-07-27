@@ -5,16 +5,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './components/WelcomeScreen';
 import HomeScreen from './components/HomeScreen';
 import DetailsScreen from './components/DetailsScreen';
+import SignInScreen from './components/SignInScreen';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="WelcomeScreen">
+      <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen
-          name="WelcomeScreen"
+          name="Welcome" //Nombre que adoptan las pantallas
           component={WelcomeScreen}
+          options={{ headerShown: false }}
         /> 
         <Stack.Screen 
           name="Home" 
@@ -45,6 +47,10 @@ function App() {
               />
             ),*/ 
           }}
+        />
+        <Stack.Screen
+          name="SignIn"
+          component={SignInScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
