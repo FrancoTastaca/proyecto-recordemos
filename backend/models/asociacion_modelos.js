@@ -1,11 +1,11 @@
-import Pastillero from './Pastillero.js';
-import Historial_Dosis from './Historial_dosis.js';
-import Cuidador from './Cuidador.js';
-import Persona from './Persona.js';
-import Paciente from './Paciente.js';
-import Medicamento from './Medicamento.js';
-import Pastillero_medicamento from './Pastillero_medicamento.js';
-import Usuario from './Usuario.js';
+import Pastillero from './pastillero.js';
+import Historial_Dosis from './historial_dosis.js';
+import Cuidador from './cuidador.js';
+import Persona from './persona.js';
+import Paciente from './paciente.js';
+import Medicamento from './medicamento.js';
+import Pastillero_medicamento from './pastillero_medicamento.js';
+import Usuario from './usuario.js';
 import picocolors from 'picocolors';
 
 Historial_Dosis.belongsTo(Pastillero, { foreignKey: 'Pastillero_ID' });

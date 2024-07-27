@@ -5,7 +5,8 @@ const Pastillero = sequelize.define('Pastillero', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
+    autoIncrement: true 
   },
   imagen_url: {
     type: DataTypes.STRING(45),

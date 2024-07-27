@@ -1,5 +1,5 @@
 import express from 'express';
-import Historial_Dosis from '../models/Historial_dosis.js';
+import Historial_Dosis from '../models/historial_dosis.js';
 const router = express.Router();
 
 // GET /historial_dosis

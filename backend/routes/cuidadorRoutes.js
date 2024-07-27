@@ -1,5 +1,5 @@
 import express from 'express';
-import Cuidador from '../models/Cuidador.js';
+import Cuidador from '../models/cuidador.js';
 const router = express.Router();
 
 // GET /cuidador

@@ -1,12 +1,12 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
-import Persona from './Persona.js';
 
 const Cuidador = sequelize.define('Cuidador', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
+    autoIncrement: true 
   },
   relacion_paciente: {
     type: DataTypes.STRING(45),
