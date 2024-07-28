@@ -2,14 +2,14 @@ import React from "react";
 import { View, Text, Button, StyleSheet, SafeAreaView, ImageBackground, Dimensions, TouchableOpacity } from "react-native";
 const { height } = Dimensions.get("window");
 
-function HomeScreen({ navigation }) {
+  function HomeScreen({ navigation }) {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#CECAE8'}}>
         <View>
           <View
             style={{
               paddingHorizontal: 40,
-              paddingTop: 100,
+              paddingTop: 110,
             }}
           >
             <Text
@@ -29,8 +29,8 @@ function HomeScreen({ navigation }) {
             />
             <Text
               style={{
-                fontSize: 20,
-                color: '#624D8A',
+                fontSize: 22,
+                color: '#33294c',
                 textAlign: 'left',
                 marginTop: 20,
               }}
@@ -38,7 +38,7 @@ function HomeScreen({ navigation }) {
           </View>
           <View style={{
             paddingHorizontal: 20,
-            paddingVertical: 40,
+            paddingVertical: 30,
             alignItems: 'center',
           }}>
             <TouchableOpacity 
@@ -63,6 +63,7 @@ function HomeScreen({ navigation }) {
               paddingHorizontal: 20,
               width: '86%',
               borderRadius: 8,
+              marginTop: 10,
             }}>
               <Text style={{
                 color: '#f1eff8',
@@ -74,6 +75,6 @@ function HomeScreen({ navigation }) {
         </View>
       </SafeAreaView>
     );
-}
+  }
 
 export default HomeScreen;
