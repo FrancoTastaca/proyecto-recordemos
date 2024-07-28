@@ -15,7 +15,7 @@ export default CarouselItem = ({ item }) => {
                 <View style={styles.empezarButton}>
                     <Button
                         title="Empezar" 
-                        onPress={ () => navigation.navigate('SignIn')}
+                        onPress={ () => navigation.navigate('Home')}
                     />
                 </View>
             )}

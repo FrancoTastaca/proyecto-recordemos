@@ -20,18 +20,12 @@ function App() {
         /> 
         <Stack.Screen 
           name="Home" 
-          component={HomeScreen} 
-          options={{ 
-            title: 'Overview', //Nombre visual de la pantalla
-            //headerShown: false, Elimina el encabezado
-            headerRight: () => ( //Boton a la derecha que dice info
-              <Button
-                onPress={() => alert('This is a button!')}
-                title="Info"
-                color="#abdcfd"
-              />
-            ), 
-          }} 
+          component={HomeScreen}
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+          name="SignIn"
+          component={SignInScreen}
         />
         <Stack.Screen
           name="Details"
@@ -47,10 +41,6 @@ function App() {
               />
             ),*/ 
           }}
-        />
-        <Stack.Screen
-          name="SignIn"
-          component={SignInScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
