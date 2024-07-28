@@ -12,11 +12,28 @@ export default CarouselItem = ({ item }) => {
             </View>
             <Image source={item.image} style={styles.image} resizeMode="contain" />
             { item.isLast && ( //Botón "Empezar" para el último ítem del Carousel y redirección al seleccionarlo
-                <View style={styles.empezarButton}>
-                    <Button
-                        title="Empezar" 
-                        onPress={ () => navigation.navigate('Home')}
-                    />
+                <View 
+                    style={{
+                        paddingHorizontal: 20,
+                        paddingVertical: 40,
+                        alignItems: 'center',
+                    }}>
+                    <TouchableOpacity 
+                      onPress={ () => navigation.navigate('Home')}
+                      style={{
+                        backgroundColor: '#624D8A',
+                        paddingVertical: 15,
+                        paddingHorizontal: 20,
+                        width: '48%',
+                        borderRadius: 8,
+                        marginBottom: 14,
+                      }}>
+                      <Text style={{
+                        color: '#f1eff8',
+                        fontSize: 22,
+                        textAlign: 'center',
+                      }}>Empezar</Text>
+                    </TouchableOpacity>
                 </View>
             )}
         </View>
@@ -48,11 +65,4 @@ const styles = StyleSheet.create({
         height: 100,
         marginBottom: 50,
     },
-    empezarButton: {
-        color: '#fff',
-        width: '48%',
-        fontSize: 20,
-        marginTop: 20,
-        justifyContent: 'center',
-    },  
 });
