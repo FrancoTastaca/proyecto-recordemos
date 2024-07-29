@@ -39,13 +39,8 @@ Cuidador.createCuidador = async (cuidadorData) => {
   }
 };
 
-Cuidador.readCuidador = async (cuidadorId) => {
-  try {
-    const cuidador = await Cuidador.findByPk(cuidadorId);
-    return cuidador;
-  } catch (error) {
-    throw error;
-  }
+Cuidador.findByPersonaId = async (personaId) => {
+  return await Cuidador.findOne({ where: { Persona_ID: personaId } });
 };
 
 Cuidador.updateCuidador = async (cuidadorId, cuidadorData) => {

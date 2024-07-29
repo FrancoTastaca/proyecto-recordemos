@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
-import Medicamento from './Medicamento.js';
-import Pastillero from './Pastillero.js';
+import Medicamento from './medicamento.js';
+import Pastillero from './pastillero.js';
 
 const Pastillero_medicamento = sequelize.define('Pastillero_medicamento', {
   ID: {
@@ -14,7 +14,7 @@ const Pastillero_medicamento = sequelize.define('Pastillero_medicamento', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  Medicamento_imagen: {
+  medicamento_imagen: {
     type: DataTypes.STRING(45),
     allowNull: true,
     defaultValue: null
@@ -32,7 +32,7 @@ Pastillero_medicamento.createPastilleroMedicamento = async (MedicamentoID, image
   try {
     const dosis = await Pastillero_medicamento.create({
         Medicamento_ID: MedicamentoID,
-        Medicamento_imagen: imagen_url,
+        medicamento_imagen: imagen_url,
         Pastillero_ID: PastilleroID
     });
     return dosis;

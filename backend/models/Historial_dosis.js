@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
-import Pastillero from './Pastillero.js';
+import Pastillero from './pastillero.js';
 
 const Historial_Dosis = sequelize.define('Historial_Dosis', {
   ID: {

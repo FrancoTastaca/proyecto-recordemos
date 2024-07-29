@@ -35,13 +35,8 @@ Paciente.createPaciente = async (pacienteData) => {
   }
 };
 
-Paciente.readPaciente = async (pacienteId) => {
-  try {
-    const paciente = await Paciente.findByPk(pacienteId);
-    return paciente;
-  } catch (error) {
-    throw error;
-  }
+Paciente.findByPersonaId = async (personaId) => {
+  return await Paciente.findOne({ where: { Persona_ID: personaId } });
 };
 
 Paciente.updatePaciente = async (pacienteId, pacienteData) => {

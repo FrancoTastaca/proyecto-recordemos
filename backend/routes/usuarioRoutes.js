@@ -1,82 +1,74 @@
 import express from 'express';
 import Usuario from '../models/usuario.js';
-import passport, { isAuthenticated } from '../controllers/passport.js';
-import { body, param, validationResult } from 'express-validator';
+import passport, { isAuthenticated } from '../controllers/auth-local.js';
+import { param } from 'express-validator';
+import picocolors from 'picocolors';
 
 const router = express.Router();
 
-// Middleware de validación
-const validate = (validations) => {
-  return async (req, res, next) => {
-    await Promise.all(validations.map(validation => validation.run(req)));
+console.log(picocolors.red('Cargando rutas de usuario'));
 
-    const errors = validationResult(req);
-    if (errors.isEmpty()) {
-      return next();
-    }
-
-    res.status(400).json({ errors: errors.array() });
-  };
-};
-
-// Validaciones comunes
-const userValidations = [
-  body('email').isEmail().normalizeEmail().withMessage('Email inválido'),
-  body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
-  body('nombre').notEmpty().trim().escape().withMessage('El nombre es requerido'),
-  body('Persona_ID').isInt().withMessage('Persona_ID debe ser un número entero')
-];
-router.post('/register', validate(userValidations), (req, res, next) => {
+/* Registro de usuario
+router.post('/register', (req, res, next) => {
   passport.authenticate('local-signup', (err, user, info) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error interno del servidor', error: err.message });
-    }
-    if (!user) {
-      return res.status(400).json({ message: info.message });
-    }
-    
+    if (err) return res.status(500).json({ message: 'Error interno del servidor', error: err.message });
+    if (!user) return res.status(400).json({ message: info.message });
     req.logIn(user, (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error al iniciar sesión', error: err.message });
-      }
-      return res.json({ message: 'Usuario registrado exitosamente', user: { id: user.id, email: user.email, nombre: user.nombre } });
+      if (err) return res.status(500).json({ message: 'Error al iniciar sesión', error: err.message });
+      res.json({ message: 'Usuario registrado exitosamente', user: { id: user.id, email: user.email, nombre: user.nombre } });
     });
   })(req, res, next);
+});*/
+router.post('/register', passport.authenticate('local-signup', { session: false }), (req, res) => {
+  res.json({
+    message: 'Usuario registrado exitosamente',
+    user: {
+      id: req.user.id,
+      email: req.user.email,
+      nombre: req.user.nombre
+    }
+  });
 });
 
-router.post('/login', validate([
-  body('email').isEmail().normalizeEmail(),
-  body('password').notEmpty()
-]), (req, res, next) => {
+// Inicio de sesión
+router.post('/login', (req, res, next) => {
   passport.authenticate('local-signin', (err, user, info) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error interno del servidor', error: err.message });
-    }
-    if (!user) {
-      return res.status(400).json({ message: info.message || 'Credenciales inválidas' });
-    }
+    if (err) return res.status(500).json({ message: 'Error interno del servidor', error: err.message });
+    if (!user) return res.status(400).json({ message: info.message || 'Credenciales inválidas' });
     req.logIn(user, (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error al iniciar sesión', error: err.message });
-      }
-      return res.json({ message: 'Inicio de sesión exitoso', user: { id: user.id, email: user.email, nombre: user.nombre } });
+      if (err) return res.status(500).json({ message: 'Error al iniciar sesión', error: err.message });
+      res.json({ message: 'Inicio de sesión exitoso', user: { id: user.id, email: user.email, nombre: user.nombre } });
     });
   })(req, res, next);
 });
 
+// Cierre de sesión
 router.post('/logout', isAuthenticated, (req, res) => {
   req.logout((err) => {
-    if (err) {
-      return res.status(500).json({ message: 'Error al cerrar sesión', error: err.message });
-    }
+    if (err) return res.status(500).json({ message: 'Error al cerrar sesión', error: err.message });
     res.json({ message: 'Sesión cerrada exitosamente' });
   });
 });
 
-// GET /usuario/me
+// Obtener rol del usuario
+router.get('/role', isAuthenticated, async (req, res) => {
+  try {
+    const usuario = await Usuario.findByPk(req.user.id);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const role = await usuario.getRole();
+    res.json({ role });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener el rol del usuario', error: error.message });
+  }
+});
+
+// Obtener usuario actual
 router.get('/me', isAuthenticated, async (req, res) => {
   try {
-    const usuario = await Usuario.readUsuario(req.user.id);
+    const usuario = await Usuario.findByPk(req.user.id);
     if (usuario) {
       res.json(usuario);
     } else {
@@ -87,8 +79,8 @@ router.get('/me', isAuthenticated, async (req, res) => {
   }
 });
 
-// PUT /usuario/me
-router.put('/me', isAuthenticated, validate(userValidations), async (req, res) => {
+// Actualizar usuario actual
+router.put('/me', isAuthenticated, async (req, res) => {
   try {
     const usuarioActualizado = await Usuario.updateUsuario(req.user.id, req.body);
     if (usuarioActualizado[0] === 1) {
@@ -102,7 +94,7 @@ router.put('/me', isAuthenticated, validate(userValidations), async (req, res) =
   }
 });
 
-// GET /usuario
+// Obtener todos los usuarios
 router.get('/', async (_, res) => {
   try {
     const usuarios = await Usuario.findAll();
@@ -112,10 +104,8 @@ router.get('/', async (_, res) => {
   }
 });
 
-// GET /usuario/:id
-router.get('/:id', validate([
-  param('id').isInt().withMessage('ID debe ser un número entero')
-]), async (req, res) => {
+// Obtener usuario por ID
+router.get('/:id'), async (req, res) => {
   try {
     const usuario = await Usuario.readUsuario(req.params.id);
     if (usuario) {
@@ -126,10 +116,10 @@ router.get('/:id', validate([
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener el usuario', error: error.message });
   }
-});
+};
 
-// POST /usuario
-router.post('/', validate(userValidations), async (req, res) => {
+// Crear nuevo usuario
+router.post('/', async (req, res) => {
   try {
     const nuevoUsuario = await Usuario.createUsuario(req.body);
     res.status(201).json(nuevoUsuario);
@@ -138,11 +128,8 @@ router.post('/', validate(userValidations), async (req, res) => {
   }
 });
 
-// PUT /usuario/:id
-router.put('/:id', validate([
-  param('id').isInt().withMessage('ID debe ser un número entero'),
-  ...userValidations
-]), async (req, res) => {
+// Actualizar usuario por ID
+router.put('/:id'), async (req, res) => {
   try {
     const usuarioActualizado = await Usuario.updateUsuario(req.params.id, req.body);
     if (usuarioActualizado[0] === 1) {
@@ -154,12 +141,10 @@ router.put('/:id', validate([
   } catch (error) {
     res.status(500).json({ message: 'Error al actualizar el usuario', error: error.message });
   }
-});
+};
 
-// DELETE /usuario/:id
-router.delete('/:id', validate([
-  param('id').isInt().withMessage('ID debe ser un número entero')
-]), async (req, res) => {
+// Eliminar usuario por ID
+router.delete('/:id'), async (req, res) => {
   try {
     const result = await Usuario.deleteUsuario(req.params.id);
     if (result === 1) {
@@ -170,6 +155,6 @@ router.delete('/:id', validate([
   } catch (error) {
     res.status(500).json({ message: 'Error al eliminar el usuario', error: error.message });
   }
-});
+}
 
 export default router;
