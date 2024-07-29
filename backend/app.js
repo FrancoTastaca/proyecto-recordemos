@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session'; // Asegúrate de haber instalado express-session
-import passport from './controllers/passport.js'; // Importa la configuración de Passport
+import passport from './controllers/auth-local.js'; // Importa la configuración de Passport
 import flash from 'connect-flash'; //
 import morgan from 'morgan'; 
 import cors from 'cors';
@@ -25,8 +25,7 @@ app.use(session({
 }));
 
 //Inicializar passport  
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.authenticate('session'));
 app.use(flash());
 
 app.use((req,res,next)=>{
