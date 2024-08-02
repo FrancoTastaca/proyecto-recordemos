@@ -1,12 +1,12 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/bd.config.js';
+import { DataTypes } from 'sequelize'
+import sequelize from '../config/bd.config.js'
 
 const Persona = sequelize.define('Persona', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true 
+    autoIncrement: true
   },
   nombre: {
     type: DataTypes.STRING(45),
@@ -31,48 +31,48 @@ const Persona = sequelize.define('Persona', {
 }, {
   tableName: 'Persona',
   timestamps: false
-});
+})
 
 Persona.createPersona = async (personaData) => {
   try {
-    const persona = await Persona.create(personaData);
-    return persona;
+    const persona = await Persona.create(personaData)
+    return persona
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 Persona.ByID = async (personaId) => {
   try {
-    const persona = await Persona.findByPk(personaId);
-    return persona;
+    const persona = await Persona.findByPk(personaId)
+    return persona
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 // Actualizar una persona
 Persona.updatePersona = async (personaId, personaData) => {
   try {
     const result = await Persona.update(personaData, {
       where: { ID: personaId }
-    });
-    return result;
+    })
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 // Eliminar una persona
 Persona.deletePersona = async (personaId) => {
   try {
     const result = await Persona.destroy({
       where: { ID: personaId }
-    });
-    return result;
+    })
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
-export default Persona;
+export default Persona
