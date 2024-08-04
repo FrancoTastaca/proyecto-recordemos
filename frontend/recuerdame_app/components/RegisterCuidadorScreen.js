@@ -2,12 +2,12 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 
 function RegisterCuidadorScreen() {
     return (
         <View style={styles.container}>
-            <FontAwesomeIcon icon={faUser} size={64} color="#624d8a" style={styles.icono} />
+            <FontAwesomeIcon icon={faUserCircle} size={64} color="#624d8a" style={styles.icono} />
             <Text style={styles.subtitulo}>Cuidador</Text>
             <View style={styles.textInput}>
               <TextInput placeholder="Nombre" />
