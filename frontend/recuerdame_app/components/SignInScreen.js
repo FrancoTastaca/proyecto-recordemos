@@ -79,14 +79,17 @@ function SignInScreen({ navigation }) {
                 textAlign: 'center',
               }}>Iniciar sesión</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{
-              backgroundColor: '#624D8A',
-              paddingVertical: 15,
-              paddingHorizontal: 20,
-              width: '86%',
-              borderRadius: 8,
-              marginTop: 10,
-            }}>
+            <TouchableOpacity 
+              onPress={ () => navigation.navigate('RegisterCuidador')}
+              style={{
+                backgroundColor: '#624D8A',
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                width: '86%',
+                borderRadius: 8,
+                marginTop: 10,
+              }}
+            >
               <Text style={{
                 color: '#f1eff8',
                 fontSize: 20,
