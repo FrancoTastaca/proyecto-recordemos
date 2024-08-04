@@ -1,12 +1,12 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/bd.config.js';
+import { DataTypes } from 'sequelize'
+import sequelize from '../config/bd.config.js'
 
 const Pastillero = sequelize.define('Pastillero', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true 
+    autoIncrement: true
   },
   imagen_url: {
     type: DataTypes.STRING(45),
@@ -37,26 +37,26 @@ const Pastillero = sequelize.define('Pastillero', {
 }, {
   tableName: 'Pastillero',
   timestamps: false
-});
+})
 
 Pastillero.createPastillero = async (pastilleroData) => {
   try {
-    const pastillero = await Pastillero.create(pastilleroData);
-    return pastillero;
+    const pastillero = await Pastillero.create(pastilleroData)
+    return pastillero
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 Pastillero.updatePastillero = async (pastilleroId, updatedData) => {
   try {
     const result = await Pastillero.update(updatedData, {
       where: { ID: pastilleroId }
-    });
-    return result[0] === 1 ? await Pastillero.findByPk(pastilleroId) : null;
+    })
+    return result[0] === 1 ? await Pastillero.findByPk(pastilleroId) : null
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
-export default Pastillero;
+export default Pastillero

@@ -1,13 +1,15 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/bd.config.js';
-import Pastillero from './pastillero.js';
+import { DataTypes } from 'sequelize'
+import sequelize from '../config/bd.config.js'
+import Pastillero from './pastillero.js'
+import Paciente from './paciente.js'
+import Cuidador from './cuidador.js'
 
-const Historial_Dosis = sequelize.define('Historial_Dosis', {
+const HistorialDosis = sequelize.define('HistorialDosis', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true 
+    autoIncrement: true
   },
   fecha: {
     type: DataTypes.DATE,
@@ -26,59 +28,59 @@ const Historial_Dosis = sequelize.define('Historial_Dosis', {
     allowNull: false
   }
 }, {
-  tableName: 'Historial_Dosis',
+  tableName: 'HistorialDosis',
   timestamps: false
-});
+})
 
 // Crear una entrada en el historial de dosis
-Historial_Dosis.createHistorialDosis = async (historialDosisData) => {
+HistorialDosis.createHistorialDosis = async (historialDosisData) => {
   try {
-    const historialDosis = await Historial_Dosis.create(historialDosisData);
-    return historialDosis;
+    const historialDosis = await HistorialDosis.create(historialDosisData)
+    return historialDosis
   } catch (error) {
-    throw error;
+    throw error
   }
-};
-Historial_Dosis.getDosisByPaciente_Cuidador= async (Paciente_ID, Cuidador_ID) =>{
+}
+HistorialDosis.getDosisByPaciente_Cuidador = async (PacienteID, CuidadorID) => {
   try {
-    const Historial_dosis = await Historial_Dosis.findAll({
+    const historialDosis = await HistorialDosis.findAll({
       include: [
         {
           model: Pastillero,
-          where: { Paciente_ID, Cuidador_ID },
+          where: { PacienteID, CuidadorID },
           include: [
             { model: Paciente, attributes: ['nombre'] },
             { model: Cuidador, attributes: ['nombre'] }
           ]
         }
       ]
-    });
-    return Historial_dosis;
+    })
+    return historialDosis
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 // Leer una entrada del historial de dosis por ID
-Historial_Dosis.readHistorialDosis = async (historialDosisId) => {
+HistorialDosis.readHistorialDosis = async (historialDosisId) => {
   try {
-    const historialDosis = await Historial_Dosis.findByPk(historialDosisId);
-    return historialDosis;
+    const historialDosis = await HistorialDosis.findByPk(historialDosisId)
+    return historialDosis
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 // Actualizar una entrada en el historial de dosis
-Historial_Dosis.updateHistorialDosis = async (historialDosisId, historialDosisData) => {
+HistorialDosis.updateHistorialDosis = async (historialDosisId, historialDosisData) => {
   try {
-    const result = await Historial_Dosis.update(historialDosisData, {
+    const result = await HistorialDosis.update(historialDosisData, {
       where: { ID: historialDosisId }
-    });
-    return result;
+    })
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
-export default Historial_Dosis;
+export default HistorialDosis

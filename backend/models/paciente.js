@@ -1,12 +1,12 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/bd.config.js';
+import { DataTypes } from 'sequelize'
+import sequelize from '../config/bd.config.js'
 
 const Paciente = sequelize.define('Paciente', {
   ID: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true 
+    autoIncrement: true
   },
   historial_medico: {
     type: DataTypes.TEXT,
@@ -24,40 +24,40 @@ const Paciente = sequelize.define('Paciente', {
 }, {
   tableName: 'Paciente',
   timestamps: false
-});
+})
 
 Paciente.createPaciente = async (pacienteData) => {
   try {
-    const paciente = await Paciente.create(pacienteData);
-    return paciente;
+    const paciente = await Paciente.create(pacienteData)
+    return paciente
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 Paciente.findByPersonaId = async (personaId) => {
-  return await Paciente.findOne({ where: { Persona_ID: personaId } });
-};
+  return await Paciente.findOne({ where: { Persona_ID: personaId } })
+}
 
 Paciente.updatePaciente = async (pacienteId, pacienteData) => {
   try {
     const result = await Paciente.update(pacienteData, {
       where: { ID: pacienteId }
-    });
-    return result;
+    })
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
+}
 
 Paciente.deletePaciente = async (pacienteId) => {
   try {
     const result = await Paciente.destroy({
       where: { ID: pacienteId }
-    });
-    return result;
+    })
+    return result
   } catch (error) {
-    throw error;
+    throw error
   }
-};
-export default Paciente;
+}
+export default Paciente
