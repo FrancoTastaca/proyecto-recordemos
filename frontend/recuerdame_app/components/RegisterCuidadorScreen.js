@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 
-function RegisterCuidadorScreen() {
+function RegisterCuidadorScreen({ navigation }) {
     return (
         <View style={styles.container}>
             <FontAwesomeIcon icon={faUserCircle} size={64} color="#624d8a" style={styles.icono} />
@@ -32,6 +32,7 @@ function RegisterCuidadorScreen() {
             </View>                                       
             <View style={styles.containerBoton}>
                 <TouchableOpacity 
+                  onPress={ () => navigation.navigate('RegisterPaciente')}
                   style={styles.boton}>
                   <Text style={styles.textoBoton}>Registrar paciente</Text>
                 </TouchableOpacity>
