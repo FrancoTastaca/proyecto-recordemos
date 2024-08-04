@@ -26,6 +26,7 @@ function App() {
         <Stack.Screen
           name="SignIn"
           component={SignInScreen}
+          options={{ headerShown: false }} 
         />
         <Stack.Screen
           name="Details"
