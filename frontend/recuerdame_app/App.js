@@ -6,7 +6,8 @@ import WelcomeScreen from './components/WelcomeScreen';
 import HomeScreen from './components/HomeScreen';
 import DetailsScreen from './components/DetailsScreen';
 import SignInScreen from './components/SignInScreen';
-import RegisterCuidadorScreen from './components/RegisterCuidadorScreen'
+import RegisterCuidadorScreen from './components/RegisterCuidadorScreen';
+import RegisterPacienteScreen from './components/RegisterPacienteScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,11 @@ function App() {
         <Stack.Screen
           name="RegisterCuidador"
           component={RegisterCuidadorScreen}
+          options={{ headerShown: false }} 
+        />
+        <Stack.Screen
+          name="RegisterPaciente"
+          component={RegisterPacienteScreen}
           options={{ headerShown: false }} 
         />
         <Stack.Screen
