@@ -5,7 +5,7 @@ function Header(){
     return(
         <View style={styles.header}>
             <View style={styles.headerContent}>
-                <Text style={styles.headerTitle}>Rol</Text>
+                <Text style={styles.headerTitle}>ROL</Text>
                 <Text style={styles.headerText}>Nombre Apellido</Text>
             </View>
         </View>
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontWeight: 'bold',
-        fontSize: 26,
+        fontSize: 30,
         color: '#CECAE8',
         letterSpacing: 1,
         paddingBottom: 20
