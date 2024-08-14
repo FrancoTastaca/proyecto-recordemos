@@ -53,7 +53,7 @@ function App() {
           name="ProfileCuidador"
           component={ProfileCuidadorScreen}
           options={{ 
-            headerTitle: () => <Header />, 
+            headerTitle: () => <Header screen={'ProfileCuidador'} />, 
             headerTintColor: '#CECAE8',
             headerStyle: {
               backgroundColor: '#624D8A',
@@ -65,7 +65,7 @@ function App() {
           name="Pastilleros"
           component={PastillerosScreen}
           options={{ 
-            headerTitle: () => <Header />, 
+            headerTitle: () => <Header screen={'Pastilleros'} />, 
             headerTintColor: '#CECAE8',
             headerStyle: {
               backgroundColor: '#624D8A',
