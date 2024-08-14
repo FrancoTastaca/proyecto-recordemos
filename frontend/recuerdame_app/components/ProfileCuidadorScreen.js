@@ -6,11 +6,12 @@ import { faSuitcaseMedical } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 
-function ProfileCuidadorScreen() {
+function ProfileCuidadorScreen({ navigation }) {
     return (
       <View style={styles.container}>
         <View style={styles.touchsWrapper}>
-          <TouchableOpacity style={styles.touchItem}>
+          <TouchableOpacity onPress={ () => navigation.navigate('Pastilleros')}
+            style={styles.touchItem}>
           <FontAwesomeIcon icon={faDropbox} size={40} style={styles.iconoItem} />  
             <Text style={styles.textTouch}>Pastilleros</Text>
           </TouchableOpacity>
@@ -57,7 +58,6 @@ const styles = StyleSheet.create({
   },
   iconoItem: {
     alignSelf: 'left',
-    //marginRight: 10,
     color: '#CECAE8'
   },   
   textTouch:{

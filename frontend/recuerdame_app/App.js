@@ -11,6 +11,7 @@ import RegisterCuidadorScreen from './components/RegisterCuidadorScreen';
 import RegisterPacienteScreen from './components/RegisterPacienteScreen';
 import ProfileCuidadorScreen from './components/ProfileCuidadorScreen';
 import Header from "./shared/Header";
+import PastillerosScreen from './components/PastillerosScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,18 @@ function App() {
         <Stack.Screen
           name="ProfileCuidador"
           component={ProfileCuidadorScreen}
+          options={{ 
+            headerTitle: () => <Header />, 
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A',
+            },
+            headerBackVisible: false
+          }} 
+        />
+        <Stack.Screen
+          name="Pastilleros"
+          component={PastillerosScreen}
           options={{ 
             headerTitle: () => <Header />, 
             headerTintColor: '#CECAE8',
