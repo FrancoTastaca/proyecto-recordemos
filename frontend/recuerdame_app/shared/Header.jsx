@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import AgregarAlarma from '../components/AgregarAlarma';
 
 function Header({ screen }){
+    /* Constantes para el pop up */
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const handleModal = () => {
+        setIsModalVisible(!isModalVisible);
+    };
     return(
         <View style={styles.header}>
             <View style={styles.headerContent}>
@@ -17,10 +23,11 @@ function Header({ screen }){
                         <Text style={styles.headerTitle}>PASTILLERO</Text>
                         <Text style={styles.headerTitle}>DIARIO</Text>
                         <View style={styles.touchContainer}>
-                            <TouchableOpacity style={styles.touchPlus}>
+                            <TouchableOpacity style={styles.touchPlus} onPress={handleModal}>
                                 <FontAwesomeIcon icon={faCirclePlus} size={36} style={styles.iconPlus} />  
                                 <Text style={styles.btnHeaderText}>Agregar alarma</Text>
                             </TouchableOpacity>
+                            {isModalVisible && <AgregarAlarma isVisible = {isModalVisible} onPress={handleModal} />}
                         </View>
                     </>
                 )}
