@@ -78,7 +78,7 @@ function App() {
           name="EndDay"
           component={EndDayScreen}
           options={{ 
-            headerTitle: () => <Header screen={'Pastilleros'} />, 
+            headerTitle: () => <Header screen={'EndDay'} />, 
             headerTintColor: '#CECAE8',
             headerStyle: {
               backgroundColor: '#624D8A',

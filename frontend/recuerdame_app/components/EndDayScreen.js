@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   titleStateAlarm:{
     padding: 10,
-    fontSize: 26,
+    fontSize: 30,
     color: '#624D8A',
     fontWeight: 'bold'
   },
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10
   },
   items: {
-    marginTop: 20
+    marginTop: 10
   }
 })
 
