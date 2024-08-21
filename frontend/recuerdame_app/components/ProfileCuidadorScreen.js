@@ -26,7 +26,7 @@ function ProfileCuidadorScreen({ navigation }) {
               <Text style={styles.textTouch}>Medicamentos</Text>
           </TouchableOpacity>
           {isModalVisible && <AgregarMedicamento isVisible = {isModalVisible} onPress={handleModal} />}
-          <TouchableOpacity style={styles.touchItem}>
+          <TouchableOpacity style={styles.touchItem} onPress={ () => navigation.navigate('EndDay')}>
             <FontAwesomeIcon icon={faCalendarDays} size={40} style={styles.iconoItem} />
             <Text style={styles.textTouch}>Final del día</Text>
           </TouchableOpacity>
