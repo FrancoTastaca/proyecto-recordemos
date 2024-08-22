@@ -1,7 +1,5 @@
 import { DataTypes } from 'sequelize'
 import sequelize from '../config/bd.config.js'
-import bcrypt from 'bcryptjs'
-import { v4 as uuidv4 } from 'uuid'
 import Cuidador from './cuidador.js'
 import Paciente from './paciente.js'
 import Persona from './persona.js'
@@ -38,73 +36,5 @@ const Usuario = sequelize.define('Usuario', {
   tableName: 'Usuario',
   timestamps: false
 })
-
-Usuario.register = async ({ nombre_usuario, email, password, Persona_ID }) => {
-  console.log('Iniciando registro de usuario')
-  console.log('Datos recibidos:', { nombre_usuario, email, Persona_ID })
-  const hashedPassword = await bcrypt.hash(password, bcrypt.genSaltSync(12))
-  console.log('Contraseña hasheada correctamente')
-  return Usuario.create({
-    ID: uuidv4(),
-    nombre_usuario,
-    email,
-    password: hashedPassword,
-    Persona_ID
-  })
-}
-
-Usuario.prototype.validatePassword = async function (password) {
-  return bcrypt.compareSync(password, this.password)
-}
-
-Usuario.readUsuario = async function (id) {
-  try {
-    const usuario = await this.findByPk(id, {
-      include: [{ model: Persona }]
-    })
-    return usuario
-  } catch (error) {
-    throw error
-  }
-}
-Usuario.updateUsuario = async function (id, data) {
-  try {
-    if (data.password) {
-      data.password = await bcrypt.hash(data.password, await bcrypt.genSalt(12))
-    }
-    const result = await this.update(data, {
-      where: { ID: id }
-    })
-    return result
-  } catch (error) {
-    throw error
-  }
-}
-
-Usuario.deleteUsuario = async function (id) {
-  try {
-    const result = await this.destroy({
-      where: { id: id }
-    })
-    return result
-  } catch (error) {
-    throw error
-  }
-}
-
-Usuario.prototype.getRole = async function () {
-  const personaId = this.Persona_ID
-  const cuidador = await Cuidador.findByPersonaId(personaId)
-  if (cuidador) {
-    return 'Cuidador'
-  }
-
-  const paciente = await Paciente.findByPersonaId(personaId)
-  if (paciente) {
-    return 'Paciente'
-  }
-
-  return 'Desconocido'
-}
 
 export default Usuario

@@ -9,7 +9,7 @@ export default {
     try {
       const user = await models.Usuario.findOne({
         where: {
-          mail: req.body.mail
+          email: req.body.email
         }
       });
 
@@ -41,20 +41,21 @@ export default {
     try {
       const persona = await models.Persona.findOne({
         where: {
-          legajo: req.body.legajo
+          persona_id: req.body.idPersona
         }
       });
 
-      req.body.password = bcrypt.hashSync(req.body.password, 10);
+      hashedPassword= bcrypt.hashSync(req.body.password, 10);
       const user = await models.Usuario.create({
-        mail: req.body.mail,
-        password: req.body.password,
-        rol: rolservice.rolByMail(req.body.mail) ? 'D' : 'A',
-        persona_id: persona ? persona.ID : null
+        nombre_usuario: req.body.nombreUsuario,
+        email: req.body.email,
+        password: hashedPassword,
+        persona_id: persona.id
       });
 
       res.json({
         success: true,
+        message: "Usuario creado correctamente",
         data: {
           id: user.ID
         }

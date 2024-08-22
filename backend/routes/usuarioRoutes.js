@@ -159,7 +159,13 @@ import usuarioScheme from '../middlewares/schemes/usuario.scheme.js';
 
 const router = Router();
 
-router.get('/', usuarioController.prueba);
-router.post('/', validate(usuarioScheme.crearUsuario), usuarioController.crear);
+router.get('/', usuarioController.listar);
+// Rutas CRUD de usuario por ID
+router.get('/:id', validate(usuarioScheme.read), usuarioController.readUsuario);
+router.put('/:id', validate(usuarioScheme.update), usuarioController.updateUsuario);
+router.delete('/:id', validate(usuarioScheme.remove), usuarioController.deleteUsuario);
+
+// Ruta para obtener el rol de un usuario por ID
+router.get('/:id/role', validate(usuarioScheme.getRole), usuarioController.getRole);
 
 export default router;
