@@ -13,6 +13,7 @@ import ProfileCuidadorScreen from './components/ProfileCuidadorScreen';
 import Header from "./shared/Header";
 import PastillerosScreen from './components/PastillerosScreen';
 import EndDayScreen from './components/EndDayScreen';
+import EscanearCodigoQR from './components/GenerarQR';
 
 const Stack = createNativeStackNavigator();
 

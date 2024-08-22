@@ -6,12 +6,18 @@ import { faSuitcaseMedical } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import AgregarMedicamento from "./AgregarMedicamento";
+import EscanearCodigoQR from "./GenerarQR";
 
 function ProfileCuidadorScreen({ navigation }) {
    /* Constantes para el modal Medicamentos */
     const [isModalVisible, setIsModalVisible] = useState(false);
     const handleModal = () => {
         setIsModalVisible(!isModalVisible);
+    };
+    /* Constantes para el modal Código QR */
+    const [isModalVisibleQR, setIsModalVisibleQR] = useState(false);
+    const handleModalQR = () => {
+        setIsModalVisibleQR(!isModalVisibleQR);
     };
     return (
       <View style={styles.container}>
@@ -30,10 +36,11 @@ function ProfileCuidadorScreen({ navigation }) {
             <FontAwesomeIcon icon={faCalendarDays} size={40} style={styles.iconoItem} />
             <Text style={styles.textTouch}>Final del día</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.touchItem}>
+          <TouchableOpacity style={styles.touchItem} onPress={handleModalQR}>
             <FontAwesomeIcon icon={faQrcode} size={40} style={styles.iconoItem} />
             <Text style={styles.textTouch}>Código QR Paciente</Text>
           </TouchableOpacity>
+          {isModalVisibleQR && <EscanearCodigoQR isVisible = {isModalVisibleQR} onPress={handleModalQR} />}
         </View>
       </View>
     )
