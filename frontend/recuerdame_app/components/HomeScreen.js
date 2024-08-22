@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, Button, StyleSheet, SafeAreaView, ImageBackground, Dimensions, TouchableOpacity } from "react-native";
 const { height } = Dimensions.get("window");
+import { useNavigation } from "@react-navigation/native";
 
-  function HomeScreen({ navigation }) {
+  function HomeScreen() {
+    const navigation = useNavigation();
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#CECAE8'}}>
         <View>

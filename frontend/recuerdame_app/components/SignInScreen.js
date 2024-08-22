@@ -64,6 +64,7 @@ function SignInScreen({ navigation }) {
             alignItems: 'center',
           }}>
             <TouchableOpacity 
+              onPress={ () => navigation.navigate('ProfileCuidador')}
               style={{
                 backgroundColor: '#624D8A',
                 paddingVertical: 15,
