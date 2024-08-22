@@ -19,6 +19,10 @@ const HistorialDosis = sequelize.define('HistorialDosis', {
     type: DataTypes.TIME,
     allowNull: false
   },
+  dosisRegisrtada: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   estado: {
     type: DataTypes.ENUM('Tomado', 'No Tomado'),
     allowNull: false
