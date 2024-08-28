@@ -10,10 +10,6 @@ const Usuario = sequelize.define('Usuario', {
     primaryKey: true,
     allowNull: false
   },
-  nombre_usuario: {
-    type: DataTypes.STRING(45),
-    allowNull: false
-  },
   password: {
     type: DataTypes.STRING(60),
     allowNull: false,
