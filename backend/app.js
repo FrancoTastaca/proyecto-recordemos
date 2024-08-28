@@ -3,9 +3,9 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import cors from 'cors';
-import router from './routes/index-routes.js';
-import models from './models/index.Models.js';
-import errorHandler from './middlewares/error.js'; // Importa el middleware de manejo de errores
+import router from './src/routes/index-Routes.js'; // Importa las rutas de la API
+import models from './src/bd/models/index.Models.js'; // Importa los modelos de la base de datos
+import errorHandler from './src/middlewares/error.js'; // Importa el middleware de manejo de errores
 
 const app = express();
 models.initAssociations();
@@ -16,14 +16,6 @@ app.use(cors({
   origin: process.env.RUTA_FRONT, // La URL del frontend
   credentials: true
 }));
-
-// Configuración de mensajes flash
-app.use((req, res, next) => {
-  app.locals.signupMessage = req.flash('signupMessage');
-  app.locals.signinMessage = req.flash('signinMessage');
-  console.log(app.locals.signinMessage);
-  next();
-});
 
 if (!inTest) {
   app.use(morgan('dev'));

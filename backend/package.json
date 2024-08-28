@@ -7,9 +7,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "test:coverage": "node --test --coverage"
   },
   "keywords": [],
   "author": "",
@@ -31,7 +31,6 @@
     "sequelize": "^6.37.3"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "standard": "^17.1.0",
     "supertest": "^7.0.0"
