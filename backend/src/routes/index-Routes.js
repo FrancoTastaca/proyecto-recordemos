@@ -12,27 +12,35 @@ const __dirname = dirname(__filename);
 const routesPath = join(__dirname);
 
 const loadedRoutes = new Set();
-const publicRoutes = ['/auth', '/persona'];
+
+// Rutas públicas generales y específicas
+const publicRoutes = [
+  '/auth',
+  '/paciente/createPaciente',
+  '/cuidador/createCuidador'
+];
 
 async function loadRoutes() {
   const files = readdirSync(routesPath);
   for (const file of files) {
-    if (file !== 'index-Routes.js' && file.endsWith('Routes.js')) 
-      {
+    if (file !== 'index-Routes.js' && file.endsWith('Routes.js')) {
       const routePath = `/${file.replace('Routes.js', '')}`;
 
       if (!loadedRoutes.has(routePath)) {
         const filePath = pathToFileURL(join(routesPath, file)).href;
         try {
           const route = await import(filePath);
-          
-          // Comprueba si la ruta debe ser pública
-          if (publicRoutes.includes(routePath)) {
-            router.use(routePath, route.default);
-          } else {
-            router.use(routePath, verifyJWT, route.default);
-          }
-          
+
+          // Aplicar middleware condicionalmente
+          router.use(routePath, (req, res, next) => {
+            const fullPath = `${routePath}${req.path}`;
+            if (publicRoutes.includes(routePath) || publicRoutes.includes(fullPath)) {
+              route.default(req, res, next);
+            } else {
+              verifyJWT(req, res, () => route.default(req, res, next));
+            }
+          });
+
           loadedRoutes.add(routePath);
         } catch (error) {
           console.error(`Error al cargar la ruta ${routePath}:`, error);
