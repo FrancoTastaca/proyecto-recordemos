@@ -1,33 +1,24 @@
-import Joi from 'joi';
 import errors from '../utils/errors.js';
-
-Joi.defaults(schema => schema.options({ 
-  allowUnknown: false, 
-  messages: {
-    'object.unknown': 'El campo {#label} no está permitido.'
-  }
-}))
 
 const errorHandler = (err, req, res, next) => {
   const response = {
     success: false,
     error: {
       code: err.code || 500,
-      message: err.message || 'Internal server error'
+      message: err.message || 'Internal server error',
+      details: []
     }
   };
 
   if (err.isJoi) {
-    const errorType = err.details[0].type;
-    let errorKey = 'ValidationError';
-
-    if (errorType === 'any.required') {
-      errorKey = 'FaltanCampos';
-    }
-
-    response.error.code = errors[errorKey].code;
-    response.error.message = errors[errorKey].message;
-    response.error.details = err.details.map(detail => detail.message).join(', ');
+    response.error.code = errors.ValidationError.code || 400;
+    response.error.message = errors.ValidationError.message || 'Error de validación';
+    response.error.details = err.details.map(detail => {
+      return {
+        message: detail.message,
+        type: detail.type === 'any.required' ? 'FaltanCampos' : 'ValidationError'
+      };
+    });
   }
 
   res.status(response.error.code).json(response);
