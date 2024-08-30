@@ -20,13 +20,13 @@ const Persona = sequelize.define('Persona', {
     type: DataTypes.STRING(45),
     allowNull: false
   },
-  fecha_nacimiento: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
   tipo: {
     type: DataTypes.ENUM('P', 'C'),
     allowNull: false
+  },
+  codVinculacion: {
+    type: DataTypes.STRING(8),
+    allowNull: true,
   }
 }, {
   tableName: 'Persona',

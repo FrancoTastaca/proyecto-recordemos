@@ -1,8 +1,5 @@
 import { DataTypes } from 'sequelize'
 import sequelize from '../config/bd.config.js'
-import Pastillero from './pastillero.js'
-import Paciente from './paciente.js'
-import Cuidador from './cuidador.js'
 
 const HistorialDosis = sequelize.define('HistorialDosis', {
   ID: {

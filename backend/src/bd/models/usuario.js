@@ -1,8 +1,5 @@
 import { DataTypes } from 'sequelize'
 import sequelize from '../config/bd.config.js'
-import Cuidador from './cuidador.js'
-import Paciente from './paciente.js'
-import Persona from './persona.js'
 
 const Usuario = sequelize.define('Usuario', {
   ID: {
@@ -20,15 +17,11 @@ const Usuario = sequelize.define('Usuario', {
     allowNull: false,
     field: 'correo_electronico'
   },
-  rol: {
-    type: DataTypes.ENUM('P', 'C'),
-    allowNull: false
-  },
   Persona_ID: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Personas',
+      model: 'Persona',
       key: 'ID'
     }
   }

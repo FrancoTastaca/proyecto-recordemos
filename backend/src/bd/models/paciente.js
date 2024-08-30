@@ -15,11 +15,12 @@ const Paciente = sequelize.define('Paciente', {
   },
   contacto_emergencia: {
     type: DataTypes.STRING(45),
-    allowNull: false
+    allowNull: true,
+    defaultValue: null
   },
-  Persona_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+  codVinculacion: {
+    type: DataTypes.STRING(8),
+    allowNull: true,
   }
 }, {
   tableName: 'Paciente',

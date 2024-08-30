@@ -10,21 +10,24 @@ const Cuidador = sequelize.define('Cuidador', {
   },
   relacion_paciente: {
     type: DataTypes.STRING(45),
-    allowNull: false
+    allowNull: true,
+    defaultValue: null
   },
   especialidad: {
     type: DataTypes.STRING(45),
     allowNull: true,
     defaultValue: null
   },
-  Persona_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
   contacto: {
     type: DataTypes.STRING(45),
-    allowNull: false
+    allowNull: true,
+    defaultValue: null
+  },
+  codVinculacion: {
+    type: DataTypes.STRING(8),
+    allowNull: true,
   }
+  
 }, {
   tableName: 'Cuidador',
   timestamps: false
