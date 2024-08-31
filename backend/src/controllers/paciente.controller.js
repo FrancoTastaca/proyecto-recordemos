@@ -1,5 +1,7 @@
 import models from '../bd/models/index.Models.js';
 import pc from 'picocolors';
+import personaController from './persona.controller.js';
+import errors from '../utils/errors.js';
 
 export default {
   listar: async (req, res, next) => {
@@ -28,17 +30,37 @@ export default {
     }
   },
 
-  create: async (req, res, next) => {
-    console.log(pc.green('Datos recibidos en /paciente:'), req.body);
+  crearPaciente: async (req, res, next) => {
+    console.log(pc.green('Datos recibidos en /crearPaciente:'), req.body);
     const transaction = await models.sequelize.transaction();
     try {
-      const nuevoPaciente = await models.Paciente.create(req.body, { transaction });
+      const { codVinculacion } = req.body;
+      const { nuevaPersona } = await personaController.crearPersona(req.body, 'P', transaction, codVinculacion);
+
+      const nuevoPaciente = await models.Paciente.create({
+        ID: nuevaPersona.ID,
+        codVinculacion: codVinculacion,
+        historial_medico: req.body.historial_medico || null,
+        contacto_emergencia: req.body.contacto_emergencia|| null,
+      }, { transaction });
+
       await transaction.commit();
-      res.status(201).json({ mensaje: 'Paciente creado exitosamente', data: nuevoPaciente });
-    } catch (error) {
+
+      res.status(201).json({
+        success: true,
+        message: "Paciente creado correctamente",
+        data: {
+          paciente: nuevoPaciente,
+          datosPersonaPaciente: nuevaPersona
+        }
+      });
+    } catch (err) {
       await transaction.rollback();
-      console.log(pc.red('Error al crear el paciente:'), error);
-      res.status(500).json({ mensaje: 'Error al crear el paciente' });
+      console.log(pc.red('Error en el proceso de creación del paciente:'), err);
+      return res.status(errors.InternalServerError.code).json({
+        success: false,
+        message: 'Ocurrió un error al intentar crear el paciente. Por favor, inténtelo más tarde.'
+      });
     }
   },
 
