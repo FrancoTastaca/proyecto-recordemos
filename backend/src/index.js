@@ -1,7 +1,7 @@
 import app from './app.js';
-import sequelize from './src/bd/config/bd.config.js';
+import sequelize from './bd/config/bd.config.js';
 import pico from 'picocolors';
-import { PORT } from './src/utils/globalConstant.js';
+import { PORT } from './utils/globalConstant.js';
 
 import dotenv from 'dotenv';
 dotenv.config();

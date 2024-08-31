@@ -16,7 +16,7 @@ const HistorialDosis = sequelize.define('HistorialDosis', {
     type: DataTypes.TIME,
     allowNull: false
   },
-  dosisRegisrtada: {
+  dosisRegistrada: {
     type: DataTypes.INTEGER,
     allowNull: false
   },

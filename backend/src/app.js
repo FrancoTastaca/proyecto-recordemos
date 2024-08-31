@@ -3,9 +3,9 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import cors from 'cors';
-import router from './src/routes/index-Routes.js'; // Importa las rutas de la API
-import models from './src/bd/models/index.Models.js'; // Importa los modelos de la base de datos
-import errorHandler from './src/middlewares/error.js'; // Importa el middleware de manejo de errores
+import router from './routes/index-Routes.js';
+import models from './bd/models/index.Models.js';
+import errorHandler from './middlewares/error.js';
 
 const app = express();
 models.initAssociations();
