@@ -8,26 +8,30 @@ const HistorialDosis = sequelize.define('HistorialDosis', {
     allowNull: false,
     autoIncrement: true
   },
-  fecha: {
+  fechaRegistrada: {
     type: DataTypes.DATE,
-    allowNull: false
-  },
-  hora: {
-    type: DataTypes.TIME,
     allowNull: false
   },
   dosisRegistrada: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  estado: {
-    type: DataTypes.ENUM('Tomado', 'No Tomado'),
-    allowNull: false
+  horaPrimerNotificacion: {
+    type: DataTypes.TIME,
+    allowNull: true
   },
-  Pastillero_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  }
+  horaSegundaNotificacion: {
+    type: DataTypes.TIME,
+    allowNull: true
+  },
+  primerTomoDosis: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true
+  },
+  segundoTomoDosis: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true
+  },
 }, {
   tableName: 'HistorialDosis',
   timestamps: false
