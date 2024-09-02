@@ -26,7 +26,7 @@ const Persona = sequelize.define('Persona', {
   },
   codVinculacion: {
     type: DataTypes.STRING(8),
-    allowNull: true,
+    allowNull: false,
   }
 }, {
   tableName: 'Persona',

@@ -18,10 +18,6 @@ const Paciente = sequelize.define('Paciente', {
     allowNull: true,
     defaultValue: null
   },
-  codVinculacion: {
-    type: DataTypes.STRING(8),
-    allowNull: false,
-  }
 }, {
   tableName: 'Paciente',
   timestamps: false

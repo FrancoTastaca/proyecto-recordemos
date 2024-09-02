@@ -2,7 +2,7 @@ import sequelize from '../config/bd.config.js';
 import Cuidador from './cuidador.js';
 import Persona from './persona.js';
 import Paciente from './paciente.js';
-import Medicamento from './medicamento.js';
+import MedicamentoCuidador from './medicamentoCuidador.js';
 import PastilleroAlarma from './pastilleroAlarma.js';
 import HistorialDosis from './historialDosis.js';
 import Usuario from './usuario.js';
@@ -30,13 +30,17 @@ const initAssociations = () => {
   // Asociación de Usuario con Persona
   Usuario.belongsTo(Persona, { foreignKey: 'Persona_ID', as: 'persona' });
 
-  // Asociación de Vademecum con Medicamento
-  Vademecum.hasMany(Medicamento, { foreignKey: 'Vademecum_ID' });
-  Medicamento.belongsTo(Vademecum, { foreignKey: 'Vademecum_ID' });
+  // Asociación de Vademecum con MedicamentoCuidador
+  Vademecum.hasMany(MedicamentoCuidador, { foreignKey: 'Vademecum_ID' });
+  MedicamentoCuidador.belongsTo(Vademecum, { foreignKey: 'Vademecum_ID' });
 
-  // Asociación de PastilleroAlarma con Medicamento a través de PastilleroMedicamento
-  PastilleroAlarma.belongsToMany(Medicamento, { through: PastilleroMedicamento, foreignKey: 'Pastillero_ID' });
-  Medicamento.belongsToMany(PastilleroAlarma, { through: PastilleroMedicamento, foreignKey: 'Medicamento_ID' });
+  // Asociación de MedicamentoCuidador con Cuidador
+  Cuidador.hasMany(MedicamentoCuidador, { foreignKey: 'Cuidador_ID' });
+  MedicamentoCuidador.belongsTo(Cuidador, { foreignKey: 'Cuidador_ID' });
+
+  // Asociación de PastilleroAlarma con MedicamentoCuidador a través de PastilleroMedicamento
+  PastilleroAlarma.belongsToMany(MedicamentoCuidador, { through: PastilleroMedicamento, foreignKey: 'Pastillero_ID' });
+  MedicamentoCuidador.belongsToMany(PastilleroAlarma, { through: PastilleroMedicamento, foreignKey: 'Medicamento_ID' });
 
   console.log(picocolors.green('Asociación de los modelos hecha correctamente'));
 };
@@ -48,7 +52,7 @@ const models = {
   Cuidador,
   Persona,
   Paciente,
-  Medicamento,
+  MedicamentoCuidador,
   Usuario,
   Vademecum,
   PastilleroMedicamento,

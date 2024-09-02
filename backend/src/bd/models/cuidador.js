@@ -22,12 +22,7 @@ const Cuidador = sequelize.define('Cuidador', {
     type: DataTypes.STRING(45),
     allowNull: true,
     defaultValue: null
-  },
-  codVinculacion: {
-    type: DataTypes.STRING(8),
-    allowNull: false,
   }
-  
 }, {
   tableName: 'Cuidador',
   timestamps: false
