@@ -20,7 +20,7 @@ const Paciente = sequelize.define('Paciente', {
   },
   codVinculacion: {
     type: DataTypes.STRING(8),
-    allowNull: true,
+    allowNull: false,
   }
 }, {
   tableName: 'Paciente',

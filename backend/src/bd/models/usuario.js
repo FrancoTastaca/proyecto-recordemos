@@ -17,14 +17,6 @@ const Usuario = sequelize.define('Usuario', {
     allowNull: false,
     field: 'correo_electronico'
   },
-  Persona_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: 'Persona',
-      key: 'ID'
-    }
-  }
 }, {
   tableName: 'Usuario',
   timestamps: false

@@ -25,7 +25,7 @@ const Cuidador = sequelize.define('Cuidador', {
   },
   codVinculacion: {
     type: DataTypes.STRING(8),
-    allowNull: true,
+    allowNull: false,
   }
   
 }, {
