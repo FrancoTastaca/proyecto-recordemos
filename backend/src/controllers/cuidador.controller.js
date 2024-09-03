@@ -3,6 +3,7 @@ import pc from 'picocolors';
 import personaController from './persona.controller.js';
 import errors from '../utils/errors.js';
 import QRCode from 'qrcode';
+import crypto from 'crypto';
 
 export default {
   listar: async (req, res) => {
@@ -22,10 +23,10 @@ export default {
   crearCuidador: async (req, res, next) => {
     const transaction = await models.sequelize.transaction();
     try {
-      const { nuevaPersona, codVinculacion } = await personaController.crearPersona(req.body, 'C', transaction);
+      const codVinculacion = crypto.randomBytes(4).toString('hex').toUpperCase();
+      const nuevaPersona  = await personaController.crearPersona(req.body, 'C', transaction, codVinculacion);
       const nuevoCuidador = await models.Cuidador.create({
         ID: nuevaPersona.ID,
-        codVinculacion: codVinculacion,
         relacion_paciente: req.body.relacion_paciente || null,
         especialidad: req.body.especialidad || null,
         contacto: req.body.contacto || null,

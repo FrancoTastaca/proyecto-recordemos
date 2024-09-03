@@ -27,19 +27,15 @@ export default {
     }
   },
 
-  crearPersona: async (datosPersona, tipo, transaction, codVinculacion = null) => {
+  crearPersona: async (datosPersona, tipo, transaction, codVinculacion ) => {
     try {
-      if (!codVinculacion) {
-        codVinculacion = crypto.randomBytes(4).toString('hex').toUpperCase();
-      }
-
       const nuevaPersona = await models.Persona.create({
         ...datosPersona,
         tipo,
         codVinculacion
       }, { transaction });
 
-      return { nuevaPersona, codVinculacion };
+      return  nuevaPersona
     } catch (error) {
       console.log(pc.red('Error al crear la persona:'), error);
       throw errors.InternalServerError('Error al crear la persona');

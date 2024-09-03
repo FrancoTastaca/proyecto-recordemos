@@ -16,8 +16,8 @@ const loadedRoutes = new Set();
 // Rutas públicas generales y específicas
 const publicRoutes = [
   '/auth',
-  '/paciente/createPaciente',
-  '/cuidador/createCuidador'
+  '/paciente/crear',
+  '/cuidador/crear',
 ];
 
 async function loadRoutes() {

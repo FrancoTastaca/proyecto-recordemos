@@ -35,11 +35,10 @@ export default {
     const transaction = await models.sequelize.transaction();
     try {
       const { codVinculacion } = req.body;
-      const { nuevaPersona } = await personaController.crearPersona(req.body, 'P', transaction, codVinculacion);
+      const nuevaPersona  = await personaController.crearPersona(req.body, 'P', transaction, codVinculacion);
 
       const nuevoPaciente = await models.Paciente.create({
         ID: nuevaPersona.ID,
-        codVinculacion: codVinculacion,
         historial_medico: req.body.historial_medico || null,
         contacto_emergencia: req.body.contacto_emergencia|| null,
       }, { transaction });

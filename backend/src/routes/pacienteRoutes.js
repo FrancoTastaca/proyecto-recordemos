@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', pacienteController.listar);
 router.get('/:id', validate(pacienteScheme.read), pacienteController.read);
-router.post('/', validate(pacienteScheme.crearPaciente), pacienteController.crearPaciente);
+router.post('/crear', validate(pacienteScheme.crearPaciente), pacienteController.crearPaciente);
 router.put('/:id', validate(pacienteScheme.update), pacienteController.update);
 router.delete('/:id', validate(pacienteScheme.remove), pacienteController.remove);
 
