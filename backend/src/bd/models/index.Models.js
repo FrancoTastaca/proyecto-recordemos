@@ -7,7 +7,6 @@ import PastilleroAlarma from './pastilleroAlarma.js';
 import HistorialDosis from './historialDosis.js';
 import Usuario from './usuario.js';
 import Vademecum from './vademecum.js';
-import PastilleroMedicamento from './pastilleroMedicamento.js';
 import picocolors from 'picocolors';
 
 // Definir las asociaciones entre los modelos
@@ -38,9 +37,9 @@ const initAssociations = () => {
   Cuidador.hasMany(MedicamentoCuidador, { foreignKey: 'Cuidador_ID' });
   MedicamentoCuidador.belongsTo(Cuidador, { foreignKey: 'Cuidador_ID' });
 
-  // Asociación de PastilleroAlarma con MedicamentoCuidador a través de PastilleroMedicamento
-  PastilleroAlarma.belongsToMany(MedicamentoCuidador, { through: PastilleroMedicamento, foreignKey: 'Pastillero_ID' });
-  MedicamentoCuidador.belongsToMany(PastilleroAlarma, { through: PastilleroMedicamento, foreignKey: 'Medicamento_ID' });
+  // Asociación de PastilleroAlarma con MedicamentoCuidador (uno a muchos)
+  PastilleroAlarma.hasMany(MedicamentoCuidador, { foreignKey: 'Pastillero_ID' });
+  MedicamentoCuidador.belongsTo(PastilleroAlarma, { foreignKey: 'Pastillero_ID' });
 
   console.log(picocolors.green('Asociación de los modelos hecha correctamente'));
 };
@@ -55,7 +54,6 @@ const models = {
   MedicamentoCuidador,
   Usuario,
   Vademecum,
-  PastilleroMedicamento,
   initAssociations
 };
 

@@ -17,7 +17,7 @@ const Paciente = sequelize.define('Paciente', {
     type: DataTypes.STRING(45),
     allowNull: true,
     defaultValue: null
-  },
+  }
 }, {
   tableName: 'Paciente',
   timestamps: false

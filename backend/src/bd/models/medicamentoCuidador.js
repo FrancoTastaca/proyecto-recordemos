@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/bd.config.js';
 
-const Medicamento = sequelize.define('Medicamento', {
+const MedicamentoCuidador = sequelize.define('MedicamentoCuidador', {
   ID: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -11,13 +11,17 @@ const Medicamento = sequelize.define('Medicamento', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  marca: {
+    type: DataTypes.STRING(45),
+    allowNull: false
+  },  
   medicamento_imagen: {
     type: DataTypes.STRING(45),
     allowNull: true
   },
 }, {
-  tableName: 'Medicamento',
+  tableName: 'MedicamentoCuidador',
   timestamps: false
 });
 
-export default Medicamento;
+export default MedicamentoCuidador;
