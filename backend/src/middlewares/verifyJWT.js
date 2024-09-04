@@ -3,6 +3,7 @@ import models from '../bd/models/index.Models.js';
 import { JWT_SECRET, REFRESH_JWT_SECRET } from '../utils/globalConstant.js';
 import moment from 'moment';
 import pc from 'picocolors';
+import errors from '../utils/errors.js';
 
 export const verifyJWT = async (req, res, next) => {
   let token;
@@ -20,9 +21,9 @@ export const verifyJWT = async (req, res, next) => {
 
   if (!token) {
     console.log(pc.red('No se proporcionó un token de autenticación.'));
-    return res.status(401).json({
-      success: false,
-      message: 'No se proporcionó un token de autenticación.'
+    return next({
+      ...errors.CredencialesInvalidas,
+      details: 'No se proporcionó un token de autenticación en la solicitud.'
     });
   }
 
@@ -47,15 +48,15 @@ export const verifyJWT = async (req, res, next) => {
           return next();
         } catch (err) {
           console.log(pc.red('Error al verificar el refresh token JWT:'), err);
-          return res.status(401).json({
-            success: false,
-            message: 'Sesión expirada y refresh token inválido.'
+          return next({
+            ...errors.SesionExpirada,
+            details: `Error al verificar el refresh token JWT: ${err.message}`
           });
         }
       } else {
-        return res.status(401).json({
-          success: false,
-          message: 'Sesión expirada.'
+        return next({
+          ...errors.SesionExpirada,
+          details: 'El token de autenticación ha expirado y no se proporcionó un refresh token.'
         });
       }
     }
@@ -74,9 +75,9 @@ export const verifyJWT = async (req, res, next) => {
 
     if (!usuario) {
       console.log(pc.red('Usuario no autorizado.'));
-      return res.status(401).json({
-        success: false,
-        message: 'Usuario no autorizado.'
+      return next({
+        ...errors.UsuarioNoAutorizado,
+        details: 'No se encontró un usuario asociado al token proporcionado.'
       });
     }
 
@@ -84,9 +85,9 @@ export const verifyJWT = async (req, res, next) => {
     next();
   } catch (err) {
     console.log(pc.red('Error al verificar el token JWT:'), err);
-    return res.status(401).json({
-      success: false,
-      message: 'Usuario no autorizado.'
+    return next({
+      ...errors.CredencialesInvalidas,
+      details: `Error al verificar el token JWT: ${err.message}`
     });
   }
 };

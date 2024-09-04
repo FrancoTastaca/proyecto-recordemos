@@ -24,34 +24,38 @@ export default {
       if (user) {
         const coincide = bcrypt.compareSync(req.body.password, user.password);
         if (!coincide) {
-          return res.status(errors.CredencialesInvalidas.code).json({
-            success: false,
-            message: 'La contraseña es incorrecta. Por favor, inténtelo de nuevo.'
+          return next({
+            ...errors.CredencialesInvalidas,
+            details: 'La contraseña proporcionada no coincide con la almacenada en la base de datos.'
           });
         }
       } else {
-        return res.status(errors.CredencialesInvalidas.code).json({
-          success: false,
-          message: 'No se encontró una cuenta con ese correo electrónico.'
+        return next({
+          ...errors.CredencialesInvalidas,
+          details: 'El correo electrónico proporcionado no está registrado en el sistema.'
         });
       }
 
-      const tokens = jwt(user, user.persona.tipo);
-      res.cookie('jwt', tokens);
-      res.status(200).json({
-        success: true,
-        message: 'Inicio de sesión exitoso',
-        data: {
-          id: user.ID,
-          tipo: user.persona.tipo,
-          tokens
-        }
-      });
+      try {
+        const tokens = jwt(user, user.persona.tipo);
+        res.cookie('jwt', tokens);
+        res.status(200).json({
+          success: true,
+          message: 'Inicio de sesión exitoso',
+          data: {
+            id: user.ID,
+            tipo: user.persona.tipo,
+            tokens
+          }
+        });
+      } catch (err) {
+        return next(err);
+      }
     } catch (err) {
       console.log(pc.red('Error en el proceso de login:'), err);
-      return res.status(errors.InternalServerError.code).json({
-        success: false,
-        message: 'Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo más tarde.'
+      return next({
+        ...errors.InternalServerError,
+        details: `Error en el proceso de login: ${err.message}`
       });
     }
   },
@@ -65,9 +69,9 @@ export default {
       });
 
       if (!persona) {
-        return res.status(errors.UsuarioNoEncontrado.code).json({
-          success: false,
-          message: 'No se encontró una persona con el ID proporcionado.'
+        return next({
+          ...errors.UsuarioNoEncontrado,
+          details: 'El ID de persona proporcionado no está registrado en el sistema.'
         });
       }
 
@@ -83,8 +87,13 @@ export default {
         }, { transaction });
 
         if (persona.tipo === 'C') {
-          const tokens = jwt(user, persona.tipo);
-          res.cookie('jwt', tokens);
+          try {
+            const tokens = jwt(user, persona.tipo);
+            res.cookie('jwt', tokens);
+          } catch (err) {
+            await transaction.rollback();
+            return next(err);
+          }
         }
 
         await transaction.commit();
@@ -101,16 +110,16 @@ export default {
       } catch (err) {
         await transaction.rollback();
         console.log(pc.red('Error en el proceso de registro:'), err);
-        return res.status(errors.InternalServerError.code).json({
-          success: false,
-          message: 'Ocurrió un error al intentar registrar el usuario. Por favor, inténtelo más tarde.'
+        return next({
+          ...errors.InternalServerError,
+          details: `Error en el proceso de registro: ${err.message}`
         });
       }
     } catch (err) {
       console.log(pc.red('Error en el proceso de verificación de persona:'), err);
-      return res.status(errors.InternalServerError.code).json({
-        success: false,
-        message: 'Ocurrió un error al intentar verificar la persona. Por favor, inténtelo más tarde.'
+      return next({
+        ...errors.InternalServerError,
+        details: `Error en el proceso de verificación de persona: ${err.message}`
       });
     }
   },
@@ -120,7 +129,10 @@ export default {
       const { qrCode } = req.body;
 
       if (!qrCode) {
-        throw new Error('No se recibieron datos del QR');
+        return next({
+          ...errors.CredencialesInvalidas,
+          details: 'El código QR no fue proporcionado en la solicitud.'
+        });
       }
 
       const image = await jimp.read(Buffer.from(qrCode.split(',')[1], 'base64'));
@@ -136,9 +148,9 @@ export default {
       });
 
       if (!personaPaciente) {
-        return res.status(errors.UsuarioNoEncontrado.code).json({
-          success: false,
-          message: 'Código de vinculación no válido o paciente no encontrado.'
+        return next({
+          ...errors.UsuarioNoEncontrado,
+          details: 'El código de vinculación proporcionado no corresponde a ningún paciente registrado.'
         });
       }
 
@@ -147,28 +159,32 @@ export default {
       });
 
       if (!usuarioPaciente) {
-        return res.status(errors.UsuarioNoEncontrado.code).json({
-          success: false,
-          message: 'Usuario no encontrado para el paciente.'
+        return next({
+          ...errors.UsuarioNoEncontrado,
+          details: 'No se encontró un usuario asociado al paciente con el código de vinculación proporcionado.'
         });
       }
 
-      const tokens = jwt(usuarioPaciente, 'P');
-      res.cookie('jwt', tokens);
-      res.status(200).json({
-        success: true,
-        message: 'Login exitoso',
-        data: {
-          id: usuarioPaciente.ID,
-          tipo: 'P',
-          tokens
-        }
-      });
+      try {
+        const tokens = jwt(usuarioPaciente, 'P');
+        res.cookie('jwt', tokens);
+        res.status(200).json({
+          success: true,
+          message: 'Login exitoso',
+          data: {
+            id: usuarioPaciente.ID,
+            tipo: 'P',
+            tokens
+          }
+        });
+      } catch (err) {
+        return next(err);
+      }
     } catch (err) {
       console.log(pc.red('Error en el proceso de login del paciente con QR:'), err);
-      return res.status(errors.InternalServerError.code).json({
-        success: false,
-        message: 'Ocurrió un error al intentar hacer login. Por favor, inténtelo más tarde.'
+      return next({
+        ...errors.InternalServerError,
+        details: `Error en el proceso de login del paciente con QR: ${err.message}`
       });
     }
   },
@@ -180,4 +196,4 @@ export default {
       message: 'Sesión cerrada correctamente'
     });
   }
-}
+};

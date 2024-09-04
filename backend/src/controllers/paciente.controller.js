@@ -11,7 +11,10 @@ export default {
       res.json(pacientes);
     } catch (error) {
       console.log(pc.red('Error al obtener los pacientes:'), error);
-      res.status(500).json({ mensaje: 'Error al obtener los pacientes' });
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al obtener los pacientes'
+      });
     }
   },
 
@@ -21,12 +24,18 @@ export default {
       const paciente = await models.Paciente.findByPk(req.params.id);
       if (!paciente) {
         console.log(pc.red('Paciente no encontrado'));
-        return res.status(404).json({ mensaje: 'Paciente no encontrado' });
+        return next({
+          ...errors.UsuarioNoEncontrado,
+          details: 'Paciente no encontrado'
+        });
       }
       res.json(paciente);
     } catch (error) {
       console.log(pc.red('Error al obtener el paciente:'), error);
-      res.status(500).json({ mensaje: 'Error al obtener el paciente' });
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al obtener el paciente'
+      });
     }
   },
 
@@ -35,12 +44,12 @@ export default {
     const transaction = await models.sequelize.transaction();
     try {
       const { codVinculacion } = req.body;
-      const nuevaPersona  = await personaController.crearPersona(req.body, 'P', transaction, codVinculacion);
+      const nuevaPersona = await personaController.crearPersona(req.body, 'P', transaction, codVinculacion);
 
       const nuevoPaciente = await models.Paciente.create({
         ID: nuevaPersona.ID,
         historial_medico: req.body.historial_medico || null,
-        contacto_emergencia: req.body.contacto_emergencia|| null,
+        contacto_emergencia: req.body.contacto_emergencia || null,
       }, { transaction });
 
       await transaction.commit();
@@ -56,9 +65,9 @@ export default {
     } catch (err) {
       await transaction.rollback();
       console.log(pc.red('Error en el proceso de creación del paciente:'), err);
-      return res.status(errors.InternalServerError.code).json({
-        success: false,
-        message: 'Ocurrió un error al intentar crear el paciente. Por favor, inténtelo más tarde.'
+      next({
+        ...errors.InternalServerError,
+        details: 'Ocurrió un error al intentar crear el paciente. Por favor, inténtelo más tarde.'
       });
     }
   },
@@ -78,12 +87,18 @@ export default {
       } else {
         await transaction.rollback();
         console.log(pc.red('Paciente no encontrado'));
-        res.status(404).json({ mensaje: 'Paciente no encontrado' });
+        next({
+          ...errors.UsuarioNoEncontrado,
+          details: 'Paciente no encontrado'
+        });
       }
     } catch (error) {
       await transaction.rollback();
       console.log(pc.red('Error al actualizar el paciente:'), error);
-      res.status(500).json({ mensaje: 'Error al actualizar el paciente' });
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al actualizar el paciente'
+      });
     }
   },
 
@@ -101,12 +116,18 @@ export default {
       } else {
         await transaction.rollback();
         console.log(pc.red('Paciente no encontrado'));
-        res.status(404).json({ mensaje: 'Paciente no encontrado' });
+        next({
+          ...errors.UsuarioNoEncontrado,
+          details: 'Paciente no encontrado'
+        });
       }
     } catch (error) {
       await transaction.rollback();
       console.log(pc.red('Error al eliminar el paciente:'), error);
-      res.status(500).json({ mensaje: 'Error al eliminar el paciente' });
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al eliminar el paciente'
+      });
     }
-  }
+  },
 };

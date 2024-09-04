@@ -6,7 +6,7 @@ import QRCode from 'qrcode';
 import crypto from 'crypto';
 
 export default {
-  listar: async (req, res) => {
+  listar: async (req, res, next) => {
     const transaction = await models.sequelize.transaction();
     try {
       const cuidadores = await models.Cuidador.findAll({ transaction });
@@ -17,14 +17,18 @@ export default {
         await transaction.rollback();
       }
       console.log(pc.red('Error al obtener los cuidadores:'), error);
-      res.status(500).json({ mensaje: 'Error al obtener los cuidadores' });
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al obtener los cuidadores'
+      });
     }
   },
+
   crearCuidador: async (req, res, next) => {
     const transaction = await models.sequelize.transaction();
     try {
       const codVinculacion = crypto.randomBytes(4).toString('hex').toUpperCase();
-      const nuevaPersona  = await personaController.crearPersona(req.body, 'C', transaction, codVinculacion);
+      const nuevaPersona = await personaController.crearPersona(req.body, 'C', transaction, codVinculacion);
       const nuevoCuidador = await models.Cuidador.create({
         ID: nuevaPersona.ID,
         relacion_paciente: req.body.relacion_paciente || null,
@@ -47,9 +51,9 @@ export default {
         await transaction.rollback();
       }
       console.log(pc.red('Error en el proceso de creación del cuidador:'), err);
-      return res.status(errors.InternalServerError.code).json({
-        success: false,
-        message: 'Ocurrió un error al intentar crear el cuidador. Por favor, inténtelo más tarde.'
+      next({
+        ...errors.InternalServerError,
+        details: 'Ocurrió un error al intentar crear el cuidador. Por favor, inténtelo más tarde.'
       });
     }
   },
@@ -67,14 +71,20 @@ export default {
         res.json({ mensaje: 'Cuidador actualizado exitosamente', data: updatedCuidador });
       } else {
         await transaction.rollback();
-        res.status(404).json({ mensaje: 'Cuidador no encontrado' });
+        next({
+          ...errors.NotFoundError,
+          details: 'Cuidador no encontrado'
+        });
       }
     } catch (error) {
       if (!transaction.finished) {
         await transaction.rollback();
       }
       console.log(pc.red('Error al actualizar el cuidador:'), error);
-      res.status(500).json({ mensaje: 'Error al actualizar el cuidador' });
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al actualizar el cuidador'
+      });
     }
   },
 
@@ -90,17 +100,24 @@ export default {
         res.status(204).end();
       } else {
         await transaction.rollback();
-        res.status(404).json({ mensaje: 'Cuidador no encontrado' });
+        next({
+          ...errors.NotFoundError,
+          details: 'Cuidador no encontrado'
+        });
       }
     } catch (error) {
       if (!transaction.finished) {
         await transaction.rollback();
       }
       console.log(pc.red('Error al eliminar el cuidador:'), error);
-      res.status(500).json({ mensaje: 'Error al eliminar el cuidador' });
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al eliminar el cuidador'
+      });
     }
   },
-  generarQR: async (req, res) => {
+
+  generarQR: async (req, res, next) => {
     const transaction = await models.sequelize.transaction();
     try {
       const usuarioCuidador = res.locals.usuario;
@@ -113,9 +130,9 @@ export default {
 
       if (!personaPaciente) {
         await transaction.rollback();
-        return res.status(404).json({
-          success: false,
-          message: 'Paciente no encontrado.'
+        return next({
+          ...errors.NotFoundError,
+          details: 'Paciente no encontrado.'
         });
       }
 
@@ -135,9 +152,9 @@ export default {
         await transaction.rollback();
       }
       console.log(pc.red('Error al generar el código QR:'), err);
-      return res.status(500).json({
-        success: false,
-        message: 'Ocurrió un error al generar el código QR. Por favor, inténtelo más tarde.'
+      next({
+        ...errors.InternalServerError,
+        details: 'Ocurrió un error al generar el código QR. Por favor, inténtelo más tarde.'
       });
     }
   },

@@ -37,7 +37,12 @@ async function loadRoutes() {
             if (publicRoutes.includes(routePath) || publicRoutes.includes(fullPath)) {
               route.default(req, res, next);
             } else {
-              verifyJWT(req, res, () => route.default(req, res, next));
+              verifyJWT(req, res, (err) => {
+                if (err) {
+                  return next(err);
+                }
+                route.default(req, res, next);
+              });
             }
           });
 
