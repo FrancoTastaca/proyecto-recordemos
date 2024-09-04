@@ -10,17 +10,16 @@ const save = Joi.object({
   dosis: Joi.number().integer().positive().required()
 });
 
-const read = Joi.object({
+const validateId = Joi.object({
   id: Joi.number().integer().positive().required()
-});
-
-const remove = Joi.object({
+})
+const update= save.keys({
   id: Joi.number().integer().positive().required()
-});
+})
 const validations = {
   save,
-  read,
-  remove
+  update,
+  validateId
 };
 
 export default validations;
