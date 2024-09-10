@@ -1,5 +1,5 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/bd.config.js';
+import { DataTypes } from 'sequelize'
+import sequelize from '../config/bd.config.js'
 
 const PastilleroAlarma = sequelize.define('PastilleroMedicamento', {
   ID: {
@@ -34,6 +34,6 @@ const PastilleroAlarma = sequelize.define('PastilleroMedicamento', {
 }, {
   tableName: 'PastilleroAlarma',
   timestamps: false
-});
+})
 
-export default PastilleroAlarma;
+export default PastilleroAlarma

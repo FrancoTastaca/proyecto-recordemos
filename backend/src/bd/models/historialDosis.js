@@ -31,11 +31,10 @@ const HistorialDosis = sequelize.define('HistorialDosis', {
   segundoTomoDosis: {
     type: DataTypes.BOOLEAN,
     allowNull: true
-  },
+  }
 }, {
   tableName: 'HistorialDosis',
   timestamps: false
 })
-
 
 export default HistorialDosis

@@ -16,7 +16,7 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING(45),
     allowNull: false,
     field: 'correo_electronico'
-  },
+  }
 }, {
   tableName: 'Usuario',
   timestamps: false

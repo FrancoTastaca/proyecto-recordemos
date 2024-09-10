@@ -1,5 +1,5 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/bd.config.js';
+import { DataTypes } from 'sequelize'
+import sequelize from '../config/bd.config.js'
 
 const Persona = sequelize.define('Persona', {
   ID: {
@@ -26,11 +26,11 @@ const Persona = sequelize.define('Persona', {
   },
   codVinculacion: {
     type: DataTypes.STRING(8),
-    allowNull: false,
+    allowNull: false
   }
 }, {
   tableName: 'Persona',
   timestamps: false
-});
+})
 
-export default Persona;
+export default Persona
