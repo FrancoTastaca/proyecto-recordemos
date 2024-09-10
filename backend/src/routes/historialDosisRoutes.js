@@ -1,12 +1,14 @@
-import express from 'express';
-import historialDosisController from '../controllers/historialDosis.controller.js';
+import express from 'express'
+import historialDosisController from '../controllers/historialDosis.controller.js'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/', historialDosisController.obtenerHistorialDosis);
-router.get('/:id', historialDosisController.obtenerHistorialDosisPorId);
-router.post('/', historialDosisController.crearHistorialDosis);
-router.put('/:id', historialDosisController.actualizarHistorialDosis);
-router.delete('/:id', historialDosisController.eliminarHistorialDosis);
+router.get('/', historialDosisController.listarTodo)
+router.get('/historial/:id', historialDosisController.historialDosisPersonaID)
+router.get('/porFechas/:id', historialDosisController.listarDosisPersonaPorFechas)
+router.get('/:id', historialDosisController.read)
+router.post('/', historialDosisController.create)
+router.put('/:id', historialDosisController.update)
+router.delete('/:id', historialDosisController.remove)
 
-export default router;
+export default router
