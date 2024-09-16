@@ -13,7 +13,7 @@ import ProfileCuidadorScreen from './components/ProfileCuidadorScreen';
 import Header from "./shared/Header";
 import PastillerosScreen from './components/PastillerosScreen';
 import EndDayScreen from './components/EndDayScreen';
-import EscanearCodigoQR from './components/GenerarQR';
+import EscanearCodigoQr from './components/EscanearQR';
 
 const Stack = createNativeStackNavigator();
 
@@ -86,6 +86,11 @@ function App() {
             },
             headerBackVisible: false
           }} 
+        />
+        <Stack.Screen
+          name="ScanQr"
+          component={EscanearCodigoQr}
+          options={{ headerShown: false }} 
         />
         <Stack.Screen
           name="Details"

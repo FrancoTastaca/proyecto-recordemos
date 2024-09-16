@@ -4,8 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import AgregarAlarma from '../components/AgregarAlarma';
+import { useRoute } from "@react-navigation/native";
 
 function Header({ screen }){
+    const route = useRoute()
+    const { role } = route.params;
+    const roles = {
+        cuidador: 'cuidador',
+        paciente: 'paciente'
+    };
     /* Constantes para el pop up */
     const [isModalVisible, setIsModalVisible] = useState(false);
     const handleModal = () => {
@@ -34,13 +41,15 @@ function Header({ screen }){
                     <>
                         <Text style={styles.headerTitle}>PASTILLERO</Text>
                         <Text style={styles.headerTitle}>DIARIO</Text>
-                        <View style={styles.touchContainer}>
-                            <TouchableOpacity style={styles.touchPlus} onPress={handleModal}>
-                                <FontAwesomeIcon icon={faCirclePlus} size={36} style={styles.iconPlus} />  
-                                <Text style={styles.btnHeaderText}>Agregar alarma</Text>
-                            </TouchableOpacity>
-                            {isModalVisible && <AgregarAlarma isVisible = {isModalVisible} onPress={handleModal} />}
-                        </View>
+                        {role === roles.cuidador && (
+                            <View style={styles.touchContainer}>
+                                <TouchableOpacity style={styles.touchPlus} onPress={handleModal}>
+                                    <FontAwesomeIcon icon={faCirclePlus} size={36} style={styles.iconPlus} />  
+                                    <Text style={styles.btnHeaderText}>Agregar alarma</Text>
+                                </TouchableOpacity>
+                                {isModalVisible && <AgregarAlarma isVisible = {isModalVisible} onPress={handleModal} />}
+                            </View>
+                        )}
                     </>
                 )}
             </View>

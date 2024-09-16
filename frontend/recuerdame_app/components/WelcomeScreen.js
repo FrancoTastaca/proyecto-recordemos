@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { View, Text, Button, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HomeScreen from "./HomeScreen";
 
@@ -31,12 +31,5 @@ const WelcomeScreen=({navigation}) => {
     </View>
   )
 }
-
-    /*return (
-      <View style={{ flex: 1, backgroundColor: '#CECAE8', alignItems: 'center', justifyContent: 'center' }}>
-        <Carousel />
-      </View>
-    )*/
-
 
 export default WelcomeScreen;

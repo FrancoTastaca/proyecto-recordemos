@@ -2,19 +2,24 @@ import React from "react";
 import { StyleSheet, View, Text, ScrollView} from "react-native";
 import Alarmas from './Alarmas' 
 
-const EndDay = () => {
+const EndDay = ({route}) => {
+  const { role } = route.params;
+  const roles = {
+    cuidador: 'cuidador',
+    paciente: 'paciente'
+  };
     return (
       <ScrollView>
         <View style={styles.endDayContainer}>
           <Text style={styles.titleStateAlarm}>Estado alarmas</Text> 
           <View style={styles.itemsContainer}>
             <View style={styles.items}>
-              <Alarmas text={'Alarma 1'} estado={'Tomada'} />
-              <Alarmas text={'Alarma 2'} estado={'Omitida'} />
-              <Alarmas text={'Alarma 3'} estado={'Tomada'} />
-              <Alarmas text={'Alarma 4'} estado={'Tomada'} />
-              <Alarmas text={'Alarma 5'} estado={'Omitida'} />
-              <Alarmas text={'Alarma 6'} estado={'Tomada'} />
+              <Alarmas text={'Alarma 1'} estado={'Tomada'} role={role} />
+              <Alarmas text={'Alarma 2'} estado={'Omitida'} role={role} />
+              <Alarmas text={'Alarma 3'} estado={'Tomada'} role={role} />
+              <Alarmas text={'Alarma 4'} estado={'Tomada'} role={role} />
+              <Alarmas text={'Alarma 5'} estado={'Omitida'} role={role} />
+              <Alarmas text={'Alarma 6'} estado={'Tomada'} role={role} />
             </View>
           </View>
         </View>

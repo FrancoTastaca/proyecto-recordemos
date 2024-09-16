@@ -6,9 +6,10 @@ import { faSuitcaseMedical } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarDays } from "@fortawesome/free-regular-svg-icons";
 import { faQrcode } from '@fortawesome/free-solid-svg-icons';
 import AgregarMedicamento from "./AgregarMedicamento";
-import EscanearCodigoQR from "./GenerarQR";
+import GenerarCodigoQR from "./GenerarQR";
 
-function ProfileCuidadorScreen({ navigation }) {
+function ProfileCuidadorScreen({ navigation, route }) {
+    const { role } = route.params;
    /* Constantes para el modal Medicamentos */
     const [isModalVisible, setIsModalVisible] = useState(false);
     const handleModal = () => {
@@ -22,7 +23,7 @@ function ProfileCuidadorScreen({ navigation }) {
     return (
       <View style={styles.container}>
         <View style={styles.touchsWrapper}>
-          <TouchableOpacity onPress={ () => navigation.navigate('Pastilleros')}
+          <TouchableOpacity onPress={ () => navigation.navigate('Pastilleros', {role})}
             style={styles.touchItem}>
           <FontAwesomeIcon icon={faDropbox} size={40} style={styles.iconoItem} />  
             <Text style={styles.textTouch}>Pastilleros</Text>
@@ -32,7 +33,7 @@ function ProfileCuidadorScreen({ navigation }) {
               <Text style={styles.textTouch}>Medicamentos</Text>
           </TouchableOpacity>
           {isModalVisible && <AgregarMedicamento isVisible = {isModalVisible} onPress={handleModal} />}
-          <TouchableOpacity style={styles.touchItem} onPress={ () => navigation.navigate('EndDay')}>
+          <TouchableOpacity style={styles.touchItem} onPress={ () => navigation.navigate('EndDay', {role})}>
             <FontAwesomeIcon icon={faCalendarDays} size={40} style={styles.iconoItem} />
             <Text style={styles.textTouch}>Final del día</Text>
           </TouchableOpacity>
@@ -40,7 +41,7 @@ function ProfileCuidadorScreen({ navigation }) {
             <FontAwesomeIcon icon={faQrcode} size={40} style={styles.iconoItem} />
             <Text style={styles.textTouch}>Código QR Paciente</Text>
           </TouchableOpacity>
-          {isModalVisibleQR && <EscanearCodigoQR isVisible = {isModalVisibleQR} onPress={handleModalQR} />}
+          {isModalVisibleQR && <GenerarCodigoQR isVisible = {isModalVisibleQR} onPress={handleModalQR} />}
         </View>
       </View>
     )

@@ -1,8 +1,27 @@
 import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { StyleSheet, View, Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Pressable } from "react-native";
+import { useRoute } from '@react-navigation/native'
+import { useCameraPermissions } from "expo-camera";
 
 function SignInScreen({ navigation }) {
+  const route = useRoute()
+  const roles = {
+    cuidador: 'cuidador',
+    paciente: 'paciente'
+  };
+  const [role, setRole] = useState(roles.paciente);
+
+  useEffect(() => {
+    if(route.params?.role){
+      setRole(route.params.role)
+    }
+  }, [route.params?.role])
+
+  const [permission, requestPermission] = useCameraPermissions();
+
+  const isPermissionGranted = Boolean(permission?.granted);
+
     return (
       <View style={styles.signInContainer}>
         <Text style={styles.signInTitle}>¡Hola, de nuevo!</Text>
@@ -18,16 +37,44 @@ function SignInScreen({ navigation }) {
           />
         </View>
         <View style={styles.touchsContainer}>
-            <TouchableOpacity 
-              onPress={ () => navigation.navigate('ProfileCuidador')}
-              style={styles.touchItem}>
-              <Text style={styles.touchItemText}>Iniciar sesión</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              onPress={ () => navigation.navigate('RegisterCuidador')}
-              style={styles.touchItem}>
-              <Text style={styles.touchItemText}>Registrarme</Text>
-            </TouchableOpacity>
+            {role === roles.cuidador && (
+              <>
+              <TouchableOpacity 
+                onPress={ () => navigation.navigate('ProfileCuidador', {role})}
+                style={styles.touchItem}>
+                <Text style={styles.touchItemText}>Iniciar sesión</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                onPress={ () => navigation.navigate('RegisterCuidador')}
+                style={styles.touchItem}>
+                <Text style={styles.touchItemText}>Registrarme</Text>
+              </TouchableOpacity>
+              </>
+            )}
+            {role === roles.paciente && (
+              <>
+              <TouchableOpacity 
+                onPress={ () => navigation.navigate('Pastilleros', {role} )}
+                style={styles.touchItem}>
+                <Text style={styles.touchItemText}>Iniciar sesión</Text>
+              </TouchableOpacity>
+              {!isPermissionGranted && (<TouchableOpacity onPress={requestPermission} style={styles.touchItem}>
+                <Text style={styles.touchItemText}>Permiso de cámara</Text>
+              </TouchableOpacity>
+              )}
+              {isPermissionGranted && (<Pressable disabled={!isPermissionGranted} onPress={() => navigation.navigate('ScanQr')} asChild style={styles.touchItem}>
+                <Text
+                  style={[
+                    styles.touchItemText,
+                    { opacity: !isPermissionGranted ? 0.5 : 1 },
+                  ]}
+                >
+                  Escanear
+                </Text>
+              </Pressable>
+              )}
+              </>
+            )}
           </View>
         <StatusBar style="auto" />
       </View>

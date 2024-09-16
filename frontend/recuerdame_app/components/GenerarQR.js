@@ -5,7 +5,7 @@ import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
 import QRCode from "react-qr-code";
 
 
-const EscanearCodigoQR = ({ isVisible, onPress }) => {
+const GenerarCodigoQR = ({ isVisible, onPress }) => {
     const link = 'https://alz.org/ar/demencia-alzheimer-argentina.asp';
     return (
         <Modal
@@ -46,5 +46,5 @@ const styles = StyleSheet.create({
     } 
 })
 
-export default EscanearCodigoQR;
+export default GenerarCodigoQR;
 
