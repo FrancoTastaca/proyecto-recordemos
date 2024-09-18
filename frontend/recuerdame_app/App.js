@@ -39,26 +39,50 @@ function App() {
         <Stack.Screen
           name="SignIn"
           component={SignInScreen}
-          options={{ headerShown: false }} 
+          options={{ 
+            headerShown: true,
+            headerTitle: '',
+            headerBackVisible: true,
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A'
+            }
+          }} 
         />
         <Stack.Screen
           name="RegisterCuidador"
           component={RegisterCuidadorScreen}
-          options={{ headerShown: false }} 
+          options={{  
+            headerShown: true,
+            headerTitle: '',
+            headerBackVisible: true,
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A'
+            }
+          }} 
         />
         <Stack.Screen
           name="RegisterPaciente"
           component={RegisterPacienteScreen}
-          options={{ headerShown: false }} 
+          options={{ 
+            headerShown: true,
+            headerTitle: '',
+            headerBackVisible: true,
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A'
+            }
+          }} 
         />
         <Stack.Screen
           name="ProfileCuidador"
           component={ProfileCuidadorScreen}
           options={{ 
-            headerTitle: () => <Header screen={'ProfileCuidador'} />, 
+            headerTitle: () => <Header screen={'ProfileCuidador'} />,
             headerTintColor: '#CECAE8',
             headerStyle: {
-              backgroundColor: '#624D8A',
+              backgroundColor: '#624D8A'
             },
             headerBackVisible: false
           }} 

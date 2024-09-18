@@ -5,8 +5,11 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import AgregarAlarma from '../components/AgregarAlarma';
 import { useRoute } from "@react-navigation/native";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useNavigation } from "@react-navigation/native"
 
 function Header({ screen }){
+    const navigation = useNavigation();
     const route = useRoute()
     const { role } = route.params;
     const roles = {
@@ -23,11 +26,17 @@ function Header({ screen }){
             <View style={styles.headerContent}>
                 {screen === 'ProfileCuidador' ? (
                     <> 
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
+                        </TouchableOpacity>
                         <Text style={styles.headerTitle}>ROL</Text>
                         <Text style={styles.headerText}>Nombre Apellido</Text>
                     </>
                 ) : screen === 'EndDay' ? (
                     <>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
+                        </TouchableOpacity>
                         <Text style={styles.headerTitleEndDay}>FINAL DEL DÍA</Text>
                         <View style={styles.headerSubContent}>
                             <View style={styles.withIconContainer}>
@@ -39,6 +48,9 @@ function Header({ screen }){
                     </>
                 ) : (
                     <>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
+                        </TouchableOpacity>
                         <Text style={styles.headerTitle}>PASTILLERO</Text>
                         <Text style={styles.headerTitle}>DIARIO</Text>
                         {role === roles.cuidador && (
@@ -60,7 +72,7 @@ function Header({ screen }){
 const styles = StyleSheet.create({
     header: {
         width: '100%',
-        height: 170,
+        height: 220,
         backgroundColor: '#624D8A',
         alignItems: 'center',
         flexDirection: 'column',
@@ -77,13 +89,18 @@ const styles = StyleSheet.create({
     headerSubContent: {
         backgroundColor: '#2f273f',
         width: '100%', 
-        height: 110,
+        height: 130,
         alignItems: 'center',
         marginLeft: 0,
         marginRight: 32,
         padding: 0
     },
+    goBackIcon: {
+        marginRight: 340, 
+        color: '#CECAE8'
+    },
     headerTitle: {
+        marginTop: '1rem',
         fontWeight: 'bold',
         fontSize: 40,
         color: '#CECAE8'
