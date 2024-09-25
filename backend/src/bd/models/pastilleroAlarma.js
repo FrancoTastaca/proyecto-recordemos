@@ -11,19 +11,11 @@ const PastilleroAlarma = sequelize.define('PastilleroMedicamento', {
     type: DataTypes.STRING(45),
     allowNull: true
   },
-  Paciente_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  Cuidador_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
   color_pastillero: {
     type: DataTypes.STRING(45),
     allowNull: true
   },
-  horario_diaro: {
+  horario_diario: {
     type: DataTypes.STRING(45),
     allowNull: false
   },

@@ -1,41 +1,27 @@
-const validate = (schemas) => {
+const validate = (scheme, source = 'all') => {
   return (req, res, next) => {
-    const validationErrors = []
-
-    if (schemas.params) {
-      const { error } = schemas.params.validate(req.params, { abortEarly: false })
-      if (error) {
-        validationErrors.push(...error.details.map(detail => detail.message))
-      }
+    let data
+    switch (source) {
+      case 'params':
+        data = req.params
+        break
+      case 'query':
+        data = req.query
+        break
+      case 'body':
+        data = req.body
+        break
+      default:
+        data = { ...req.params, ...req.query, ...req.body }
     }
 
-    if (schemas.query) {
-      const { error } = schemas.query.validate(req.query, { abortEarly: false })
-      if (error) {
-        validationErrors.push(...error.details.map(detail => detail.message))
-      }
+    const { error } = scheme.validate(data)
+    if (error) {
+      next(error)
+    } else {
+      next()
     }
-
-    if (schemas.body) {
-      const { error } = schemas.body.validate(req.body, { abortEarly: false })
-      if (error) {
-        validationErrors.push(...error.details.map(detail => detail.message))
-      }
-    }
-
-    if (validationErrors.length > 0) {
-      return res.status(400).json({
-        success: false,
-        error: {
-          code: 400,
-          message: 'Error de validación',
-          details: validationErrors.join(', ')
-        }
-      })
-    }
-
-    next()
   }
 }
 
-module.exports = validate
+export default validate
