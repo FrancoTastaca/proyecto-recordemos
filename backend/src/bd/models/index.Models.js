@@ -11,10 +11,6 @@ import picocolors from 'picocolors'
 
 // Definir las asociaciones entre los modelos
 const initAssociations = () => {
-  // Asociación de HistorialDosis con PastilleroAlarma
-  HistorialDosis.belongsTo(PastilleroAlarma, { foreignKey: 'Pastillero_ID' })
-  PastilleroAlarma.hasMany(HistorialDosis, { foreignKey: 'Pastillero_ID' })
-
   // Asociación de Persona con Paciente y Cuidador
   Persona.hasOne(Paciente, { foreignKey: 'ID', as: 'paciente' })
   Paciente.belongsTo(Persona, { foreignKey: 'ID' })
@@ -22,12 +18,14 @@ const initAssociations = () => {
   Persona.hasOne(Cuidador, { foreignKey: 'ID', as: 'cuidador' })
   Cuidador.belongsTo(Persona, { foreignKey: 'ID' })
 
-  // Asociación de PastilleroAlarma con Paciente y Cuidador
+  // Asociación de PastilleroAlarma con Paciente y MedicamentoCuidador
   PastilleroAlarma.belongsTo(Paciente, { foreignKey: 'Paciente_ID' })
-  PastilleroAlarma.belongsTo(Cuidador, { foreignKey: 'Cuidador_ID' })
+  Paciente.hasMany(PastilleroAlarma, { foreignKey: 'Paciente_ID' })
+  PastilleroAlarma.belongsTo(MedicamentoCuidador, { foreignKey: 'MedicamentoCuidador_ID', as: 'medicamento' })
 
-  // Asociación de Usuario con Persona
-  Usuario.belongsTo(Persona, { foreignKey: 'Persona_ID', as: 'persona' })
+  // Asociación de HistorialDosis con PastilleroAlarma
+  HistorialDosis.belongsTo(PastilleroAlarma, { foreignKey: 'Pastillero_ID' })
+  PastilleroAlarma.hasMany(HistorialDosis, { foreignKey: 'Pastillero_ID' })
 
   // Asociación de Vademecum con MedicamentoCuidador
   Vademecum.hasMany(MedicamentoCuidador, { foreignKey: 'Vademecum_ID' })
@@ -37,9 +35,9 @@ const initAssociations = () => {
   Cuidador.hasMany(MedicamentoCuidador, { foreignKey: 'Cuidador_ID' })
   MedicamentoCuidador.belongsTo(Cuidador, { foreignKey: 'Cuidador_ID' })
 
-  // Asociación de PastilleroAlarma con MedicamentoCuidador (uno a muchos)
-  PastilleroAlarma.hasMany(MedicamentoCuidador, { foreignKey: 'Pastillero_ID' })
-  MedicamentoCuidador.belongsTo(PastilleroAlarma, { foreignKey: 'Pastillero_ID' })
+  // Asociación de Usuario con Persona
+  Usuario.belongsTo(Persona, { foreignKey: 'Persona_ID', as: 'persona' })
+  Persona.hasOne(Usuario, { foreignKey: 'Persona_ID' })
 
   console.log(picocolors.green('Asociación de los modelos hecha correctamente'))
 }
