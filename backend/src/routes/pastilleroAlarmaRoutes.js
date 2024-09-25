@@ -7,11 +7,11 @@ import { checkRoleCuidador } from '../middlewares/checkRole.js'
 const router = express.Router()
 
 router.get('/', pastilleroController.listar)
-router.get('/persona/:id', validate(pastilleroScheme.validateId), pastilleroController.listarPoridPersona)
+router.get('/persona/:id', validate(pastilleroScheme.validateId), pastilleroController.listarPorIdPersona)
 router.post('/', validate(pastilleroScheme.save), checkRoleCuidador, pastilleroController.create)
-router.get('/:id', validate(pastilleroScheme.validateId), checkRoleCuidador, pastilleroController.read)
-router.put('/:id', validate(pastilleroScheme.update), checkRoleCuidador, pastilleroController.update)
+router.put('/:id', validate(pastilleroScheme.validateId, 'params'), validate(pastilleroScheme.save, 'body'), checkRoleCuidador, pastilleroController.update)
 router.delete('/:id', validate(pastilleroScheme.validateId), checkRoleCuidador, pastilleroController.remove)
-router.get('/horario_diario/:id', validate(pastilleroScheme.validateId), pastilleroController.obtenerHorarioDiario)
-
+router.get('/cuidador/:id', pastilleroController.obtenerCuidadorDePastillero)
+router.get('/:id', validate(pastilleroScheme.validateId), pastilleroController.read)
+router.get('/horarioDiario/:id', validate(pastilleroScheme.validateId), pastilleroController.obtenerHorarioDiario)
 export default router

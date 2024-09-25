@@ -6,7 +6,7 @@ const crearPaciente = Joi.object({
   apellido: Joi.string().max(45).required(),
   dni: Joi.string().max(45).required(),
   tipo: Joi.string().valid('P').required().messages({
-    'any.only': 'El tipo debe ser "P" para paciente o "C" para cuidador.',
+    'any.only': 'El tipo debe ser "P" para paciente.',
     'any.required': 'El tipo es un campo obligatorio.'
   }),
   codVinculacion: Joi.string().pattern(/^[A-F0-9]{8}$/).required().messages({
