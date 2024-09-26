@@ -16,7 +16,7 @@ const MedicamentoCuidador = sequelize.define('MedicamentoCuidador', {
     allowNull: false
   },
   medicamento_imagen: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.STRING(255),
     allowNull: true
   }
 }, {

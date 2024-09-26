@@ -1,54 +1,12 @@
 import models from '../bd/models/index.Models.js'
 import errors from '../utils/errors.js'
 import { handleTransaction } from '../utils/transactionHelper.js'
-import pc from 'picocolors'
+import { handleFileCreateOrUpdate } from './update.controller.js'
 
 export default {
-  create: async (req, res, next) => {
-    console.log(pc.green('Datos recibidos en /pastillero:'), req.body)
-    const { imagenURL, PacienteID, MedCuidadorID, colorPastillero, horarioDiario, dosis } = req.body
-
-    try {
-      // Verificar que el PacienteID existe
-      const paciente = await models.Paciente.findByPk(PacienteID)
-      if (!paciente) {
-        return next({
-          ...errors.NotFoundError,
-          details: `El paciente especificado con ID ${PacienteID} no existe en la base de datos.`
-        })
-      }
-
-      // Verificar que el MedCuidadorID existe
-      const medicamentoCuidador = await models.MedicamentoCuidador.findByPk(MedCuidadorID)
-      if (!medicamentoCuidador) {
-        return next({
-          ...errors.NotFoundError,
-          details: `El medicamento cuidador especificado con ID ${MedCuidadorID} no existe en la base de datos.`
-        })
-      }
-
-      // Crear el nuevo pastillero dentro de una transacción
-      const nuevoPastillero = await handleTransaction(async (transaction) => {
-        return await models.PastilleroAlarma.create({
-          imagen_url: imagenURL,
-          Paciente_ID: PacienteID,
-          MedicamentoCuidador_ID: MedCuidadorID,
-          color_pastillero: colorPastillero,
-          horario_diario: horarioDiario,
-          dosis
-        }, { transaction })
-      }, next)
-
-      console.log(pc.green('Pastillero creado exitosamente:', nuevoPastillero))
-      res.status(201).json(nuevoPastillero)
-    } catch (error) {
-      console.log(pc.red('Error al crear el pastillero:'), error)
-      next({
-        ...errors.InternalServerError,
-        details: 'Error al crear el pastillero',
-        originalError: error
-      })
-    }
+  create: (req, res, next) => {
+    req.params.type = 'pastillero' // Definimos el tipo 'pastillero'
+    return handleFileCreateOrUpdate(req, res, next)
   },
 
   listar: async (req, res, next) => {
@@ -99,58 +57,9 @@ export default {
     }
   },
 
-  update: async (req, res, next) => {
-    const { id } = req.params
-    const { imagenURL, PacienteID, MedCuidadorID, colorPastillero, horarioDiario, dosis } = req.body
-
-    try {
-      // Verificar que el pastillero existe
-      const pastillero = await models.PastilleroAlarma.findByPk(id)
-      if (!pastillero) {
-        return next({
-          ...errors.NotFoundError,
-          details: `El pastillero con ID ${id} no existe en la base de datos.`
-        })
-      }
-
-      // Verificar que el PacienteID existe
-      const paciente = await models.Paciente.findByPk(PacienteID)
-      if (!paciente) {
-        return next({
-          ...errors.NotFoundError,
-          details: `El paciente especificado con ID ${PacienteID} no existe en la base de datos.`
-        })
-      }
-
-      // Verificar que el MedCuidadorID existe
-      const medicamentoCuidador = await models.MedicamentoCuidador.findByPk(MedCuidadorID)
-      if (!medicamentoCuidador) {
-        return next({
-          ...errors.NotFoundError,
-          details: `El medicamento cuidador especificado con ID ${MedCuidadorID} no existe en la base de datos.`
-        })
-      }
-
-      // Actualizar el pastillero dentro de una transacción
-      const pastilleroActualizado = await handleTransaction(async (transaction) => {
-        pastillero.imagen_url = imagenURL
-        pastillero.Paciente_ID = PacienteID
-        pastillero.MedicamentoCuidador_ID = MedCuidadorID
-        pastillero.color_pastillero = colorPastillero
-        pastillero.horario_diario = horarioDiario
-        pastillero.dosis = dosis
-
-        await pastillero.save({ transaction })
-        return pastillero
-      }, next)
-
-      res.status(200).json(pastilleroActualizado)
-    } catch (error) {
-      next({
-        ...errors.InternalServerError,
-        details: 'Error al intentar actualizar el pastillero - ' + error.message
-      })
-    }
+  update: (req, res, next) => {
+    req.params.type = 'pastillero' // Definimos el tipo 'pastillero'
+    return handleFileCreateOrUpdate(req, res, next)
   },
 
   remove: async (req, res, next) => {
