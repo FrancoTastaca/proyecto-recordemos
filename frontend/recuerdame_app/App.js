@@ -12,6 +12,8 @@ import RegisterPacienteScreen from './components/RegisterPacienteScreen';
 import ProfileCuidadorScreen from './components/ProfileCuidadorScreen';
 import Header from "./shared/Header";
 import PastillerosScreen from './components/PastillerosScreen';
+import EndDayScreen from './components/EndDayScreen';
+import EscanearCodigoQr from './components/EscanearQR';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,26 +39,50 @@ function App() {
         <Stack.Screen
           name="SignIn"
           component={SignInScreen}
-          options={{ headerShown: false }} 
+          options={{ 
+            headerShown: true,
+            headerTitle: '',
+            headerBackVisible: true,
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A'
+            }
+          }} 
         />
         <Stack.Screen
           name="RegisterCuidador"
           component={RegisterCuidadorScreen}
-          options={{ headerShown: false }} 
+          options={{  
+            headerShown: true,
+            headerTitle: '',
+            headerBackVisible: true,
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A'
+            }
+          }} 
         />
         <Stack.Screen
           name="RegisterPaciente"
           component={RegisterPacienteScreen}
-          options={{ headerShown: false }} 
+          options={{ 
+            headerShown: true,
+            headerTitle: '',
+            headerBackVisible: true,
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A'
+            }
+          }} 
         />
         <Stack.Screen
           name="ProfileCuidador"
           component={ProfileCuidadorScreen}
           options={{ 
-            headerTitle: () => <Header screen={'ProfileCuidador'} />, 
+            headerTitle: () => <Header screen={'ProfileCuidador'} />,
             headerTintColor: '#CECAE8',
             headerStyle: {
-              backgroundColor: '#624D8A',
+              backgroundColor: '#624D8A'
             },
             headerBackVisible: false
           }} 
@@ -72,6 +98,23 @@ function App() {
             },
             headerBackVisible: false
           }} 
+        />
+        <Stack.Screen
+          name="EndDay"
+          component={EndDayScreen}
+          options={{ 
+            headerTitle: () => <Header screen={'EndDay'} />, 
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A',
+            },
+            headerBackVisible: false
+          }} 
+        />
+        <Stack.Screen
+          name="ScanQr"
+          component={EscanearCodigoQr}
+          options={{ headerShown: false }} 
         />
         <Stack.Screen
           name="Details"

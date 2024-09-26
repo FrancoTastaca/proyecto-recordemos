@@ -1,17 +1,27 @@
 import React, { useState, useRef } from 'react';
-import {View, StyleSheet, FlatList, Animated} from 'react-native';
+import {View, StyleSheet, FlatList, Animated, TouchableOpacity} from 'react-native';
 import CarouselItem from './CarouselItemScreen';
 import slides from '../data';
 import Paginator from './Paginator';
+import { faCircleArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 export default Carousel = () => {
-    const [currentIndex, setCurrentIndex] = useState(true);
+    //const [currentIndex, setCurrentIndex] = useState(true);
+    const [currentIndex, setCurrentIndex] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current;
     const dataRef = useRef(null);
     const viewableItemsChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index);
     }).current;
     const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+    const handleNext = () => {
+        if(currentIndex < slides.length - 1){
+            dataRef.current.scrollToIndex({ index: currentIndex + 1 })
+        }
+    }
+
     return(
         <View style={styles.container}>
             <View style={{ flex: 3 }}>
@@ -32,7 +42,12 @@ export default Carousel = () => {
                     ref={dataRef}
                 />    
             </View>
-            <Paginator data={slides} scrollX={scrollX} /> 
+            <Paginator data={slides} scrollX={scrollX} />
+            {currentIndex < slides.length -1 && (
+                <TouchableOpacity onPress={handleNext} style={styles.nextIcon}>
+                    <FontAwesomeIcon icon={faCircleArrowRight} size={44} color='#33294c' />
+                </TouchableOpacity>
+            )}
         </View>
     );
 };
@@ -43,4 +58,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    nextIcon: {
+        position: 'absolute',
+        right: 20,
+        bottom: 50
+    }
 });
