@@ -25,7 +25,14 @@ const errorHandler = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
     response.error.code = 400
     response.error.message = 'Error de Multer'
-    response.error.details = [{ message: err.message, type: 'MulterError' }]
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+      response.error.details = [{
+        message: `Campo inesperado: ${err.field}. Se esperaba el campo 'image' como etiqueta para la carga del archivo.`,
+        type: 'MulterError'
+      }]
+    } else {
+      response.error.details = [{ message: err, type: 'MulterError' }]
+    }
   }
 
   res.status(response.error.code).json(response)
