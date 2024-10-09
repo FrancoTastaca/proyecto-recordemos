@@ -6,33 +6,50 @@ import cors from 'cors'
 import router from './routes/index-Routes.js'
 import models from './bd/models/index.Models.js'
 import errorHandler from './middlewares/error.js'
+import manageTempFiles from './middlewares/archivosTemporales.js'
 
 const app = express()
 models.initAssociations()
 const inTest = false // Define esta variable según sea necesario
 
-// Configuración de CORS
-app.use(cors({
-  origin: process.env.RUTA_FRONT, // La URL del frontend
-  credentials: true
-}))
+// Función para configurar la API
+const configuracionApi = (app) => {
+  // Configuración de CORS
+  app.use(cors({
+    origin: process.env.RUTA_FRONT, // La URL del frontend
+    credentials: true
+  }))
 
-if (!inTest) {
-  app.use(morgan('dev'))
+  // Middleware para manejar archivos temporales
+  app.use(manageTempFiles)
+
+  // Middleware de logging
+  if (!inTest) {
+    app.use(morgan('dev'))
+  }
+
+  // Configuración middleware body-parser y cookie-parser
+  app.use(bodyParser.json())
+  app.use(bodyParser.urlencoded({ extended: true }))
+  app.use(cookieParser())
+  app.use(errorHandler)
 }
 
-// Configuración middleware body-parser, cookie-parser y rutas de la API
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cookieParser())
-app.use('/api', router)
+// Función para configurar las rutas
+const configuracionRutas = (app) => {
+  // Rutas de la API
+  app.use('/api', router)
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-  res.send('Bienvenido al backend de la aplicación del Proyecto Recordemos 2024')
-})
+  // Ruta de prueba
+  app.get('/', (req, res) => {
+    res.send('Bienvenido al backend de la aplicación del Proyecto Recordemos 2024')
+  })
 
-// Middleware de manejo de errores
-app.use(errorHandler)
+  // Middleware de manejo de errores
+  app.use(errorHandler)
+}
+
+configuracionApi(app)
+configuracionRutas(app)
 
 export default app

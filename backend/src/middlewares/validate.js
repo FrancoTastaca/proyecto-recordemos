@@ -14,7 +14,6 @@ const validate = (scheme, source = 'all') => {
       default:
         data = { ...req.params, ...req.query, ...req.body }
     }
-
     const { error } = scheme.validate(data)
     if (error) {
       next(error)

@@ -3,13 +3,13 @@ import pastilleroController from '../controllers/pastilleroAlarma.controller.js'
 import pastilleroScheme from '../middlewares/schemes/pastillero.scheme.js'
 import validate from '../middlewares/validate.js'
 import { checkRoleCuidador } from '../middlewares/checkRole.js'
-
+import { uploadImagenes } from '../middlewares/multerConfig.js'
 const router = express.Router()
 
 router.get('/', pastilleroController.listar)
 router.get('/persona/:id', validate(pastilleroScheme.validateId), pastilleroController.listarPorIdPersona)
-router.post('/', validate(pastilleroScheme.save), checkRoleCuidador, pastilleroController.create)
-router.put('/:id', validate(pastilleroScheme.validateId, 'params'), validate(pastilleroScheme.save, 'body'), checkRoleCuidador, pastilleroController.update)
+router.post('/', validate(pastilleroScheme.save), uploadImagenes, checkRoleCuidador, pastilleroController.create)
+router.put('/:id', uploadImagenes, validate(pastilleroScheme.validateId, 'params'), validate(pastilleroScheme.save, 'body'), checkRoleCuidador, pastilleroController.update)
 router.delete('/:id', validate(pastilleroScheme.validateId), checkRoleCuidador, pastilleroController.remove)
 router.get('/cuidador/:id', pastilleroController.obtenerCuidadorDePastillero)
 router.get('/:id', validate(pastilleroScheme.validateId), pastilleroController.read)

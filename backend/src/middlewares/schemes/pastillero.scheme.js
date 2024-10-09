@@ -7,7 +7,9 @@ const save = Joi.object({
   MedCuidadorID: Joi.number().integer().positive().required(),
   colorPastillero: Joi.string().max(45).allow(null),
   horarioDiario: Joi.string().max(45).required(),
-  dosis: Joi.number().integer().positive().required()
+  dosis: Joi.number().integer().positive().required(),
+  image: Joi.any().allow(null)
+
 })
 
 const validateId = Joi.object({

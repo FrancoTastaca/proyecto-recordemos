@@ -1,4 +1,5 @@
 import errors from '../utils/errors.js'
+import multer from 'multer' // Importar multer
 
 const errorHandler = (err, req, res, next) => {
   const response = {
@@ -19,6 +20,12 @@ const errorHandler = (err, req, res, next) => {
         type: detail.type === 'any.required' ? 'FaltanCampos' : 'ValidationError'
       }
     })
+  }
+  // Manejo de errores de Multer
+  if (err instanceof multer.MulterError) {
+    response.error.code = 400
+    response.error.message = 'Error de Multer'
+    response.error.details = [{ message: err.message, type: 'MulterError' }]
   }
 
   res.status(response.error.code).json(response)

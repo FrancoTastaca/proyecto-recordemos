@@ -37,7 +37,7 @@ const errors = {
   },
   NotFoundError: {
     code: 404, // Código 404: No encontrado. Indica que el recurso solicitado no existe.
-    message: 'El recurso solicitado no se pudo encontrar. Verifique la URL o el ID del recurso e intente nuevamente.'
+    message: 'El recurso solicitado no se pudo encontrar. Por favor, verifique la URL o el ID del recurso e intente nuevamente.'
   },
   ConflictError: {
     code: 409,

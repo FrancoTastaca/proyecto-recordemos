@@ -1,7 +1,7 @@
 import models from '../bd/models/index.Models.js'
 import errors from '../utils/errors.js'
 import { handleTransaction } from '../utils/transactionHelper.js'
-import { handleFileCreateOrUpdate } from './update.controller.js'
+import { handleFileCreateOrUpdate } from './updateFile.controller.js'
 
 export default {
   create: (req, res, next) => {
@@ -41,7 +41,7 @@ export default {
   },
 
   update: (req, res, next) => {
-    req.params.type = 'medicamento' // Definimos el tipo 'medicamento'
+    req.params.type = 'medicamento'
     return handleFileCreateOrUpdate(req, res, next)
   },
 

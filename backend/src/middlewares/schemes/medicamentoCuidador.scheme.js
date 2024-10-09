@@ -6,7 +6,8 @@ const base = Joi.object({
   notas: Joi.string().allow(null, ''),
   marca: Joi.string().max(45).required(),
   medicamentoImagen: Joi.string().max(45).allow(null, ''),
-  idCuidador: Joi.number().integer().positive().required()
+  idCuidador: Joi.number().integer().positive().required(),
+  image: Joi.any().allow(null)
 })
 
 const validateId = Joi.object({
