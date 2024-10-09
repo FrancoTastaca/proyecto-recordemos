@@ -7,6 +7,7 @@ import router from './routes/index-Routes.js'
 import models from './bd/models/index.Models.js'
 import errorHandler from './middlewares/error.js'
 import manageTempFiles from './middlewares/archivosTemporales.js'
+import swaggerRouter from './doc/swagger.js'
 
 const app = express()
 models.initAssociations()
@@ -39,6 +40,7 @@ const configuracionApi = (app) => {
 const configuracionRutas = (app) => {
   // Rutas de la API
   app.use('/api', router)
+  app.use('/api', swaggerRouter)
 
   // Ruta de prueba
   app.get('/', (req, res) => {
@@ -49,6 +51,7 @@ const configuracionRutas = (app) => {
   app.use(errorHandler)
 }
 
+// Configurar la API y las rutas
 configuracionApi(app)
 configuracionRutas(app)
 
