@@ -55,11 +55,16 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
         const updatedMedicamento = await handleTransaction(async (transaction) => {
           // Si hay una nueva imagen, sube el archivo en Google Drive
           if (file && file.path) {
+            if (medicamento.medicamento_imagen) {
+              const oldFileId = driveService.extractFileIdFromLink(medicamento.medicamento_imagen)
+              await driveService.deleteFile(oldFileId)
+            }
             const codVinculacion = res.locals.usuario.persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(file.path)
-            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, file.originalname, file.mimetype, subFolderId)
+            const nombreArchivo = `Medicamento - ${file.originalname}`
+            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, nombreArchivo, file.mimetype, subFolderId)
             console.log(`---- archivo recuperado en controller - ${JSON.stringify(driveFile)}`)
             console.log(`---- driveFolder guardado recuperado en controller - ${JSON.stringify(driveFolder)}`)
             medicamento.medicamento_imagen = driveFile.webViewLink
@@ -81,7 +86,8 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(file.path)
-            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, file.originalname, file.mimetype, subFolderId)
+            const nombreArchivo = `Medicamento - ${file.originalname}`
+            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, nombreArchivo, file.mimetype, subFolderId)
             console.log(`---- archivo recuperado en controller - ${JSON.stringify(driveFile)}`)
             console.log(`---- driveFolder guardado recuperado en controller - ${JSON.stringify(driveFolder)}`)
             imagenUrl = driveFile.webViewLink // Obtén el enlace de la imagen subida
@@ -129,11 +135,16 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
         const updatedPastillero = await handleTransaction(async (transaction) => {
           // Si hay una nueva imagen, sube el archivo
           if (file && file.path) {
+            if (pastillero.imagen_url) {
+              const oldFileId = driveService.extractFileIdFromLink(pastillero.imagen_url)
+              await driveService.deleteFile(oldFileId)
+            }
             const codVinculacion = res.locals.usuario.persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(file.path)
-            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, file.originalname, file.mimetype, subFolderId)
+            const nombreArchivo = `Pastillero - ${file.originalname}`
+            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, nombreArchivo, file.mimetype, subFolderId)
             console.log(`---- archivo recuperado en controller - ${JSON.stringify(driveFile)}`)
             console.log(`---- driveFolder guardado recuperado en controller - ${JSON.stringify(driveFolder)}`)
             pastillero.imagen_url = driveFile.webViewLink // Asigna el enlace de la imagen subida
@@ -159,7 +170,8 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion, next) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(req.file.path)
-            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, file.originalname, file.mimetype, subFolderId)
+            const nombreArchivo = `Pastillero - ${file.originalname}`
+            const { file: driveFile, folder: driveFolder } = await driveService.uploadFile(fileStream, nombreArchivo, file.mimetype, subFolderId)
             console.log(`---- archivo recuperado en controller - ${JSON.stringify(driveFile)}`)
             console.log(`---- driveFolder guardado recuperado en controller - ${JSON.stringify(driveFolder)}`)
             imagenUrl = driveFile.webViewLink // Obtén el enlace de la imagen subida
@@ -233,7 +245,19 @@ export const obtenerImagen = async (req, res, next) => {
           details: `El pastillero con ID ${id} no existe en la base de datos.`
         })
       }
-      res.status(200).json(pastillero)
+      const fileId = driveService.extractFileIdFromLink(pastillero.imagen_url)
+      console.log(pico.bgRed(`ID de la imagen en Google Drive antes de obtenerlo: ${fileId}`))
+      const { data: fileStream, mimeType, name } = await driveService.getFile(fileId)
+      if (!fileStream) {
+        return next({
+          ...errors.NotFoundError,
+          details: `El archivo con ID ${fileId} no existe en Google Drive.`
+        })
+      }
+      res.status(200)
+      res.setHeader('Content-Type', mimeType || 'image/jpeg')
+      res.setHeader('Content-Disposition', `inline; filename="${name}"`)
+      fileStream.pipe(res)
     }
   } catch (error) {
     console.log('Error capturado por try general - ' + error.message)
