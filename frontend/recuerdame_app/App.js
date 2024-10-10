@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
+import { Button, View, Text, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './components/WelcomeScreen';
 import CarouselScreen from './components/CarouselScreen';
 import HomeScreen from './components/HomeScreen';
-import DetailsScreen from './components/DetailsScreen';
+import ConfirmScreen from './components/ConfirmScreen';
 import SignInScreen from './components/SignInScreen';
 import RegisterCuidadorScreen from './components/RegisterCuidadorScreen';
 import RegisterPacienteScreen from './components/RegisterPacienteScreen';
@@ -117,18 +117,13 @@ function App() {
           options={{ headerShown: false }} 
         />
         <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
+          name="Confirm"
+          component={ConfirmScreen}
           options={{
-            headerBackTitle: 'Custom Back',
-            headerBackTitleStyle: { fontSize: 30 },
-            /*headerRight: () => ( //Boton a la derecha que dice info
-              <Button
-                onPress={() => navigation.popToTop('Home')}
-                title="Omitir"
-                color="#abdcfd"
-              />
-            ),*/ 
+            headerTitle: '',
+            headerStyle: {
+              backgroundColor: '#624D8A',
+            }
           }}
         />
       </Stack.Navigator>

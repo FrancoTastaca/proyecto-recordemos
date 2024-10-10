@@ -108,31 +108,31 @@ function RegisterPacienteScreen({ navigation }) {
       <FontAwesomeIcon icon={faUserCircle} size={64} color="#624d8a" style={styles.icono} />
       <Text style={styles.subtitulo}>Paciente</Text>
       <View style={styles.textInput}>
-        <TextInput placeholder="Nombre" onChangeText={setNombrePaciente} />
+        <TextInput placeholder="Nombre" value={nombrePaciente} onChangeText={setNombrePaciente} />
         {errorsPaciente.nombrePaciente && <Text style={styles.error}>{errorsPaciente.nombrePaciente}</Text>}
       </View>
       <View style={styles.textInput}>
-        <TextInput placeholder="Apellido" onChangeText={setApellidoPaciente} />
+        <TextInput placeholder="Apellido" value={apellidoPaciente} onChangeText={setApellidoPaciente} />
         {errorsPaciente.apellidoPaciente && <Text style={styles.error}>{errorsPaciente.apellidoPaciente}</Text>}
       </View>
       <View style={styles.textInput}>
-        <TextInput placeholder="Correo electrónico" onChangeText={setCorreoPaciente} />
+        <TextInput placeholder="Correo electrónico" value={correoPaciente} onChangeText={setCorreoPaciente} />
         {errorsPaciente.correoPaciente && <Text style={styles.error}>{errorsPaciente.correoPaciente}</Text>}
       </View>
       <View style={styles.textInput}>
-        <TextInput placeholder="Celular" keyboardType="numeric" onChangeText={setCelularPaciente} />
+        <TextInput placeholder="Celular" keyboardType="numeric" value={celularPaciente} onChangeText={setCelularPaciente} />
         {errorsPaciente.celularPaciente && <Text style={styles.error}>{errorsPaciente.celularPaciente}</Text>}
       </View>    
       <View style={styles.textInput}>
-        <TextInput placeholder="Aquí va tu contraseña" secureTextEntry onChangeText={handlePasswordPacienteChange} />
+        <TextInput placeholder="Aquí va tu contraseña" value={passwordPaciente} secureTextEntry onChangeText={handlePasswordPacienteChange} />
         {errorsPaciente.passwordPaciente && <Text style={styles.error}>{errorsPaciente.passwordPaciente}</Text>}
       </View>  
       <View style={styles.textInput}>
-        <TextInput placeholder="Por favor, confirme su contraseña" secureTextEntry onChangeText={handleConfirmPasswordPacienteChange} />
+        <TextInput placeholder="Por favor, confirme su contraseña" value={confirmPasswordPaciente} secureTextEntry onChangeText={handleConfirmPasswordPacienteChange} />
         {errorsPaciente.confirmPasswordPaciente && <Text style={styles.error}>{errorsPaciente.confirmPasswordPaciente}</Text>}
       </View>   
       <View style={styles.textInput}>
-        <TextInput placeholder="DNI" keyboardType="numeric" onChangeText={handleDniPacienteChange} />
+        <TextInput placeholder="DNI" keyboardType="numeric" value={dniPaciente} onChangeText={handleDniPacienteChange} />
         {errorsPaciente.dniPaciente && <Text style={styles.error}>{errorsPaciente.dniPaciente}</Text>}
       </View>                                       
       <View style={styles.containerBoton}>

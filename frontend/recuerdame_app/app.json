@@ -29,6 +29,17 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            {
+              "name": "alarma",
+              "path": "./assets/sounds/alarma.wav"
+            }
+          ]
+        }
       ]
     ]
   }

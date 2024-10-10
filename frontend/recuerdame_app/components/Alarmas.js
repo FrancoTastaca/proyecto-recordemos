@@ -20,10 +20,10 @@ const Alarmas = ({text, estado, role}) => {
         <View style={styles.itemLeft}>
           <ImageBackground source={require('../assets/Configurar.png')} style={styles.image} />
           <View>
-            <Text style={styles.itemText}>Fecha</Text>
-            <Text style={styles.itemText}>Horario</Text>
+            <Text style={styles.itemText}>10/10/24</Text>
+            <Text style={styles.itemText}>12:21</Text>
             <Text style={styles.itemText}>{text}</Text>
-            <Text style={styles.itemText}>Dosis</Text>
+            <Text style={styles.itemText}>5mg</Text>
           </View>
         </View>
         {isEndDayScreen && 

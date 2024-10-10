@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -11,9 +11,9 @@ function RegisterCuidadorScreen({ navigation }) {
   const [celular, setCelular] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [dni, setDni] = useState('')
   const [errors, setErrors] = useState({})
 
-  const [dni, setDni] = useState('')
 
   const validateDNI = (dni) => {
     const allowDni = /^\d+$/
@@ -108,31 +108,32 @@ function RegisterCuidadorScreen({ navigation }) {
       <FontAwesomeIcon icon={faUserCircle} size={64} color="#624d8a" style={styles.icono} />
       <Text style={styles.subtitulo}>Cuidador</Text>
       <View style={styles.textInput}>
-        <TextInput placeholder="Nombre" onChangeText={setNombre} />
+        <TextInput placeholder="Nombre" value={nombre} onChangeText={setNombre} />
         {errors.nombre && <Text style={styles.error}>{errors.nombre}</Text>}
       </View>
       <View style={styles.textInput}>
-        <TextInput placeholder="Apellido"onChangeText={setApellido} />
+        <TextInput placeholder="Apellido" value={apellido} onChangeText={setApellido} />
         {errors.apellido && <Text style={styles.error}>{errors.apellido}</Text>}
       </View>
       <View style={styles.textInput}>
-        <TextInput placeholder="Correo electrónico" onChangeText={setCorreo} />
+        <TextInput placeholder="Correo electrónico" value={correo} onChangeText={setCorreo} />
         {errors.correo && <Text style={styles.error}>{errors.correo}</Text>}
       </View>
       <View style={styles.textInput}>
-        <TextInput placeholder="Celular" keyboardType="numeric" onChangeText={setCelular} />
+        <TextInput placeholder="Celular" keyboardType="numeric" value={celular} onChangeText={setCelular} />
         {errors.celular && <Text style={styles.error}>{errors.celular}</Text>}
       </View>    
       <View style={styles.textInput}>
-        <TextInput placeholder="Aquí va tu contraseña" secureTextEntry onChangeText={handlePasswordChange} />
+        <TextInput placeholder="Aquí va tu contraseña" value={password} secureTextEntry onChangeText={handlePasswordChange} />
         {errors.password && <Text style={styles.error}>{errors.password}</Text>}
       </View>
       <View style={styles.textInput}>
-        <TextInput placeholder="Por favor, confirme su contraseña" secureTextEntry onChangeText={handleConfirmPasswordChange} />
+        <TextInput placeholder="Por favor, confirme su contraseña" value={confirmPassword} secureTextEntry onChangeText={handleConfirmPasswordChange} />
         {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
       </View>   
       <View style={styles.textInput}>
-        <TextInput placeholder="DNI" 
+        <TextInput placeholder="DNI"
+          value={dni}
           keyboardType="numeric" 
           onChangeText={handleDniChange}
         />
