@@ -66,7 +66,7 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
         });
 
         // Segunda notificación (5 minutos después)
-        const fiveMinutesLater = new Date(date.getTime() + 5 * 60000);
+        const fiveMinutesLater = new Date(date.getTime() + 7 * 60000);
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: 'Recordatorio',
