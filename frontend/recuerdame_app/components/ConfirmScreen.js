@@ -16,10 +16,10 @@ function ConfirmScreen({ navigation }) {
 const styles = StyleSheet.create({
   homeContainer: {
     flex: 1, 
-    backgroundColor: '#CECAE8'
+    backgroundColor: '#CECAE8',
+    justifyContent: 'center'
   },
   confirmContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
   },
@@ -31,12 +31,12 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 30,
-    color: '#624D8A'
+    color: '#624D8A',
+    marginBottom: 20
   },
   imgAlarm: {
     width: '100',
-    height: 250,
-    marginBottom: 120
+    height: 250
   },
 })
 
