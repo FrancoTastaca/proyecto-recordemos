@@ -1,5 +1,5 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/bd.config.js';
+import { DataTypes } from 'sequelize'
+import sequelize from '../config/bd.config.js'
 
 const PastilleroAlarma = sequelize.define('PastilleroMedicamento', {
   ID: {
@@ -8,22 +8,14 @@ const PastilleroAlarma = sequelize.define('PastilleroMedicamento', {
     primaryKey: true
   },
   imagen_url: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.STRING(255),
     allowNull: true
-  },
-  Paciente_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  Cuidador_ID: {
-    type: DataTypes.INTEGER,
-    allowNull: false
   },
   color_pastillero: {
     type: DataTypes.STRING(45),
     allowNull: true
   },
-  horario_diaro: {
+  horario_diario: {
     type: DataTypes.STRING(45),
     allowNull: false
   },
@@ -34,6 +26,6 @@ const PastilleroAlarma = sequelize.define('PastilleroMedicamento', {
 }, {
   tableName: 'PastilleroAlarma',
   timestamps: false
-});
+})
 
-export default PastilleroAlarma;
+export default PastilleroAlarma

@@ -1,5 +1,5 @@
-import configureJoi from '../../utils/joiConfig.js';
-const Joi = configureJoi();
+import configureJoi from '../../utils/joiConfig.js'
+const Joi = configureJoi()
 
 const update = Joi.object({
   id: Joi.string().guid({ version: 'uuidv4' }).required(),
@@ -9,18 +9,13 @@ const update = Joi.object({
       'string.pattern.base': 'La contraseña debe incluir al menos una mayúscula, una minúscula, un número y un carácter especial'
     }),
   confirmPassword: Joi.any().valid(Joi.ref('password')).required()
-});
+})
 
-const read = Joi.object({
-  id: Joi.number().integer().required()
-});
-
-const remove = Joi.object({
-  id: Joi.number().integer().required()
-});
+const validateId = Joi.object({
+  id: Joi.number().integer().positive().required()
+})
 
 export default {
   update,
-  read,
-  remove,
-};
+  validateId
+}

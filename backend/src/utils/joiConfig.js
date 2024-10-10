@@ -1,4 +1,4 @@
-import Joi from 'joi';
+import Joi from 'joi'
 
 const configureJoi = () => {
   return Joi.defaults((schema) => {
@@ -14,8 +14,8 @@ const configureJoi = () => {
         'number.base': 'El campo {#label} debe ser un número.',
         'any.only': 'El campo {#label} no coincide con el valor esperado.'
       }
-    });
-  });
-};
+    })
+  })
+}
 
-export default configureJoi;
+export default configureJoi

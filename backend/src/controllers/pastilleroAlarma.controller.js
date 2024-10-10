@@ -1,167 +1,176 @@
-import models from '../bd/models/index.Models.js';
-import pc from 'picocolors';
-import errors from '../utils/errors.js';
+import models from '../bd/models/index.Models.js'
+import errors from '../utils/errors.js'
+import { handleTransaction } from '../utils/transactionHelper.js'
+import { handleFileCreateOrUpdate } from './updateFile.controller.js'
 
 export default {
+  create: (req, res, next) => {
+    req.params.type = 'pastillero' // Definimos el tipo 'pastillero'
+    return handleFileCreateOrUpdate(req, res, next)
+  },
 
   listar: async (req, res, next) => {
-    console.log(pc.blue('Datos recibidos en /pastillero:'));
     try {
-      const pastilleros = await models.PastilleroAlarma.findAll();
-      res.json(pastilleros);
+      const pastilleros = await models.PastilleroAlarma.findAll()
+      res.status(200).json(pastilleros)
     } catch (error) {
-      console.log(pc.red('Error al obtener los pastilleros:'), error);
       next({
         ...errors.InternalServerError,
-        details: 'Error al obtener los pastilleros'
-      });
+        details: 'Ocurrió un error al intentar listar los pastilleros. Por favor, inténtelo más tarde.'
+      })
     }
   },
 
-  listarPoridPersona: async (req, res, next) => {
-    console.log(pc.blue('Datos recibidos en /pastillero:'));
+  listarPorIdPersona: async (req, res, next) => {
     try {
-      const idPersona = req.params.id;
+      const { id } = req.params
       const pastilleros = await models.PastilleroAlarma.findAll({
-        where: {
-          [Op.or]: [
-            { Paciente_ID: idPersona },
-            { Cuidador_ID: idPersona }
-          ]
-        }
-      });
-      res.json(pastilleros);
+        where: { Paciente_ID: id }
+      })
+      res.status(200).json(pastilleros)
     } catch (error) {
-      console.log(pc.red('Error al obtener los pastilleros:'), error);
       next({
         ...errors.InternalServerError,
-        details: 'Error al obtener los pastilleros'
-      });
+        details: 'Error al intentar listar los pastilleros del paciente - ' + error.message
+      })
     }
   },
 
   read: async (req, res, next) => {
-    console.log(pc.blue('Datos recibidos en /pastillero/:id:'), req.params.id);
+    const { id } = req.params
+
     try {
-      const pastillero = await models.PastilleroAlarma.findByPk(req.params.id);
+      const pastillero = await models.PastilleroAlarma.findByPk(id)
       if (!pastillero) {
-        console.log(pc.red('Pastillero no encontrado'));
         return next({
           ...errors.NotFoundError,
-          details: 'Pastillero no encontrado'
-        });
+          details: `El pastillero con ID ${id} no existe en la base de datos.`
+        })
       }
-      res.json(pastillero);
+
+      res.status(200).json(pastillero)
     } catch (error) {
-      console.log(pc.red('Error al obtener el pastillero:'), error);
       next({
         ...errors.InternalServerError,
-        details: 'Error al obtener el pastillero'
-      });
+        details: 'Error al intentar leer el pastillero - ' + error.message
+      })
     }
   },
 
-  create: async (req, res, next) => {
-    console.log(pc.green('Datos recibidos en /pastillero:'), req.body);
-    const transaction = await models.sequelize.transaction();
-    try {
-      const nuevoPastillero = await models.PastilleroAlarma.create(req.body, { transaction });
-      await transaction.commit();
-      console.log(pc.green('Pastillero creado exitosamente:', nuevoPastillero));
-      res.status(201).json({ mensaje: 'Pastillero creado exitosamente', data: nuevoPastillero });
-    } catch (error) {
-      await transaction.rollback();
-      console.log(pc.red('Error al crear el pastillero:'), error);
-      next({
-        ...errors.InternalServerError,
-        details: 'Error al crear el pastillero',
-        originalError: error
-      });
-    }
-  },
-
-  update: async (req, res, next) => {
-    console.log(pc.blue('Datos recibidos en /pastillero/:id:'), req.params.id, req.body);
-    const transaction = await models.sequelize.transaction();
-    try {
-      const [updated] = await models.PastilleroAlarma.update(req.body, {
-        where: { id: req.params.id },
-        transaction
-      });
-      if (updated) {
-        const updatedPastillero = await models.PastilleroAlarma.findByPk(req.params.id, { transaction });
-        await transaction.commit();
-        res.json({ mensaje: 'Pastillero actualizado exitosamente', data: updatedPastillero });
-      } else {
-        await transaction.rollback();
-        console.log(pc.red('Pastillero no encontrado'));
-        next({
-          ...errors.NotFoundError,
-          details: 'Pastillero no encontrado'
-        });
-      }
-    } catch (error) {
-      await transaction.rollback();
-      console.log(pc.red('Error al actualizar el pastillero:'), error);
-      next({
-        ...errors.InternalServerError,
-        details: 'Error al actualizar el pastillero',
-        originalError: error
-      });
-    }
+  update: (req, res, next) => {
+    req.params.type = 'pastillero' // Definimos el tipo 'pastillero'
+    return handleFileCreateOrUpdate(req, res, next)
   },
 
   remove: async (req, res, next) => {
-    console.log(pc.blue('Datos recibidos en /pastillero/:id:'), req.params.id);
-    const transaction = await models.sequelize.transaction();
+    const { id } = req.params
+
     try {
-      const result = await models.PastilleroAlarma.destroy({
-        where: { id: req.params.id },
-        transaction
-      });
-      if (result) {
-        await transaction.commit();
-        res.status(204).end();
-      } else {
-        await transaction.rollback();
-        console.log(pc.red('Pastillero no encontrado'));
-        next({
+      // Verificar que el pastillero existe
+      const pastillero = await models.PastilleroAlarma.findByPk(id)
+      if (!pastillero) {
+        return next({
           ...errors.NotFoundError,
-          details: 'Pastillero no encontrado'
-        });
+          details: `El pastillero con ID ${id} no existe en la base de datos.`
+        })
       }
+
+      // Eliminar el pastillero dentro de una transacción
+      await handleTransaction(async (transaction) => {
+        await pastillero.destroy({ transaction })
+      }, next)
+
+      res.status(200).json({ message: 'Pastillero eliminado exitosamente.' })
     } catch (error) {
-      await transaction.rollback();
-      console.log(pc.red('Error al eliminar el pastillero:'), error);
       next({
         ...errors.InternalServerError,
-        details: 'Error al eliminar el pastillero',
-        originalError: error
-      });
+        details: 'Error al intentar eliminar el pastillero - ' + error.message
+      })
+    }
+  },
+
+  obtenerCuidadorDePastillero: async (req, res, next) => {
+    const { id } = req.params
+
+    try {
+      const pastillero = await models.PastilleroAlarma.findByPk(id, {
+        include: {
+          model: models.MedicamentoCuidador,
+          as: 'medicamento',
+          include: {
+            model: models.Cuidador,
+            as: 'cuidador'
+          }
+        }
+      })
+
+      if (!pastillero) {
+        return next({
+          ...errors.NotFoundError,
+          details: `El pastillero con ID ${id} no existe en la base de datos.`
+        })
+      }
+
+      res.status(200).json(pastillero.medicamento.cuidador)
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al intentar obtener el cuidador del pastillero - ' + error.message
+      })
     }
   },
 
   obtenerHorarioDiario: async (req, res, next) => {
-    console.log(pc.blue('Datos recibidos en /horario_diario/:id'), req.params.id);
+    const { id } = req.params
+
     try {
-      const pastillero = await models.PastilleroAlarma.findByPk(req.params.id, {
-        attributes: ['horario_diario']
-      });
+      const pastillero = await models.PastilleroAlarma.findByPk(id)
       if (!pastillero) {
-        console.log(pc.red('Pastillero no encontrado'));
         return next({
           ...errors.NotFoundError,
-          details: 'Pastillero no encontrado'
-        });
+          details: `El pastillero con ID ${id} no existe en la base de datos.`
+        })
       }
-      res.json({ horario_diario: pastillero.horario_diario });
+
+      res.status(200).json({
+        horario_diario: pastillero.horario_diario
+      })
     } catch (error) {
-      console.log(pc.red('Error al obtener el horario diario del pastillero:'), error);
       next({
         ...errors.InternalServerError,
-        details: 'Error al obtener el horario diario del pastillero',
-        originalError: error
-      });
+        details: 'Error al intentar obtener el horario diario del pastillero - ' + error.message
+      })
+    }
+  },
+
+  obtenerHorarioDiarioDosisPaciente: async (req, res, next) => {
+    const { id } = req.params
+
+    try {
+      const pastillero = await models.PastilleroAlarma.findByPk(id, {
+        include: {
+          model: models.Paciente,
+          as: 'paciente' // Especificar el alias
+        }
+      })
+
+      if (!pastillero) {
+        return next({
+          ...errors.NotFoundError,
+          details: `El pastillero con ID ${id} no existe en la base de datos.`
+        })
+      }
+
+      res.status(200).json({
+        horario_diario: pastillero.horario_diario,
+        dosis: pastillero.dosis,
+        paciente: pastillero.paciente
+      })
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al intentar obtener el horario diario, dosis y paciente del pastillero - ' + error.message
+      })
     }
   }
-};
+}

@@ -1,83 +1,79 @@
-import models from '../bd/models/index.Models.js';
-import pc from 'picocolors';
-import errors from '../utils/errors.js';
+import models from '../bd/models/index.Models.js'
+import errors from '../utils/errors.js'
+import { handleTransaction } from '../utils/transactionHelper.js'
+import { handleFileCreateOrUpdate } from './updateFile.controller.js'
 
 export default {
-    // Crear una asociación de medicamento con uno del Vademecum droga
-    create: async (req, res, next) => {
-        console.log(pc.blue('Iniciando agregarMedicamento'));
-        console.log('Contenido de req.body:', req.body);
+  create: (req, res, next) => {
+    req.params.type = 'medicamento' // Definimos el tipo 'medicamento'
+    return handleFileCreateOrUpdate(req, res, next)
+  },
 
-        try {
-            const { idVademecum, notas, marca, medicamento_imagen, idCuidador } = req.body;
-            // Verificar que el idCuidador existe
-            const cuidador = await models.Cuidador.findByPk(idCuidador);
-            if (!cuidador) {
-                return next({
-                    ...errors.UsuarioNoEncontrado,
-                    details: 'El cuidador especificado no existe en la base de datos.'
-                });
-            }
+  listar: async (req, res, next) => {
+    try {
+      const medicamentos = await models.MedicamentoCuidador.findAll({
+        attributes: ['ID', 'notas', 'marca', 'medicamento_imagen', 'Vademecum_ID', 'Cuidador_ID']
+      })
 
-            // Verificar que el idVademecum existe
-            const vademecum = await models.Vademecum.findByPk(idVademecum);
-            if (!vademecum) {
-                return next({
-                    ...errors.NotFoundError,
-                    details: 'El vademécum especificado no existe en la base de datos.'
-                });
-            }
-
-            const nuevoMedicamento = await models.MedicamentoCuidador.create({
-                Vademecum_ID: idVademecum,
-                notas,
-                marca,
-                medicamento_imagen,
-                Cuidador_ID: idCuidador
-            });
-            res.status(201).json(nuevoMedicamento);
-        } catch (error) {
-            next({
-                ...errors.InternalServerError,
-                details: 'Ocurrió un error al intentar crear el medicamento. Por favor, inténtelo más tarde.'
-            });
-        }
-    },
-
-    listar: async (req, res, next) => {
-        console.log(pc.blue('Iniciando listarMedicamentos'));
-        try {
-            const medicamentos = await models.MedicamentoCuidador.findAll({
-                attributes: ['ID', 'notas', 'marca', 'medicamento_imagen', 'Vademecum_ID', 'Cuidador_ID']
-            });
-
-            console.log(pc.green('Medicamentos encontrados:', JSON.stringify(medicamentos, null, 2)));
-            res.status(200).json(medicamentos);
-        } catch (error) {
-            console.error(pc.red('Error al listar medicamentos:', JSON.stringify(error, null, 2)));
-            next({
-                ...errors.InternalServerError,
-                details: 'Ocurrió un error al intentar listar los medicamentos. Por favor, inténtelo más tarde.'
-            });
-        }
-    },
-
-    listarPorIdCuidador: async (req, res, next) => {
-        console.log(pc.blue('Iniciando listarMedicamentosPorIdCuidador'));
-        console.log(pc.blue('ID del cuidador:', req.params.id));
-        
-        try {
-            const medicamentos = await models.MedicamentoCuidador.findAll({
-                where: { Cuidador_ID: req.params.id },
-                attributes: ['ID', 'notas', 'marca', 'medicamento_imagen', 'Vademecum_ID', 'Cuidador_ID']
-            });
-            res.status(200).json(medicamentos);
-        } catch (error) {
-            console.error(pc.red('Error al listar medicamentos: '));
-            next({
-                ...errors.InternalServerError,
-                details: 'Ocurrió un error al intentar listar los medicamentos por ID del cuidador. Por favor, inténtelo más tarde.'
-            });
-        }
+      res.status(200).json(medicamentos)
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Ocurrió un error al intentar listar los medicamentos. Por favor, inténtelo más tarde.'
+      })
     }
-};
+  },
+
+  listarPorIdCuidador: async (req, res, next) => {
+    try {
+      const medicamentos = await models.MedicamentoCuidador.findAll({
+        where: { Cuidador_ID: res.locals.usuario.persona.ID },
+        attributes: ['ID', 'notas', 'marca', 'medicamento_imagen', 'Vademecum_ID', 'Cuidador_ID']
+      })
+
+      res.status(200).json(medicamentos)
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al intentar listar los medicamentos del cuidador - ' + error.message
+      })
+    }
+  },
+
+  update: (req, res, next) => {
+    req.params.type = 'medicamento'
+    return handleFileCreateOrUpdate(req, res, next)
+  },
+
+  remove: async (req, res, next) => {
+    try {
+      const { id } = req.params
+
+      // Verificar que el medicamento existe y pertenece al cuidador logueado
+      const medicamento = await models.MedicamentoCuidador.findOne({
+        where: {
+          ID: id,
+          Cuidador_ID: res.locals.usuario.persona.ID
+        }
+      })
+      if (!medicamento) {
+        return next({
+          ...errors.NotFoundError,
+          details: `El medicamento con ID ${id} no existe en la base de datos o no pertenece al cuidador logueado.`
+        })
+      }
+
+      // Eliminar el medicamento dentro de una transacción
+      await handleTransaction(async (transaction) => {
+        await medicamento.destroy({ transaction })
+      }, next)
+
+      res.status(200).json({ message: 'Medicamento eliminado exitosamente.' })
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al intentar eliminar el medicamento - ' + error.message
+      })
+    }
+  }
+}

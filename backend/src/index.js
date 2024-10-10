@@ -1,21 +1,21 @@
-import app from './app.js';
-import sequelize from './bd/config/bd.config.js';
-import pico from 'picocolors';
-import { PORT } from './utils/globalConstant.js';
+import app from './app.js'
+import sequelize from './bd/config/bd.config.js'
+import pico from 'picocolors'
+import { PORT } from './utils/globalConstant.js'
 
-import dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv'
+dotenv.config()
 
 async function startServer() {
   try {
-    await sequelize.authenticate();
+    await sequelize.authenticate()
 
     app.listen(PORT, () => {
-      console.log(pico.green(`El servidor está corriendo en el puerto ${PORT}`));
-    });
+      console.log(pico.green(`El servidor está corriendo en http://localhost:${PORT}/`))
+    })
   } catch (error) {
-    console.error(pico.red('No se pudo conectar al servidor:'), error);
+    console.error(pico.red('No se pudo conectar al servidor:'), error)
   }
 }
 
-startServer();
+startServer()

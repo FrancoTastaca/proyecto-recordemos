@@ -1,12 +1,26 @@
-const validate = (scheme) => {
+const validate = (scheme, source = 'all') => {
   return (req, res, next) => {
-    const { error } = scheme.validate({ ...req.params, ...req.query, ...req.body });
-    if (error) {
-      next(error);
-    } else {
-      next();
+    let data
+    switch (source) {
+      case 'params':
+        data = req.params
+        break
+      case 'query':
+        data = req.query
+        break
+      case 'body':
+        data = req.body
+        break
+      default:
+        data = { ...req.params, ...req.query, ...req.body }
     }
-  };
-};
+    const { error } = scheme.validate(data)
+    if (error) {
+      next(error)
+    } else {
+      next()
+    }
+  }
+}
 
-export default validate;
+export default validate
