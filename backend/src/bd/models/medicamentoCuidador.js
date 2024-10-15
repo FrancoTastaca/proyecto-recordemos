@@ -18,10 +18,15 @@ const MedicamentoCuidador = sequelize.define('MedicamentoCuidador', {
   medicamento_imagen: {
     type: DataTypes.STRING(255),
     allowNull: true
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false
   }
 }, {
   tableName: 'MedicamentoCuidador',
-  timestamps: false
+  timestamps: true
 })
 
 export default MedicamentoCuidador

@@ -1,7 +1,7 @@
 import models from '../bd/models/index.Models.js'
 import errors from '../utils/errors.js'
 import bcrypt from 'bcryptjs'
-import jwt from '../middlewares/signJWT.js'
+import signJWT from '../middlewares/signJWT.js'
 import { v4 as uuidv4 } from 'uuid'
 import pc from 'picocolors'
 import QrCode from 'qrcode-reader'
@@ -37,15 +37,16 @@ export default {
       }
 
       try {
-        const tokens = jwt(user, user.persona.tipo)
-        res.cookie('jwt', tokens)
+        const tokens = signJWT(user, user.persona.tipo)
+        console.log(`Tokens generados en login: ${JSON.stringify(tokens)}`) // Agregar log para depuración
         res.status(200).json({
           success: true,
           message: 'Inicio de sesión exitoso',
           data: {
             id: user.ID,
             tipo: user.persona.tipo,
-            tokens
+            token: tokens.token, // Devolver solo el token
+            refreshToken: tokens.refreshToken
           }
         })
       } catch (err) {
@@ -88,8 +89,20 @@ export default {
 
         if (persona.tipo === 'C') {
           try {
-            const tokens = jwt(user, persona.tipo)
+            const tokens = signJWT(user, persona.tipo)
+            console.log(`Tokens generados en registrarse: ${JSON.stringify(tokens)}`) // Agregar log para depuración
             res.cookie('jwt', tokens)
+            res.status(201).json({
+              success: true,
+              message: 'Usuario creado correctamente',
+              data: {
+                id: user.ID,
+                email: user.email,
+                tipo: persona.tipo,
+                token: tokens.token, // Devolver solo el token
+                refreshToken: tokens.refreshToken
+              }
+            })
           } catch (err) {
             await transaction.rollback()
             return next(err)
@@ -97,16 +110,6 @@ export default {
         }
 
         await transaction.commit()
-
-        res.status(201).json({
-          success: true,
-          message: 'Usuario creado correctamente',
-          data: {
-            id: user.ID,
-            email: user.correo_electronico,
-            tipo: persona.tipo
-          }
-        })
       } catch (err) {
         await transaction.rollback()
         console.log(pc.red('Error en el proceso de registro:'), err)
@@ -155,7 +158,7 @@ export default {
       }
 
       const usuarioPaciente = await models.Usuario.findOne({
-        where: { Persona_ID: personaPaciente.ID }
+        where: { Persona_ID: personaPaciente.ID }, include: [models.Persona]
       })
 
       if (!usuarioPaciente) {
@@ -166,15 +169,17 @@ export default {
       }
 
       try {
-        const tokens = jwt(usuarioPaciente, 'P')
+        const tokens = signJWT(usuarioPaciente, 'P')
+        console.log(`Tokens generados en loginPacienteConQR: ${JSON.stringify(tokens)}`) // Agregar log para depuración
         res.cookie('jwt', tokens)
         res.status(200).json({
           success: true,
           message: 'Login exitoso',
           data: {
-            id: usuarioPaciente.ID,
+            usuarioPaciente,
             tipo: 'P',
-            tokens
+            token: tokens.token, // Devolver solo el token
+            refreshToken: tokens.refreshToken
           }
         })
       } catch (err) {

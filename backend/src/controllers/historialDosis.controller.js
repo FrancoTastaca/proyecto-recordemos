@@ -1,6 +1,7 @@
 import models from '../bd/models/index.Models.js'
 import pc from 'picocolors'
 import errors from '../utils/errors.js'
+import { Op } from 'sequelize'
 
 export default {
   listarTodo: async (req, res, next) => {
@@ -49,7 +50,6 @@ export default {
     const transaction = await models.sequelize.transaction()
     try {
       const {
-        fechaRegistrada,
         dosisRegistrada,
         horaPrimerNotificacion = null,
         horaSegundaNotificacion = null,
@@ -59,7 +59,7 @@ export default {
       } = req.body
 
       const nuevoHistorialDosis = await models.HistorialDosis.create({
-        fechaRegistrada,
+        fechaRegistrada: Date.now(),
         dosisRegistrada,
         horaPrimerNotificacion,
         horaSegundaNotificacion,

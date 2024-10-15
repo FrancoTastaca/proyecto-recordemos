@@ -1,6 +1,7 @@
 import models from '../bd/models/index.Models.js'
 import bcrypt from 'bcryptjs'
 import errors from '../utils/errors.js'
+import pc from 'picocolors'
 
 export default {
   listar: async (req, res, next) => {
@@ -150,6 +151,31 @@ export default {
       next({
         ...errors.InternalServerError,
         details: 'Ocurrió un error al obtener el rol por ID. Por favor, inténtelo más tarde.'
+      })
+    }
+  },
+  // Método para actualizar el token de notificaciones
+  updatePushToken: async (req, res, next) => {
+    console.log(pc.blue('Datos recibidos en /usuario/updatePushToken:'))
+    const { userId, pushToken } = req.body
+    try {
+      const usuario = await models.Usuario.findByPk(userId)
+      if (!usuario) {
+        return next({
+          ...errors.NotFoundError,
+          details: 'Usuario no encontrado'
+        })
+      }
+
+      usuario.pushToken = pushToken
+      await usuario.save()
+
+      res.json({ message: 'Token de notificaciones actualizado con éxito' })
+    } catch (error) {
+      console.log(pc.red('Error al actualizar el token de notificaciones:'), error)
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al actualizar el token de notificaciones'
       })
     }
   }
