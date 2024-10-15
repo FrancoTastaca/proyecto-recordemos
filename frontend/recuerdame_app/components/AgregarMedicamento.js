@@ -6,8 +6,8 @@ const AgregarMedicamento = ({ isVisible, onPress }) => {
     const [selectedValueMed, setSelectedValueMed] = useState(''); //Estado del picker medicamento
     const[open, setOpen] = useState(false);
     const [itemsMed, setItemsMed] = useState([
-        {label: 'Opción 1', value: 'opcion1'},
-        {label: 'Opción 2', value: 'opcion2'}
+        {label: 'Donezepil', value: 'opcion1'},
+        {label: 'Tacrina', value: 'opcion2'}
     ])
 
     const [inputBrandMed, setInputBrandMed] = useState(''); //Estado del input marca
@@ -51,6 +51,7 @@ const AgregarMedicamento = ({ isVisible, onPress }) => {
                         placeholderTextColor='#4f426d'
                         value={inputBrandMed}
                         onChangeText={setInputBrandMed}
+                        
                     />
                     <Text style={styles.titleContentItem}>Color</Text>
                     <TextInput style={styles.inputValue}

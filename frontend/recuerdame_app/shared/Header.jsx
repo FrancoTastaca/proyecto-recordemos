@@ -29,8 +29,18 @@ function Header({ screen }){
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
                         </TouchableOpacity>
-                        <Text style={styles.headerTitle}>ROL</Text>
-                        <Text style={styles.headerText}>Nombre Apellido</Text>
+                        {role === roles.cuidador && (
+                            <>
+                            <Text style={styles.headerTitle}>{roles.cuidador}</Text>
+                            <Text style={styles.headerText}>Silvia Hernández</Text>
+                            </>
+                        )}
+                        {role === roles.paciente && (
+                            <>
+                            <Text style={styles.headerTitle}>{roles.paciente}</Text>
+                            <Text style={styles.headerText}>Sonia Hernández</Text>
+                            </>
+                        )}
                     </>
                 ) : screen === 'EndDay' ? (
                     <>
@@ -41,9 +51,11 @@ function Header({ screen }){
                         <View style={styles.headerSubContent}>
                             <View style={styles.withIconContainer}>
                                 <FontAwesomeIcon icon={faUserCircle} size={42} style={styles.iconUser} /> 
-                                <Text style={styles.headerText}>ROL</Text>
+                                {role === roles.cuidador && (
+                                    <Text style={styles.headerText}>{roles.cuidador}</Text>
+                                )}
                             </View>
-                            <Text style={styles.headerTextEndDay}>Nombre Apellido</Text>
+                            <Text style={styles.headerTextEndDay}>Silvia Hernández</Text>
                         </View>
                     </>
                 ) : (
@@ -60,6 +72,14 @@ function Header({ screen }){
                                     <Text style={styles.btnHeaderText}>Agregar alarma</Text>
                                 </TouchableOpacity>
                                 {isModalVisible && <AgregarAlarma isVisible = {isModalVisible} onPress={handleModal} />}
+                            </View>
+                        )}
+                        {role === roles.paciente && (
+                            <View style={styles.headerSubContentPaciente}>
+                                <>
+                                <Text style={styles.headerText}>{roles.paciente}</Text>
+                                <Text style={styles.headerTextEndDay}>Sonia Hernández</Text>
+                                </>
                             </View>
                         )}
                     </>
@@ -94,6 +114,16 @@ const styles = StyleSheet.create({
         marginLeft: 0,
         marginRight: 32,
         padding: 0
+    },
+    headerSubContentPaciente: {
+        backgroundColor: '#2f273f',
+        width: '100%', 
+        height: 86,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 0,
+        marginRight: 32,
+        marginBottom: 8
     },
     goBackIcon: {
         marginRight: 340, 

@@ -9,21 +9,21 @@ const EndDay = ({route}) => {
     paciente: 'paciente'
   };
     return (
-      <ScrollView>
-        <View style={styles.endDayContainer}>
+      <View style={styles.endDayContainer}>
+        <ScrollView>
           <Text style={styles.titleStateAlarm}>Estado alarmas</Text> 
           <View style={styles.itemsContainer}>
             <View style={styles.items}>
               <Alarmas text={'Alarma 1'} estado={'Tomada'} role={role} />
-              <Alarmas text={'Alarma 2'} estado={'Omitida'} role={role} />
+              {/*<Alarmas text={'Alarma 2'} estado={'Omitida'} role={role} />
               <Alarmas text={'Alarma 3'} estado={'Tomada'} role={role} />
               <Alarmas text={'Alarma 4'} estado={'Tomada'} role={role} />
               <Alarmas text={'Alarma 5'} estado={'Omitida'} role={role} />
-              <Alarmas text={'Alarma 6'} estado={'Tomada'} role={role} />
+              <Alarmas text={'Alarma 6'} estado={'Tomada'} role={role} />*/}
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     )
 }
 
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   itemsContainer: {
+    flex: 1,
     paddingTop: 2,
     width: '100%',
     paddingHorizontal: 10

@@ -9,7 +9,13 @@ import {
 } from "react-native";
 import { useEffect, useRef } from "react";
 
-export const EscanearCodigoQr = ({navigation, role}) => {
+export const EscanearCodigoQr = ({navigation, route}) => {
+  const { role } = route.params;
+  const roles = {
+    cuidador: 'cuidador',
+    paciente: 'paciente'
+  };
+
   const qrLock = useRef(false);
   const appState = useRef(AppState.currentState);
 

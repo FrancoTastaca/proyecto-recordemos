@@ -13,8 +13,8 @@ function PastillerosScreen({route}) {
         <View style={styles.listWrapper}>
             <View style={styles.listItems}>
                 <Alarmas text={'Alarma 1'} role={role} />
-                <Alarmas text={'Alarma 2'} role={role} />
-                <Alarmas text={'Alarma 3'} role={role} />
+                {/*<Alarmas text={'Alarma 2'} role={role} />
+                <Alarmas text={'Alarma 3'} role={role} />*/}
             </View>
         </View>
       </View>

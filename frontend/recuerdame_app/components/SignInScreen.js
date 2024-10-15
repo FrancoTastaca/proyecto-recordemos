@@ -5,6 +5,8 @@ import { useRoute } from '@react-navigation/native'
 import { useCameraPermissions } from "expo-camera";
 
 function SignInScreen({ navigation }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const route = useRoute()
   const roles = {
     cuidador: 'cuidador',
@@ -29,11 +31,18 @@ function SignInScreen({ navigation }) {
         <View style={styles.signInInputs}>
           <TextInput
             placeholder="jdoe@gmail.com"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            autoCorrect={false}
           />
         </View>
         <View style={styles.signInInputs}>
           <TextInput
             placeholder="Aquí va tu contraseña"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={true}
           />
         </View>
         <View style={styles.touchsContainer}>
@@ -54,7 +63,7 @@ function SignInScreen({ navigation }) {
             {role === roles.paciente && (
               <>
               <TouchableOpacity 
-                onPress={ () => navigation.navigate('Pastilleros', {role} )}
+                onPress={ () => navigation.navigate('Pastilleros', {role})}
                 style={styles.touchItem}>
                 <Text style={styles.touchItemText}>Iniciar sesión</Text>
               </TouchableOpacity>
@@ -62,7 +71,7 @@ function SignInScreen({ navigation }) {
                 <Text style={styles.touchItemText}>Permiso de cámara</Text>
               </TouchableOpacity>
               )}
-              {isPermissionGranted && (<Pressable disabled={!isPermissionGranted} onPress={() => navigation.navigate('ScanQr')} asChild style={styles.touchItem}>
+              {isPermissionGranted && (<Pressable disabled={!isPermissionGranted} onPress={() => navigation.navigate('ScanQr', {role})} asChild style={styles.touchItem}>
                 <Text
                   style={[
                     styles.touchItemText,
