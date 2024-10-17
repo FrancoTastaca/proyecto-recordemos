@@ -31,6 +31,11 @@ const HistorialDosis = sequelize.define('HistorialDosis', {
   segundoTomoDosis: {
     type: DataTypes.BOOLEAN,
     allowNull: true
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false
   }
 }, {
   tableName: 'HistorialDosis',
