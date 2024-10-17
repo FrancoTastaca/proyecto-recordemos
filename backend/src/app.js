@@ -58,8 +58,10 @@ configuracionApi(app)
 configuracionRutas(app)
 
 // Iniciar el servicio de recordatorios
-scheduleReminders()
+setTimeout(async () => {
+  console.log('Iniciando servicios de recordatorios...')
+  scheduleReminders()
+  setInterval(checkUnconfirmedAlarms, 5000)
+}, 10000)
 
-// Configurar el chequeo de alarmas no confirmadas cada 5 segundos
-setInterval(checkUnconfirmedAlarms, 5000)
 export default app

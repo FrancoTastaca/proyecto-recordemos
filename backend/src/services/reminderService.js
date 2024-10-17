@@ -18,18 +18,18 @@ export const scheduleReminders = () => {
           model: models.MedicamentoCuidador,
           attributes: ['Vademecum_ID'],
           include: [{
-            model: models.Paciente,
-            include: [{
-              model: models.Persona,
-              attributes: ['ID'],
-              include: [{
-                model: models.Usuario,
-                attributes: ['ID', 'pushToken']
-              }]
-            }]
-          }, {
             model: models.Vademecum,
             attributes: ['principio_activo', 'presentacion']
+          }]
+        }, {
+          model: models.Paciente,
+          include: [{
+            model: models.Persona,
+            attributes: ['ID'],
+            include: [{
+              model: models.Usuario,
+              attributes: ['ID', 'pushToken']
+            }]
           }]
         }]
       })
@@ -38,7 +38,7 @@ export const scheduleReminders = () => {
         if (horarios.some(horario => Math.abs(new Date(`1970-01-01T${horario}:00`) - new Date(`1970-01-01T${currentTime}:00`)) <= 60000)) {
           const usuario = pastillero.Paciente.Persona.Usuario
           if (usuario && usuario.pushToken) {
-            const nombreMedicamento = `${pastillero.MedicamentoCuidador.Vademecum.principio_activo} - ${pastillero.MedicamentoCuidador.Vademecum.presentacion}`
+            const nombreMedicamento = `${pastillero.medicamento.vademecum.principio_activo} - ${pastillero.medicamento.vademecum.presentacion}` // Usar alias correcto
             console.log(pc.yellow(`Enviando notificación a ${usuario.ID} para el medicamento ${nombreMedicamento}`))
 
             await sendPushNotification(

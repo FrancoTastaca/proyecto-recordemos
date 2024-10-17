@@ -46,7 +46,7 @@ export const checkUnconfirmedAlarms = async () => {
     include: [{
       model: models.PastilleroAlarma,
       include: [{
-        model: models.MedicamentoCuidador, // Aseguramos que incluimos el modelo Pastillero para obtener el nombre
+        model: models.MedicamentoCuidador,
         include: [{
           model: models.Vademecum,
           attributes: ['principio_activo', 'presentacion']

@@ -16,7 +16,6 @@ export default {
         },
         include: [{
           model: models.Persona,
-          as: 'persona',
           atributtes: ['tipo']
         }]
       })

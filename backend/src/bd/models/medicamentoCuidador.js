@@ -23,6 +23,11 @@ const MedicamentoCuidador = sequelize.define('MedicamentoCuidador', {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
     allowNull: false
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    allowNull: false
   }
 }, {
   tableName: 'MedicamentoCuidador',
