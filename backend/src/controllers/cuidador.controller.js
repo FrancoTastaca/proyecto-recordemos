@@ -157,5 +157,34 @@ export default {
         details: 'Ocurrió un error al generar el código QR. Por favor, inténtelo más tarde.'
       })
     }
+  },
+  getCuidador: async (req, res, next) => {
+    try {
+      const cuidador = res.locals.usuario.persona
+      const cuidadorDetails = await models.Cuidador.findOne({
+        where: { ID: cuidador.ID }
+      })
+      if (!cuidadorDetails) {
+        return next({
+          ...errors.NotFoundError,
+          details: `Cuidador con ${cuidador.ID} no encontrado`
+        })
+      }
+      res.status(200).json({
+        nombre: cuidador.nombre,
+        apellido: cuidador.apellido,
+        dni: cuidador.dni,
+        tipo: cuidador.tipo,
+        codVinculacion: cuidador.codVinculacion,
+        relacion_paciente: cuidadorDetails.relacion_paciente,
+        especialidad: cuidadorDetails.especialidad,
+        contacto: cuidadorDetails.contacto
+      })
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al obtener la información del cuidador'
+      })
+    }
   }
 }

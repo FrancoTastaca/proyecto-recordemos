@@ -96,10 +96,8 @@ export default {
       const pastillero = await models.PastilleroAlarma.findByPk(id, {
         include: {
           model: models.MedicamentoCuidador,
-          as: 'medicamento',
           include: {
-            model: models.Cuidador,
-            as: 'cuidador'
+            model: models.Cuidador
           }
         }
       })

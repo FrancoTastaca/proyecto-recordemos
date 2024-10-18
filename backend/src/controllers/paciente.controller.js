@@ -129,5 +129,33 @@ export default {
         details: 'Error al eliminar el paciente'
       })
     }
+  },
+  getPaciente: async (req, res, next) => {
+    try {
+      const paciente = res.locals.usuario.persona
+      const cuidadorDetails = await models.Paciente.findOne({
+        where: { ID: paciente.ID }
+      })
+      if (!cuidadorDetails) {
+        return next({
+          ...errors.NotFoundError,
+          details: `paciente con ${paciente.ID} no encontrado`
+        })
+      }
+      res.status(200).json({
+        nombre: paciente.nombre,
+        apellido: paciente.apellido,
+        dni: paciente.dni,
+        tipo: paciente.tipo,
+        codVinculacion: paciente.codVinculacion,
+        historial_medico: cuidadorDetails.relacion_paciente,
+        contacto_emergencia: cuidadorDetails.especialidad
+      })
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al obtener la información del paciente'
+      })
+    }
   }
 }

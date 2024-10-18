@@ -12,16 +12,16 @@ import picocolors from 'picocolors'
 // Definir las asociaciones entre los modelos
 const initAssociations = () => {
   // Asociación de Persona con Paciente y Cuidador
-  Persona.hasOne(Paciente, { foreignKey: 'ID', as: 'paciente' })
+  Persona.hasOne(Paciente, { foreignKey: 'ID' })
   Paciente.belongsTo(Persona, { foreignKey: 'ID' })
 
-  Persona.hasOne(Cuidador, { foreignKey: 'ID', as: 'cuidador' })
+  Persona.hasOne(Cuidador, { foreignKey: 'ID' })
   Cuidador.belongsTo(Persona, { foreignKey: 'ID' })
 
   // Asociación de PastilleroAlarma con Paciente y MedicamentoCuidador
   PastilleroAlarma.belongsTo(Paciente, { foreignKey: 'Paciente_ID' })
   Paciente.hasMany(PastilleroAlarma, { foreignKey: 'Paciente_ID' })
-  PastilleroAlarma.belongsTo(MedicamentoCuidador, { foreignKey: 'MedicamentoCuidador_ID', as: 'medicamento' })
+  PastilleroAlarma.belongsTo(MedicamentoCuidador, { foreignKey: 'MedicamentoCuidador_ID' })
 
   // Asociación de HistorialDosis con PastilleroAlarma
   HistorialDosis.belongsTo(PastilleroAlarma, { foreignKey: 'Pastillero_ID' })
@@ -36,7 +36,7 @@ const initAssociations = () => {
   MedicamentoCuidador.belongsTo(Cuidador, { foreignKey: 'Cuidador_ID' })
 
   // Asociación de Usuario con Persona
-  Usuario.belongsTo(Persona, { foreignKey: 'Persona_ID', as: 'persona' })
+  Usuario.belongsTo(Persona, { foreignKey: 'Persona_ID' })
   Persona.hasOne(Usuario, { foreignKey: 'Persona_ID' })
 
   console.log(picocolors.green('Asociación de los modelos hecha correctamente'))

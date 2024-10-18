@@ -16,6 +16,11 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING(45),
     allowNull: false,
     field: 'correo_electronico'
+  },
+  pushToken: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    field: 'push_token'
   }
 }, {
   tableName: 'Usuario',

@@ -8,6 +8,8 @@ import models from './bd/models/index.Models.js'
 import errorHandler from './middlewares/error.js'
 import manageTempFiles from './middlewares/archivosTemporales.js'
 import swaggerRouter from './doc/swagger.js'
+import { scheduleReminders } from './services/reminderService.js'
+import { checkUnconfirmedAlarms } from './services/notificationService.js'
 
 const app = express()
 models.initAssociations()
@@ -54,5 +56,12 @@ const configuracionRutas = (app) => {
 // Configurar la API y las rutas
 configuracionApi(app)
 configuracionRutas(app)
+
+/* Iniciar el servicio de recordatorios
+setTimeout(async () => {
+  console.log('Iniciando servicios de recordatorios...')
+  scheduleReminders()
+  setInterval(checkUnconfirmedAlarms, 5000)
+}, 10000) */
 
 export default app

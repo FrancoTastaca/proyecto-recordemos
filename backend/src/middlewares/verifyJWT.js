@@ -68,8 +68,7 @@ export const verifyJWT = async (req, res, next) => {
         ID: dataToken.id
       },
       include: [{
-        model: models.Persona,
-        as: 'persona'
+        model: models.Persona
       }]
     })
 
