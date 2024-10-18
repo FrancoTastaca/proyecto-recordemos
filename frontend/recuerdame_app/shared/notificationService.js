@@ -1,46 +1,89 @@
+// frontend/recuerdame_app/shared/notificationService.js
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import { Alert, Platform } from 'react-native';
 import api from './axiosConfig';
 
-// Función para registrar el dispositivo para recibir notificaciones push
-export const registerForPushNotificationsAsync = async () => {
-    let token;
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
+
+async function sendPushNotification(expoPushToken) {
+    const message = {
+        to: expoPushToken,
+        sound: 'default',
+        title: 'Original Title',
+        body: 'And here is the body!',
+        data: { someData: 'goes here' },
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
+    });
+}
+
+function handleRegistrationError(errorMessage) {
+    alert(errorMessage);
+    throw new Error(errorMessage);
+}
+
+export async function registerForPushNotificationsAsync() {
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
     if (Device.isDevice) {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
-
         if (existingStatus !== 'granted') {
             const { status } = await Notifications.requestPermissionsAsync();
             finalStatus = status;
         }
-
         if (finalStatus !== 'granted') {
-            Alert.alert('Error', 'No se pudo obtener el permiso para las notificaciones push');
+            handleRegistrationError('Permission not granted to get push token for push notification!');
             return;
         }
-
-        token = (await Notifications.getExpoPushTokenAsync()).data;
-        await api.post('/usuario/updatePushToken', { pushToken: token });
+        const projectId =
+            Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+        if (!projectId) {
+            handleRegistrationError('Project ID not found');
+        }
+        try {
+            const pushTokenString = (
+                await Notifications.getExpoPushTokenAsync({
+                    projectId,
+                })
+            ).data;
+            console.log(pushTokenString);
+            await api.post('/usuario/updatePushToken', { pushToken: pushTokenString });
+            return pushTokenString;
+        } catch (e) {
+            handleRegistrationError(`${e}`);
+        }
     } else {
-        Alert.alert('Debe usar un dispositivo físico para recibir notificaciones push');
+        handleRegistrationError('Must use physical device for push notifications');
     }
+}
 
-    if (Constants.isDevice && Platform.OS === 'web') {
-        const vapidPublicKey = Constants.expoConfig.notification.vapidPublicKey;
-        token = await Notifications.getExpoPushTokenAsync({ vapidPublicKey });
-        await api.post('/usuario/updatePushToken', { pushToken: token });
-    }
-
-    return token;
-};
-
-// Función para configurar los listeners de notificaciones
-export const setupNotificationListeners = () => {
+export function setupNotificationListeners(setNotification) {
     const notificationListener = Notifications.addNotificationReceivedListener(notification => {
-        console.log(notification);
-        // Aquí puedes manejar la notificación recibida
+        setNotification(notification);
     });
 
     const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
@@ -68,10 +111,9 @@ export const setupNotificationListeners = () => {
         Notifications.removeNotificationSubscription(notificationListener);
         Notifications.removeNotificationSubscription(responseListener);
     };
-};
+}
 
-// Función para manejar la respuesta del usuario sobre la toma de la medicación
-const handleMedicationResponse = async (historialId, response) => {
+async function handleMedicationResponse(historialId, response) {
     try {
         await api.post('/historialDosis/respuesta', {
             historialId,
@@ -80,4 +122,4 @@ const handleMedicationResponse = async (historialId, response) => {
     } catch (error) {
         console.error('Error al enviar la respuesta:', error);
     }
-};
+}
