@@ -35,11 +35,13 @@ function ConfirmScreen({ navigation }) {
             <TouchableOpacity onPress={handlePreviousImage} style={styles.buttonDirection}>
               {currentImage === 'pastilla' && <FontAwesomeIcon icon={faCircleArrowLeft} size={44} color='#33294c' />}
             </TouchableOpacity>
-            <Image
-              source={currentImage === 'pastillero' ? require('../assets/Pastillero.png') : require('../assets/Pastilla.png')}
-              style={styles.imgAlarm}
-              resizeMode='contain'
-            />
+            <View style={styles.imageWrapper}>
+              <Image
+                source={currentImage === 'pastillero' ? require('../assets/Pastillero.png') : require('../assets/Pastilla.png')}
+                style={styles.imgAlarm}
+                resizeMode='contain'
+              />
+            </View>
             <TouchableOpacity onPress={handleNextImage} style={styles.buttonDirection}>
               {currentImage === 'pastillero' && <FontAwesomeIcon icon={faCircleArrowRight} size={44} color='#33294c' />}
             </TouchableOpacity>
@@ -127,6 +129,15 @@ const styles = StyleSheet.create({
   imgAlarmCongratulations: {
     width: '100',
     height: 250
+  },
+  imageWrapper: {
+    backgroundColor: '#896cbf',
+    borderRadius: 10,
+    padding: 10,
+    elevation: 5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   }
 })
 
