@@ -41,11 +41,6 @@ export const scheduleReminders = () => {
             const nombreMedicamento = `${pastillero.medicamento.vademecum.principio_activo} - ${pastillero.medicamento.vademecum.presentacion}` // Usar alias correcto
             console.log(pc.yellow(`Enviando notificación a ${usuario.ID} para el medicamento ${nombreMedicamento}`))
 
-            await sendPushNotification(
-              usuario.pushToken,
-              `Recordatorio: Es hora de tomar ${pastillero.dosis} de su medicación ${nombreMedicamento}`
-            )
-
             // Registrar en HistorialDosis
             const historial = await models.HistorialDosis.create({
               Pastillero_ID: pastillero.ID,
@@ -55,6 +50,12 @@ export const scheduleReminders = () => {
             })
 
             console.log(pc.magenta(`HistorialDosis creado con ID ${historial.ID}`))
+
+            await sendPushNotification(
+              usuario.pushToken,
+              `Recordatorio: Es hora de tomar ${pastillero.dosis} de su medicación ${nombreMedicamento}`,
+              { historialId: historial.ID } // Incluir historialId en los datos de la notificación
+            )
 
             // Programar la segunda notificación
             setTimeout(async () => {
@@ -74,7 +75,8 @@ export const scheduleReminders = () => {
 const sendSecondNotification = async (pushToken, historialId) => {
   await sendPushNotification(
     pushToken,
-    'Confirmación: ¿Ha tomado su medicación?'
+    'Confirmación: ¿Ha tomado su medicación?',
+    { historialId } // Incluir historialId en los datos de la notificación
   )
 
   // Actualizar HistorialDosis con la hora de la segunda notificación

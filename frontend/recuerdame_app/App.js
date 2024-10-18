@@ -1,5 +1,6 @@
+// frontend/recuerdame_app/App.js
+
 import * as React from 'react';
-import { Button, View, Text, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -14,32 +15,38 @@ import Header from "./shared/Header";
 import PastillerosScreen from './components/PastillerosScreen';
 import EndDayScreen from './components/EndDayScreen';
 import EscanearCodigoQr from './components/EscanearQR';
+import { useEffect } from 'react';
+import { setupNotificationListeners } from './shared/notificationService';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
+  useEffect(() => {
+    setupNotificationListeners();
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen
-          name="Welcome" //Nombre que adoptan las pantallas
+          name="Welcome"
           component={WelcomeScreen}
           options={{ headerShown: false }}
-        /> 
+        />
         <Stack.Screen
-          name="Carousel" 
+          name="Carousel"
           component={CarouselScreen}
           options={{ headerShown: false }}
-        /> 
-        <Stack.Screen 
-          name="Home" 
+        />
+        <Stack.Screen
+          name="Home"
           component={HomeScreen}
-          options={{ headerShown: false }} 
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="SignIn"
           component={SignInScreen}
-          options={{ 
+          options={{
             headerShown: true,
             headerTitle: '',
             headerBackVisible: true,
@@ -47,12 +54,12 @@ function App() {
             headerStyle: {
               backgroundColor: '#624D8A'
             }
-          }} 
+          }}
         />
         <Stack.Screen
           name="RegisterCuidador"
           component={RegisterCuidadorScreen}
-          options={{  
+          options={{
             headerShown: true,
             headerTitle: '',
             headerBackVisible: true,
@@ -60,12 +67,12 @@ function App() {
             headerStyle: {
               backgroundColor: '#624D8A'
             }
-          }} 
+          }}
         />
         <Stack.Screen
           name="RegisterPaciente"
           component={RegisterPacienteScreen}
-          options={{ 
+          options={{
             headerShown: true,
             headerTitle: '',
             headerBackVisible: true,
@@ -73,48 +80,48 @@ function App() {
             headerStyle: {
               backgroundColor: '#624D8A'
             }
-          }} 
+          }}
         />
         <Stack.Screen
           name="ProfileCuidador"
           component={ProfileCuidadorScreen}
-          options={{ 
+          options={{
             headerTitle: () => <Header screen={'ProfileCuidador'} />,
             headerTintColor: '#CECAE8',
             headerStyle: {
               backgroundColor: '#624D8A'
             },
             headerBackVisible: false
-          }} 
+          }}
         />
         <Stack.Screen
           name="Pastilleros"
           component={PastillerosScreen}
-          options={{ 
-            headerTitle: () => <Header screen={'Pastilleros'} />, 
+          options={{
+            headerTitle: () => <Header screen={'Pastilleros'} />,
             headerTintColor: '#CECAE8',
             headerStyle: {
               backgroundColor: '#624D8A',
             },
             headerBackVisible: false
-          }} 
+          }}
         />
         <Stack.Screen
           name="EndDay"
           component={EndDayScreen}
-          options={{ 
-            headerTitle: () => <Header screen={'EndDay'} />, 
+          options={{
+            headerTitle: () => <Header screen={'EndDay'} />,
             headerTintColor: '#CECAE8',
             headerStyle: {
               backgroundColor: '#624D8A',
             },
             headerBackVisible: false
-          }} 
+          }}
         />
         <Stack.Screen
           name="ScanQr"
           component={EscanearCodigoQr}
-          options={{ headerShown: false }} 
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Confirm"

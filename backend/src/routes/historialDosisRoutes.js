@@ -10,4 +10,5 @@ router.get('/:id', historialDosisController.read)
 router.post('/', historialDosisController.create)
 router.put('/:id', historialDosisController.update)
 router.delete('/:id', historialDosisController.remove)
+router.post('/historialDosis/respuesta', historialDosisController.registrarRespuesta)
 export default router

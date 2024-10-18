@@ -20,6 +20,9 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "notification": {
+      "vapidPublicKey": "BOPmSSqg9P17A6E4-F_v_ogvkC5ANRHlC--y37UKWFXtCCOSlpyzv3timzEPDsTyu5gqpbBqhE7X9-KWVw9XPMI"
+    },
     "web": {
       "favicon": "./assets/favicon.png"
     },

@@ -10,16 +10,18 @@ import jimp from 'jimp'
 export default {
   login: async (req, res, next) => {
     try {
+      console.log(pc.blue('Datos recibidos en /login:'), req.body)
+
       const user = await models.Usuario.findOne({
         where: {
           email: req.body.email
         },
         include: [{
           model: models.Persona,
-          atributtes: ['tipo']
+          attributes: ['tipo']
         }]
       })
-
+      console.log('Pase el primer await')
       if (user) {
         const coincide = bcrypt.compareSync(req.body.password, user.password)
         if (!coincide) {
@@ -36,14 +38,14 @@ export default {
       }
 
       try {
-        const tokens = signJWT(user, user.persona.tipo)
+        const tokens = signJWT(user, user.Persona.tipo)
         console.log(`Tokens generados en login: ${JSON.stringify(tokens)}`) // Agregar log para depuración
         res.status(200).json({
           success: true,
           message: 'Inicio de sesión exitoso',
           data: {
             id: user.ID,
-            tipo: user.persona.tipo,
+            tipo: user.Persona.tipo,
             token: tokens.token, // Devolver solo el token
             refreshToken: tokens.refreshToken
           }

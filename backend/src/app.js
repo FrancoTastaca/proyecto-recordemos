@@ -57,11 +57,11 @@ const configuracionRutas = (app) => {
 configuracionApi(app)
 configuracionRutas(app)
 
-// Iniciar el servicio de recordatorios
+/* Iniciar el servicio de recordatorios
 setTimeout(async () => {
   console.log('Iniciando servicios de recordatorios...')
   scheduleReminders()
   setInterval(checkUnconfirmedAlarms, 5000)
-}, 10000)
+}, 10000) */
 
 export default app
