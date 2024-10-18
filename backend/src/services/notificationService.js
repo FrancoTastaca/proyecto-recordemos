@@ -4,7 +4,7 @@ import { Op } from 'sequelize'
 
 const expo = new Expo()
 
-export const sendPushNotification = async (pushToken, message) => {
+export const sendPushNotification = async (pushToken, message, data = {}) => {
   if (!Expo.isExpoPushToken(pushToken)) {
     console.error(`Push token ${pushToken} is not a valid Expo push token`)
     return
@@ -14,7 +14,7 @@ export const sendPushNotification = async (pushToken, message) => {
     to: pushToken,
     sound: 'default',
     body: message,
-    data: { withSome: 'data' }
+    data: { ...data } // Incluir datos adicionales en la notificación
   }]
 
   try {
@@ -64,7 +64,7 @@ export const checkUnconfirmedAlarms = async () => {
   })
 
   for (const alarm of unconfirmedAlarms) {
-    const usuario = alarm.PastilleroAlarma.MedicamentoCuidador.Cuidador.Persona.Usuario // El usuario al que se le avisa es el cuidador asignado
+    const usuario = alarm.Cuidador.Persona.Usuario
     const pastilleroColor = alarm.PastilleroAlarma.color_pastillero
     const horario = alarm.horaPrimerNotificacion || alarm.horaSegundaNotificacion
     const nombrePastillero = `${alarm.PastilleroAlarma.MedicamentoCuidador.Vademecum.principio_activo} - ${alarm.PastilleroAlarma.MedicamentoCuidador.Vademecum.presentacion}`

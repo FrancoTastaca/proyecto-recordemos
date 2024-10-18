@@ -74,9 +74,9 @@ export const scheduleReminders = () => {
 const sendSecondNotification = async (pushToken, historialId) => {
   await sendPushNotification(
     pushToken,
-    'Confirmación: ¿Ha tomado su medicación?'
+    'Confirmación: ¿Ha tomado su medicación?',
+    { historialId } // Incluir historialId en los datos de la notificación
   )
-
   // Actualizar HistorialDosis con la hora de la segunda notificación
   await models.HistorialDosis.update(
     { horaSegundaNotificacion: new Date().toTimeString().slice(0, 5) },

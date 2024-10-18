@@ -16,7 +16,7 @@ export default {
         },
         include: [{
           model: models.Persona,
-          atributtes: ['tipo']
+          attributes: ['tipo']
         }]
       })
 
@@ -36,7 +36,7 @@ export default {
       }
 
       try {
-        const tokens = signJWT(user, user.persona.tipo)
+        const tokens = signJWT(user, user.Persona.tipo)
         console.log(`Tokens generados en login: ${JSON.stringify(tokens)}`) // Agregar log para depuración
         res.status(200).json({
           success: true,

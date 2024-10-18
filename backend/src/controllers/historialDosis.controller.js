@@ -191,5 +191,35 @@ export default {
         details: 'Error al obtener el historial de dosis por fechas'
       })
     }
+  },
+  registrarRespuesta: async (req, res, next) => {
+    console.log(pc.blue('Datos recibidos en /historialDosis/respuesta:'), req.body)
+    const { historialId, respuesta, tipo } = req.body
+    try {
+      // Determinar qué campo actualizar basado en el tipo
+      let updateData = {}
+      if (tipo === 'primer') {
+        updateData = respuesta === 'si' ? { primerTomoDosis: true } : { primerTomoDosis: false }
+      } else if (tipo === 'segundo') {
+        updateData = respuesta === 'si' ? { segundoTomoDosis: true } : { segundoTomoDosis: false }
+      } else {
+        console.log(pc.red('Tipo de respuesta no válido'))
+        return next({ ...errors.ValidationError, details: 'Tipo de respuesta no válido' })
+      }
+
+      // Actualizar HistorialDosis con la respuesta del usuario
+      await models.HistorialDosis.update(
+        updateData,
+        { where: { ID: historialId } }
+      )
+
+      res.status(200).json({ message: 'Respuesta registrada correctamente' })
+    } catch (error) {
+      console.error('Error al registrar la respuesta del usuario:', error)
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al registrar la respuesta del usuario'
+      })
+    }
   }
 }
