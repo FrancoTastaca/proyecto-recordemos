@@ -28,7 +28,7 @@ export default {
     const transaction = await models.sequelize.transaction()
     try {
       const codVinculacion = crypto.randomBytes(4).toString('hex').toUpperCase()
-      const nuevaPersona = await personaController.crearPersona(req.body, 'C', transaction, codVinculacion)
+      const nuevaPersona = await personaController.crearPersona(req.body, 'C', transaction, codVinculacion, next)
       const nuevoCuidador = await models.Cuidador.create({
         ID: nuevaPersona.ID,
         relacion_paciente: req.body.relacion_paciente || null,
@@ -160,7 +160,7 @@ export default {
   },
   getCuidador: async (req, res, next) => {
     try {
-      const cuidador = res.locals.usuario.persona
+      const cuidador = res.locals.usuario.Persona
       const cuidadorDetails = await models.Cuidador.findOne({
         where: { ID: cuidador.ID }
       })
@@ -171,6 +171,7 @@ export default {
         })
       }
       res.status(200).json({
+        idCuidador: cuidador.ID,
         nombre: cuidador.nombre,
         apellido: cuidador.apellido,
         dni: cuidador.dni,

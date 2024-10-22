@@ -1,7 +1,6 @@
 import models from '../bd/models/index.Models.js'
 import pc from 'picocolors'
 import errors from '../utils/errors.js'
-import crypto from 'crypto'
 
 export default {
   listar: async (req, res, next) => {
@@ -39,7 +38,7 @@ export default {
     }
   },
 
-  crearPersona: async (datosPersona, tipo, transaction, codVinculacion) => {
+  crearPersona: async (datosPersona, tipo, transaction, codVinculacion, next) => {
     try {
       const nuevaPersona = await models.Persona.create({
         ...datosPersona,
@@ -50,10 +49,7 @@ export default {
       return nuevaPersona
     } catch (error) {
       console.log(pc.red('Error al crear la persona:'), error)
-      throw {
-        ...errors.InternalServerError,
-        details: 'Error al crear la persona'
-      }
+      next({ ...errors.InternalServerError, details: `Error al crear la persona: ${error}` })
     }
   },
 
