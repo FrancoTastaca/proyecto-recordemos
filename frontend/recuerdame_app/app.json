@@ -26,11 +26,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "extra": {
-      "eas": {
-        "projectId": "TU_PROJECT_ID"
-      }
-    },
     "plugins": [
       [
         "expo-camera",
@@ -48,7 +43,25 @@
             }
           ]
         }
-      ]
-    ]
+      ],
+      [
+        "expo-updates",
+        {
+          "enabled": true
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f939e368-f319-4f7b-bca7-4938dbf381a4"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f939e368-f319-4f7b-bca7-4938dbf381a4"
+    }
   }
 }

@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.get('/', usuarioController.listar)
 router.post('/updatePushToken', usuarioController.updatePushToken)
-router.get('/getRole', validate(usuarioScheme.validateId), usuarioController.getRole)
+router.get('/getRole', usuarioController.getRole)
 router.get('/getRole/:id', validate(usuarioScheme.validateId), usuarioController.getRoleById)
 router.get('/:id', validate(usuarioScheme.validateId), checkRoleCuidador, usuarioController.readUsuario)
 router.put('/:id', validate(usuarioScheme.update), checkRoleCuidador, usuarioController.updateUsuario)
