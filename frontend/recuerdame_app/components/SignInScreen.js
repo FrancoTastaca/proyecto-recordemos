@@ -1,26 +1,35 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Text, TextInput, Pressable, Alert } from "react-native";
+import { StyleSheet, View, Text, TextInput, Pressable, Alert, TouchableOpacity } from "react-native";
 import { useRoute } from '@react-navigation/native';
-import { useCameraPermissions } from "expo-camera";
-import { signIn } from '../shared/auth';  // Importamos la función signIn
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CustomCheckbox from './CustomCheckbox';
+import { signIn } from '../shared/auth'; // Importamos la función signIn
 import { registerForPushNotificationsAsync, setupNotificationListeners } from '../shared/notificationService'; // Importar el servicio de notificaciones
+import { useCameraPermissions } from "expo-camera";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importar el ícono de ojo
+
+// Definir roles
+const roles = {
+  cuidador: 'Cuidador',
+  paciente: 'Paciente'
+};
 
 function SignInScreen({ navigation }) {
   const route = useRoute();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState(route.params?.role || 'paciente');
+  const [rememberMe, setRememberMe] = useState(false);
+  const [role, setRole] = useState(route.params?.role || 'Paciente');
   const [notification, setNotification] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
+  const [permission, requestPermission] = useCameraPermissions();
+  const isPermissionGranted = permission?.granted;
+  const [showPassword, setShowPassword] = useState(false); // Estado para controlar la visibilidad de la contraseña
 
   useEffect(() => {
     console.log('useEffect: route.params?.role', route.params?.role);
-    registerForPushNotificationsAsync()
-      .then(token => console.log('Push token:', token))
-      .catch(error => console.error('Error registering for push notifications:', error));
-
     const removeListeners = setupNotificationListeners(setNotification);
 
     return () => {
@@ -30,11 +39,31 @@ function SignInScreen({ navigation }) {
 
   const handleSignIn = async () => {
     console.log('handleSignIn: start');
+
+    // Validar que los campos de correo electrónico y contraseña no estén vacíos
+    if (!email || !password) {
+      Alert.alert("Error de inicio de sesión", "Por favor, ingresa tu correo electrónico y contraseña.");
+      return;
+    }
+
     try {
-      const response = await signIn(email, password);
-      console.log('handleSignIn: signIn success', response);
-      await registerForPushNotificationsAsync();
-      console.log('handleSignIn: updatePushToken success');
+      const { id, token } = await signIn(email, password);
+      console.log('handleSignIn: signIn success', id);
+
+      // Guardar credenciales si "Recordar credenciales" está activado
+      if (rememberMe) {
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('password', password);
+        await AsyncStorage.setItem('userId', id);
+      } else {
+        await AsyncStorage.removeItem('email');
+        await AsyncStorage.removeItem('password');
+        await AsyncStorage.removeItem('userId');
+      }
+
+      // Registrar el push token después de iniciar sesión
+      const pushToken = await registerForPushNotificationsAsync(id);
+      console.log('handleSignIn: updatePushToken success', pushToken);
 
       if (role === 'cuidador') {
         console.log('handleSignIn: navigate to ProfileCuidador');
@@ -47,6 +76,15 @@ function SignInScreen({ navigation }) {
       console.error('handleSignIn: error', error);
       if (error.code === 'ECONNABORTED') {
         Alert.alert("Error de tiempo de espera", "La solicitud ha expirado. Por favor, inténtalo nuevamente.");
+      } else if (error.response && error.response.status === 401) {
+        Alert.alert("Error de inicio de sesión", "Token expirado o inválido. Por favor, inicia sesión nuevamente.");
+        await AsyncStorage.removeItem('email');
+        await AsyncStorage.removeItem('password');
+        await AsyncStorage.removeItem('userId');
+        await AsyncStorage.removeItem('token');
+        setEmail('');
+        setPassword('');
+        setRememberMe(false);
       } else {
         Alert.alert("Error de inicio de sesión", "Por favor, verifica tus credenciales e inténtalo nuevamente.");
       }
@@ -59,27 +97,36 @@ function SignInScreen({ navigation }) {
       <Text style={styles.signInSubtitle}>Inicia sesión</Text>
       <View style={styles.signInInputs}>
         <TextInput
-          placeholder="jdoe@gmail.com"
+          placeholder="Correo electrónico por ejemplo: jdoe@gmail.com "
           value={email}
           onChangeText={setEmail}
-          autoCapitalize="none"
-          autoCorrect={false}
         />
       </View>
-      <View style={styles.signInInputs}>
+      <View style={[styles.signInInputs, { flexDirection: 'row', alignItems: 'center' }]}>
         <TextInput
           placeholder="Aquí va tu contraseña"
           value={password}
+          secureTextEntry={!showPassword} // Controlar la visibilidad de la contraseña
           onChangeText={setPassword}
-          secureTextEntry={true}
+          style={{ flex: 1 }}
         />
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+          <Icon name={showPassword ? "eye-off" : "eye"} size={24} />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.rememberMeContainer}>
+        <CustomCheckbox
+          checked={rememberMe}
+          onChange={() => setRememberMe(!rememberMe)}
+        />
+        <Text style={styles.rememberMeText}>Recordar credenciales</Text>
       </View>
       <View style={styles.touchsContainer}>
         {role === roles.cuidador && (
           <>
             <Pressable
               onPress={() => {
-                console.log('Pressable: Iniciar sesión (cuidador)');
+                console.log('Pressable: Iniciar sesión');
                 handleSignIn();
               }}
               style={styles.touchItem}>
@@ -170,6 +217,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     fontSize: 16,
     justifyContent: "center"
+  },
+  eyeIcon: {
+    marginRight: 10, // Agregar margen a la derecha del ícono
+  },
+  rememberMeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 20
+  },
+  rememberMeText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: 'black'
   },
   touchsContainer: {
     paddingHorizontal: 20,

@@ -13,8 +13,8 @@ function Header({ screen }){
     const route = useRoute()
     const { role } = route.params;
     const roles = {
-        cuidador: 'cuidador',
-        paciente: 'paciente'
+        cuidador: 'Cuidador',
+        paciente: 'Paciente'
     };
     /* Constantes para el pop up */
     const [isModalVisible, setIsModalVisible] = useState(false);

@@ -1,6 +1,7 @@
 // frontend/recuerdame_app/shared/notificationService.js
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import { Alert, Platform } from 'react-native';
 import api from './axiosConfig';
@@ -13,7 +14,7 @@ Notifications.setNotificationHandler({
     }),
 });
 
-async function sendPushNotification(expoPushToken) {
+export async function sendPushNotification(expoPushToken) {
     const message = {
         to: expoPushToken,
         sound: 'default',
@@ -38,7 +39,23 @@ function handleRegistrationError(errorMessage) {
     throw new Error(errorMessage);
 }
 
-export async function registerForPushNotificationsAsync() {
+export async function registerForPushNotificationsAsync(id) {
+    let deviceId;
+    try {
+        if (Platform.OS === 'android') {
+            deviceId = Application.getAndroidId();
+        } else {
+            if (Platform.OS === 'ios') {
+                deviceId = await Application.getIosIdForVendorAsync();
+            }
+            console.log(`Entre al registerForPushNotificactions con valor de deviceId: ${deviceId}`);
+        }
+    } catch (error) {
+        console.error('Error al obtener el deviceId:', error);
+        handleRegistrationError('Error al obtener el deviceId');
+        return;
+    }
+    console.log('Entre a registerForPushNotificationsAsync con el id', id);
     if (Platform.OS === 'android') {
         Notifications.setNotificationChannelAsync('default', {
             name: 'default',
@@ -70,8 +87,8 @@ export async function registerForPushNotificationsAsync() {
                     projectId,
                 })
             ).data;
-            console.log(pushTokenString);
-            await api.post('/usuario/updatePushToken', { pushToken: pushTokenString });
+            console.log('Valor del pushTokenString en notificationService', pushTokenString);
+            await api.post('/usuario/updatePushToken', { userId: id, deviceId, pushToken: pushTokenString });
             return pushTokenString;
         } catch (e) {
             handleRegistrationError(`${e}`);
