@@ -205,6 +205,7 @@ const router = express.Router()
 
 router.get('/listarCuidadores', cuidadorController.listar)
 router.get('/', checkRoleCuidador, cuidadorController.getCuidador)
+router.get('/miPaciente', checkRoleCuidador, cuidadorController.getMiPaciente)
 router.post('/crear', cuidadorController.crearCuidador)
 router.put('/:id', checkRoleCuidador, cuidadorController.update)
 router.delete('/:id', cuidadorController.remove)

@@ -3,6 +3,7 @@ import { View, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HomeScreen from "./HomeScreen";
 import { getRole, signIn } from '../shared/auth'; // Importar las funciones getRole y signIn
+import api from '../shared/axiosConfig'; // Importar la instancia de axios
 
 const WelcomeScreen = ({ navigation }) => {
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
@@ -23,15 +24,17 @@ const WelcomeScreen = ({ navigation }) => {
         const savedPassword = await AsyncStorage.getItem('password');
         const savedUserId = await AsyncStorage.getItem('userId');
         if (savedEmail && savedPassword && savedUserId) {
-          const { id } = await signIn(savedEmail, savedPassword);
+          const { id, token } = await signIn(savedEmail, savedPassword);
           if (id === savedUserId) {
             // Obtener el rol del usuario logueado
             const role = await getRole(savedUserId);
             // Navegar a la vista correspondiente
             if (role === 'Cuidador') {
-              navigation.navigate('ProfileCuidador', { role });
+              const Cuidador = await api.get(`/cuidador/`, { headers: { Authorization: `Bearer ${token}` } });
+              navigation.navigate('ProfileCuidador', { role, userId: id, Cuidador: Cuidador.data });
             } else if (role === 'Paciente') {
-              navigation.navigate('Pastilleros', { role });
+              const Paciente = await api.get(`/paciente/`, { headers: { Authorization: `Bearer ${token}` } });
+              navigation.navigate('Pastilleros', { role, userId: id, Paciente: Paciente.data });
             }
           }
         }

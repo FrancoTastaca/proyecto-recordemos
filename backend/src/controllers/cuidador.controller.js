@@ -187,5 +187,48 @@ export default {
         details: 'Error al obtener la información del cuidador'
       })
     }
+  },
+  getMiPaciente: async (req, res, next) => {
+    try {
+      const cuidador = res.locals.usuario.Persona
+      if (!cuidador.codVinculacion) {
+        return next({
+          ...errors.BadRequestError,
+          details: 'El cuidador no tiene un paciente asignado'
+        })
+      }
+      const cuidadorDetails = await models.Cuidador.findOne({
+        where: { ID: cuidador.ID }
+      })
+      if (!cuidadorDetails) {
+        return next({
+          ...errors.NotFoundError,
+          details: `Cuidador con ${cuidador.ID} no encontrado`
+        })
+      }
+      const paciente = await models.Persona.findOne({
+        where: { codVinculacion: cuidador.codVinculacion, tipo: 'P' }
+      })
+      if (!paciente) {
+        return next({
+          ...errors.NotFoundError,
+          details: `Paciente con codigo de vinlacion no encontrado: ${cuidador.codVinculacion} no encontrado`
+        })
+      }
+      res.status(200).json({
+        idPaciente: paciente.ID,
+        nombre: paciente.nombre,
+        apellido: paciente.apellido,
+        dni: paciente.dni,
+        tipo: paciente.tipo,
+        codVinculacion: paciente.codVinculacion
+      })
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al obtener la información del paciente' + error
+      })
+    }
   }
+
 }

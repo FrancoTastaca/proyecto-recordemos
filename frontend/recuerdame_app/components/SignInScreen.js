@@ -4,10 +4,11 @@ import { StyleSheet, View, Text, TextInput, Pressable, Alert, TouchableOpacity }
 import { useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomCheckbox from './CustomCheckbox';
-import { signIn } from '../shared/auth'; // Importamos la función signIn
-import { registerForPushNotificationsAsync, setupNotificationListeners } from '../shared/notificationService'; // Importar el servicio de notificaciones
+import { signIn } from '../shared/auth';
+import api from "../shared/axiosConfig";
+import { registerForPushNotificationsAsync, setupNotificationListeners } from '../shared/notificationService';
 import { useCameraPermissions } from "expo-camera";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importar el ícono de ojo
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 // Definir roles
 const roles = {
@@ -55,6 +56,7 @@ function SignInScreen({ navigation }) {
         await AsyncStorage.setItem('email', email);
         await AsyncStorage.setItem('password', password);
         await AsyncStorage.setItem('userId', id);
+        await AsyncStorage.setItem('token', token);
       } else {
         await AsyncStorage.removeItem('email');
         await AsyncStorage.removeItem('password');
@@ -65,12 +67,24 @@ function SignInScreen({ navigation }) {
       const pushToken = await registerForPushNotificationsAsync(id);
       console.log('handleSignIn: updatePushToken success', pushToken);
 
-      if (role === 'cuidador') {
+      if (role === 'Cuidador') {
+        console.log('--- Entre a cuidador en SignInScreen');
+        // Capturamos informacion cuidador-persona
+        const Cuidador = await api.get(`/cuidador/`, { headers: { Authorization: `Bearer ${token}` } });
         console.log('handleSignIn: navigate to ProfileCuidador');
-        navigation.navigate('ProfileCuidador', { role });
-      } else if (role === 'paciente') {
+        console.log('--- Cuidador.data:', Cuidador.data);
+        console.log('--- Role:', role);
+        console.log('--- UserId:', id);
+        navigation.navigate('ProfileCuidador', { role, userId: id, Cuidador: Cuidador.data });
+      } else if (role === 'Paciente') {
+        console.log('--- Entre Como  paciente en SignInScreen');
         console.log('handleSignIn: navigate to Pastilleros');
-        navigation.navigate('Pastilleros', { role });
+        const Paciente = await api.get(`/paciente/`, { headers: { Authorization: `Bearer ${token}` } });
+        console.log('handleSignIn: navigate to ProfilePaciente');
+        console.log('--- Paciente.data:', Paciente.data);
+        console.log('--- Role:', role);
+        console.log('--- UserId:', id);
+        navigation.navigate('Pastilleros', { role, userId: id, Paciente: Paciente.data });
       }
     } catch (error) {
       console.error('handleSignIn: error', error);

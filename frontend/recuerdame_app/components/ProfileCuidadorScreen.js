@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faDropbox } from '@fortawesome/free-brands-svg-icons';
@@ -9,49 +9,49 @@ import AgregarMedicamento from "./AgregarMedicamento";
 import GenerarCodigoQR from "./GenerarQR";
 
 function ProfileCuidadorScreen({ navigation, route }) {
-    const { role } = route.params;
-   /* Constantes para el modal Medicamentos */
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const handleModal = () => {
-        setIsModalVisible(!isModalVisible);
-    };
-    /* Constantes para el modal Código QR */
-    const [isModalVisibleQR, setIsModalVisibleQR] = useState(false);
-    const handleModalQR = () => {
-        setIsModalVisibleQR(!isModalVisibleQR);
-    };
-    return (
-      <View style={styles.container}>
-        <View style={styles.touchsWrapper}>
-          <TouchableOpacity onPress={ () => navigation.navigate('Pastilleros', {role})}
-            style={styles.touchItem}>
-          <FontAwesomeIcon icon={faDropbox} size={40} style={styles.iconoItem} />  
-            <Text style={styles.textTouch}>Pastilleros</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.touchItem} onPress={handleModal}>
-            <FontAwesomeIcon icon={faSuitcaseMedical} size={40} style={styles.iconoItem} />  
-              <Text style={styles.textTouch}>Medicamentos</Text>
-          </TouchableOpacity>
-          {isModalVisible && <AgregarMedicamento isVisible = {isModalVisible} onPress={handleModal} />}
-          <TouchableOpacity style={styles.touchItem} onPress={ () => navigation.navigate('EndDay', {role})}>
-            <FontAwesomeIcon icon={faCalendarDays} size={40} style={styles.iconoItem} />
-            <Text style={styles.textTouch}>Final del día</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.touchItem} onPress={handleModalQR}>
-            <FontAwesomeIcon icon={faQrcode} size={40} style={styles.iconoItem} />
-            <Text style={styles.textTouch}>Código QR Paciente</Text>
-          </TouchableOpacity>
-          {isModalVisibleQR && <GenerarCodigoQR isVisible = {isModalVisibleQR} onPress={handleModalQR} />}
-        </View>
+  const { role, userId, Cuidador } = route.params;
+  /* Constantes para el modal Medicamentos */
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const handleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
+  /* Constantes para el modal Código QR */
+  const [isModalVisibleQR, setIsModalVisibleQR] = useState(false);
+  const handleModalQR = () => {
+    setIsModalVisibleQR(!isModalVisibleQR);
+  };
+  return (
+    <View style={styles.container}>
+      <View style={styles.touchsWrapper}>
+        <TouchableOpacity onPress={() => navigation.navigate('Pastilleros', { role, userId, Cuidador })}
+          style={styles.touchItem}>
+          <FontAwesomeIcon icon={faDropbox} size={40} style={styles.iconoItem} />
+          <Text style={styles.textTouch}>Pastilleros</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.touchItem} onPress={handleModal}>
+          <FontAwesomeIcon icon={faSuitcaseMedical} size={40} style={styles.iconoItem} />
+          <Text style={styles.textTouch}>Medicamentos</Text>
+        </TouchableOpacity>
+        {isModalVisible && <AgregarMedicamento isVisible={isModalVisible} onPress={handleModal} />}
+        <TouchableOpacity style={styles.touchItem} onPress={() => navigation.navigate('EndDay', { role, userId, Cuidador })}>
+          <FontAwesomeIcon icon={faCalendarDays} size={40} style={styles.iconoItem} />
+          <Text style={styles.textTouch}>Final del día</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.touchItem} onPress={handleModalQR}>
+          <FontAwesomeIcon icon={faQrcode} size={40} style={styles.iconoItem} />
+          <Text style={styles.textTouch}>Código QR Paciente</Text>
+        </TouchableOpacity>
+        {isModalVisibleQR && <GenerarCodigoQR isVisible={isModalVisibleQR} onPress={handleModalQR} />}
       </View>
-    )
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    backgroundColor: '#CECAE8', 
-    alignItems: 'center', 
+    flex: 1,
+    backgroundColor: '#CECAE8',
+    alignItems: 'center',
     justifyContent: 'center'
   },
   touchsWrapper: {
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
   iconoItem: {
     alignSelf: 'left',
     color: '#CECAE8'
-  },   
-  textTouch:{
+  },
+  textTouch: {
     color: '#f1eff8',
     fontSize: 24,
     textAlign: 'center',

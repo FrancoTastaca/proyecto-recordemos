@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
@@ -6,39 +6,67 @@ import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import AgregarAlarma from '../components/AgregarAlarma';
 import { useRoute } from "@react-navigation/native";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
+import api from "./axiosConfig";
 
-function Header({ screen }){
+function Header({ screen }) {
     const navigation = useNavigation();
-    const route = useRoute()
-    const { role } = route.params;
+    const route = useRoute();
+    const { role, userId, Cuidador, Paciente } = route.params; // Obtener role, userId, Cuidador y Paciente desde route.params
     const roles = {
         cuidador: 'Cuidador',
         paciente: 'Paciente'
     };
+
+    const [cuidadorData, setCuidadorData] = useState(Cuidador);
+    const [pacienteData, setPacienteData] = useState(Paciente);
+
+    useEffect(() => {
+        if (!Paciente && role === roles.cuidador) {
+            console.log('Header: Error: Paciente no está definido, por lo tanto entre por el camino de ser cuidador');
+            const fetchCuidadorData = async () => {
+                try {
+                    const response = await api.get(`/cuidador/miPaciente`);
+                    setPacienteData(response.data);
+                } catch (error) {
+                    console.error('Error fetching Cuidador data:', error);
+                }
+            };
+            fetchCuidadorData();
+            console.log('Header: pacienteData exitoso con un valor de: ', pacienteData);
+        }
+    }, [Paciente, role]);
+
     /* Constantes para el pop up */
     const [isModalVisible, setIsModalVisible] = useState(false);
     const handleModal = () => {
         setIsModalVisible(!isModalVisible);
     };
-    return(
+
+    console.log('Header: screen', screen);
+    console.log('Header: role', role);
+    console.log('Header: userId', userId);
+    console.log('Header: Cuidador', cuidadorData);
+    console.log('Header: Paciente', pacienteData);
+
+    return (
         <View style={styles.header}>
             <View style={styles.headerContent}>
                 {screen === 'ProfileCuidador' ? (
-                    <> 
+                    <>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
                         </TouchableOpacity>
-                        {role === roles.cuidador && (
+                        {role === roles.cuidador && cuidadorData && (
                             <>
-                            <Text style={styles.headerTitle}>{roles.cuidador}</Text>
-                            <Text style={styles.headerText}>Silvia Hernández</Text>
+                                <Text style={styles.headerTitle}>{roles.cuidador}</Text>
+                                <Text style={styles.headerText}>{cuidadorData.nombre} {cuidadorData.apellido}</Text>
                             </>
                         )}
-                        {role === roles.paciente && (
+                        {role === roles.paciente && pacienteData && (
                             <>
-                            <Text style={styles.headerTitle}>{roles.paciente}</Text>
-                            <Text style={styles.headerText}>Sonia Hernández</Text>
+                                <Text style={styles.headerTitle}>{roles.paciente}</Text>
+                                <Text style={styles.headerText}>{pacienteData.nombre} {pacienteData.apellido}</Text>
                             </>
                         )}
                     </>
@@ -50,12 +78,18 @@ function Header({ screen }){
                         <Text style={styles.headerTitleEndDay}>FINAL DEL DÍA</Text>
                         <View style={styles.headerSubContent}>
                             <View style={styles.withIconContainer}>
-                                <FontAwesomeIcon icon={faUserCircle} size={42} style={styles.iconUser} /> 
+                                <FontAwesomeIcon icon={faUserCircle} size={42} style={styles.iconUser} />
                                 {role === roles.cuidador && (
                                     <Text style={styles.headerText}>{roles.cuidador}</Text>
                                 )}
                             </View>
-                            <Text style={styles.headerTextEndDay}>Silvia Hernández</Text>
+                            {pacienteData ? (
+                                <Text style={styles.headerTextEndDay}>
+                                    Paciente: {pacienteData.nombre} {pacienteData.apellido}
+                                </Text>
+                            ) : (
+                                <Text style={styles.errorText}>Error: Paciente no está definido</Text>
+                            )}
                         </View>
                     </>
                 ) : (
@@ -68,17 +102,19 @@ function Header({ screen }){
                         {role === roles.cuidador && (
                             <View style={styles.touchContainer}>
                                 <TouchableOpacity style={styles.touchPlus} onPress={handleModal}>
-                                    <FontAwesomeIcon icon={faCirclePlus} size={36} style={styles.iconPlus} />  
+                                    <FontAwesomeIcon icon={faCirclePlus} size={36} style={styles.iconPlus} />
                                     <Text style={styles.btnHeaderText}>Agregar alarma</Text>
                                 </TouchableOpacity>
-                                {isModalVisible && <AgregarAlarma isVisible = {isModalVisible} onPress={handleModal} />}
+                                {isModalVisible && <AgregarAlarma isVisible={isModalVisible} onPress={handleModal} />}
                             </View>
                         )}
-                        {role === roles.paciente && (
+                        {role === roles.paciente && pacienteData && (
                             <View style={styles.headerSubContentPaciente}>
                                 <>
-                                <Text style={styles.headerText}>{roles.paciente}</Text>
-                                <Text style={styles.headerTextEndDay}>Sonia Hernández</Text>
+                                    <Text style={styles.headerText}>{roles.paciente}</Text>
+                                    <Text style={styles.headerTextEndDay}>
+                                        {pacienteData.nombre} {pacienteData.apellido}
+                                    </Text>
                                 </>
                             </View>
                         )}
@@ -108,7 +144,7 @@ const styles = StyleSheet.create({
     },
     headerSubContent: {
         backgroundColor: '#2f273f',
-        width: '100%', 
+        width: '100%',
         height: 130,
         alignItems: 'center',
         marginLeft: 0,
@@ -117,16 +153,16 @@ const styles = StyleSheet.create({
     },
     headerSubContentPaciente: {
         backgroundColor: '#2f273f',
-        width: '100%', 
+        width: '100%',
         height: 86,
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 0,
         marginRight: 32,
-        marginBottom: 8
+        marginBottom: 8,
     },
     goBackIcon: {
-        marginRight: 340, 
+        marginRight: 340,
         color: '#CECAE8'
     },
     headerTitle: {
@@ -138,7 +174,7 @@ const styles = StyleSheet.create({
     headerTitleEndDay: {
         fontWeight: 'bold',
         fontSize: 40,
-        color: '#CECAE8', 
+        color: '#CECAE8',
         marginBottom: 15
     },
     headerText: {
@@ -151,10 +187,11 @@ const styles = StyleSheet.create({
     },
     headerTextEndDay: {
         fontWeight: 'italic',
-        fontSize: 30,
+        fontSize: 24, // Reducir el tamaño de la fuente
         color: '#CECAE8',
         letterSpacing: 1,
-        paddingBottom: 4
+        paddingBottom: 4,
+        marginBottom: 15 // Agregar margen inferior
     },
     touchPlus: {
         flexDirection: 'row',
@@ -185,7 +222,12 @@ const styles = StyleSheet.create({
     iconUser: {
         color: '#CECAE8',
         marginRight: 16
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 20,
+        fontWeight: 'bold'
     }
 })
 
-export default Header
+export default Header;
