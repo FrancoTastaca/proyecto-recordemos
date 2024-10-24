@@ -105,8 +105,8 @@ function RegisterPacienteScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <FontAwesomeIcon icon={faUserCircle} size={64} color="#624d8a" style={styles.icono} />
-      <Text style={styles.subtitulo}>Paciente</Text>
+      <FontAwesomeIcon icon={faUserCircle} size={64} color="#624d8a" style={styles.icon} />
+      <Text style={styles.titleIcon}>Paciente</Text>
       <View style={styles.textInput}>
         <TextInput placeholder="Nombre" value={nombrePaciente} onChangeText={setNombrePaciente} />
         {errorsPaciente.nombrePaciente && <Text style={styles.error}>{errorsPaciente.nombrePaciente}</Text>}
@@ -154,14 +154,14 @@ const styles={
     justifyContent: 'center',
     paddingStart: 20
   }, 
-  subtitulo: {
+  titleIcon: {
     fontSize: 26,
-    color: '#624D8A',
+    color: '#392C52',
     fontWeight: 'bold',
     alignSelf: 'center',
     marginBottom: 10
   },
-  icono: {
+  icon: {
     alignSelf:"center", 
     marginBottom:20, 
     marginTop: 20

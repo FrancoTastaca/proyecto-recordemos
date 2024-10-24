@@ -58,7 +58,7 @@ import { useNavigation } from "@react-navigation/native";
     },
     titleDescription: {
       fontSize: 35,
-      color: '#624D8A',
+      color: '#392C52',
       fontWeight: 'bold',
       textAlign: 'center'
     },

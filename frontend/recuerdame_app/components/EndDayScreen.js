@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   titleStateAlarm:{
     padding: 10,
     fontSize: 30,
-    color: '#624D8A',
+    color: '#392C52',
     fontWeight: 'bold'
   },
   itemsContainer: {
