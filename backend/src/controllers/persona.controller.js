@@ -38,10 +38,12 @@ export default {
     }
   },
 
-  crearPersona: async (datosPersona, tipo, transaction, codVinculacion, next) => {
+  crearPersona: async (nombre, apellido, dni, tipo, transaction, codVinculacion, next) => {
     try {
       const nuevaPersona = await models.Persona.create({
-        ...datosPersona,
+        nombre,
+        apellido,
+        dni,
         tipo,
         codVinculacion
       }, { transaction })

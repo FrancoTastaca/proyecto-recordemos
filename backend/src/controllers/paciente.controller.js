@@ -43,13 +43,12 @@ export default {
     console.log(pc.green('Datos recibidos en /crearPaciente:'), req.body)
     const transaction = await models.sequelize.transaction()
     try {
-      const { codVinculacion } = req.body
-      const nuevaPersona = await personaController.crearPersona(req.body, 'P', transaction, codVinculacion, next)
-
+      const { codVinculacion, nombre, apellido, dni } = req.body
+      const nuevaPersona = await personaController.crearPersona(nombre, apellido, dni, 'P', transaction, codVinculacion, next)
       const nuevoPaciente = await models.Paciente.create({
         ID: nuevaPersona.ID,
         historial_medico: req.body.historial_medico || null,
-        contacto_emergencia: req.body.contacto_emergencia || null
+        contacto_emergencia: req.body.celular || null
       }, { transaction })
 
       await transaction.commit()

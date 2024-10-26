@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get('/listarPacientes', pacienteController.listar)
 router.get('/:id', validate(pacienteScheme.read), pacienteController.read)
-router.post('/crear', validate(pacienteScheme.crearPaciente), pacienteController.crearPaciente)
+router.post('/crear', validate(pacienteScheme.crearPaciente, 'body'), pacienteController.crearPaciente)
 router.put('/:id', validate(pacienteScheme.update), pacienteController.update)
 router.delete('/:id', validate(pacienteScheme.remove), pacienteController.remove)
 router.get('/', checkRolePaciente, pacienteController.getPaciente)

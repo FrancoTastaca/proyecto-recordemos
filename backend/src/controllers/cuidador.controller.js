@@ -28,12 +28,15 @@ export default {
     const transaction = await models.sequelize.transaction()
     try {
       const codVinculacion = crypto.randomBytes(4).toString('hex').toUpperCase()
-      const nuevaPersona = await personaController.crearPersona(req.body, 'C', transaction, codVinculacion, next)
+      const nombre = req.body.nombre
+      const apellido = req.body.apellido
+      const dni = req.body.dni
+      const nuevaPersona = await personaController.crearPersona(nombre, apellido, dni, 'C', transaction, codVinculacion, next)
       const nuevoCuidador = await models.Cuidador.create({
         ID: nuevaPersona.ID,
         relacion_paciente: req.body.relacion_paciente || null,
         especialidad: req.body.especialidad || null,
-        contacto: req.body.contacto || null
+        contacto: req.body.celular || null
       }, { transaction })
 
       await transaction.commit()
