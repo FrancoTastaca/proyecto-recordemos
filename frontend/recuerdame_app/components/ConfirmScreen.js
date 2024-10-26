@@ -79,14 +79,14 @@ const styles = StyleSheet.create({
   },
   titleConfirm: {
     fontSize: 24,
-    color: '#624D8A',
+    color: '#392C52',
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 20    
   },
   textHelp: {
     fontSize: 20,
-    color: '#624D8A',
+    color: '#392C52',
     marginBottom: 20,
     textAlign: 'center'
   },
