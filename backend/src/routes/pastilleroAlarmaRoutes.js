@@ -7,11 +7,11 @@ import { uploadImagenes } from '../middlewares/multerConfig.js'
 const router = express.Router()
 
 router.get('/', pastilleroController.listar)
-router.get('/persona/:id', validate(pastilleroScheme.validateId), pastilleroController.listarPorIdPersona)
+router.get('/paciente/:id', validate(pastilleroScheme.validateId), pastilleroController.listarPastilleroPaciente)
+router.get('/cuidador/:id', pastilleroController.listarPorIdCuidador)
 router.post('/', uploadImagenes, validate(pastilleroScheme.save, 'body'), checkRoleCuidador, pastilleroController.create)
 router.put('/:id', uploadImagenes, validate(pastilleroScheme.validateId, 'params'), validate(pastilleroScheme.save, 'body'), checkRoleCuidador, pastilleroController.update)
 router.delete('/:id', validate(pastilleroScheme.validateId), checkRoleCuidador, pastilleroController.remove)
-router.get('/cuidador/:id', pastilleroController.obtenerCuidadorDePastillero)
 router.get('/:id', validate(pastilleroScheme.validateId), pastilleroController.read)
 router.get('/horarioDiario/:id', validate(pastilleroScheme.validateId), pastilleroController.obtenerHorarioDiario)
 export default router

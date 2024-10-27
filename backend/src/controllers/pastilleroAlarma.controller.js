@@ -20,8 +20,21 @@ export default {
       })
     }
   },
-
-  listarPorIdPersona: async (req, res, next) => {
+  listarPorIdCuidador: async (req, res, next) => {
+    try {
+      const { id } = req.params
+      const pastilleros = await models.PastilleroAlarma.findAll({
+        include: { model: models.MedicamentoCuidador, where: { Cuidador_ID: id } }
+      })
+      res.status(200).json(pastilleros)
+    } catch (error) {
+      next({
+        ...errors.InternalServerError,
+        details: 'Error al intentar listar los pastilleros del cuidador - ' + error.message
+      })
+    }
+  },
+  listarPastilleroPaciente: async (req, res, next) => {
     try {
       const { id } = req.params
       const pastilleros = await models.PastilleroAlarma.findAll({

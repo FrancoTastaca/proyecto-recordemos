@@ -124,7 +124,7 @@ export default {
     const transaction = await models.sequelize.transaction()
     try {
       const usuarioCuidador = res.locals.usuario
-      const { codVinculacion } = usuarioCuidador.persona
+      const { codVinculacion } = usuarioCuidador.Persona
 
       const personaPaciente = await models.Persona.findOne({
         where: { codVinculacion, tipo: 'P' },
