@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
-import AgregarAlarma from '../components/AgregarAlarma';
-import { useRoute } from "@react-navigation/native";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useNavigation } from "@react-navigation/native";
-import api from "./axiosConfig";
+import React, { useState, useEffect } from "react"
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
+import { faCirclePlus } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle } from '@fortawesome/free-regular-svg-icons'
+import AgregarAlarma from '../components/AgregarAlarma'
+import { useRoute } from '@react-navigation/native'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { useNavigation } from '@react-navigation/native'
+import api from './axiosConfig'
 
 function Header({ screen }) {
     const navigation = useNavigation();
@@ -51,12 +51,12 @@ function Header({ screen }) {
 
     return (
         <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.goBackIconContainer}>
+                <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
+            </TouchableOpacity>
             <View style={styles.headerContent}>
                 {screen === 'ProfileCuidador' ? (
                     <>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
-                        </TouchableOpacity>
                         {role === roles.cuidador && cuidadorData && (
                             <>
                                 <Text style={styles.headerTitle}>{roles.cuidador}</Text>
@@ -72,9 +72,6 @@ function Header({ screen }) {
                     </>
                 ) : screen === 'EndDay' ? (
                     <>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
-                        </TouchableOpacity>
                         <Text style={styles.headerTitleEndDay}>FINAL DEL DÍA</Text>
                         <View style={styles.headerSubContent}>
                             <View style={styles.withIconContainer}>
@@ -94,9 +91,6 @@ function Header({ screen }) {
                     </>
                 ) : (
                     <>
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <FontAwesomeIcon icon={faArrowLeft} size={32} style={styles.goBackIcon} />
-                        </TouchableOpacity>
                         <Text style={styles.headerTitle}>PASTILLERO</Text>
                         <Text style={styles.headerTitle}>DIARIO</Text>
                         {role === roles.cuidador && (
@@ -132,7 +126,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#624D8A',
         alignItems: 'center',
         flexDirection: 'column',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        position: 'relative' // Asegura que los elementos hijos se posicionen relativamente al contenedor
+    },
+    goBackIconContainer: {
+        position: 'absolute',
+        top: 20,
+        left: 5, 
+        zIndex: 1 // Asegura que el ícono esté por encima de otros elementos
+    },
+    goBackIcon: {
+        color: '#CECAE8'
     },
     headerContent: {
         flex: 1,
@@ -160,10 +164,6 @@ const styles = StyleSheet.create({
         marginLeft: 0,
         marginRight: 32,
         marginBottom: 8,
-    },
-    goBackIcon: {
-        marginRight: 340,
-        color: '#CECAE8'
     },
     headerTitle: {
         marginTop: '1rem',

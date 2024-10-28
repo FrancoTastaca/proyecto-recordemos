@@ -16,8 +16,7 @@ const validateId = Joi.object({
   id: Joi.number().integer().positive().required()
 })
 
-const validateParams = Joi.object({
-  id: Joi.number().integer().positive().required(),
+const validateType = Joi.object({
   type: Joi.string().valid('cuidador', 'paciente').required().messages({
     'any.only': 'El tipo debe ser cuidador o paciente'
   })
@@ -26,7 +25,7 @@ const validateParams = Joi.object({
 const validations = {
   save,
   validateId,
-  validateParams
+  validateType
 }
 
 export default validations

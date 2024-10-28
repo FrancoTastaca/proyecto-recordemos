@@ -20,10 +20,10 @@ export default {
       })
     }
   },
-  listarPorId: async (req, res, next) => {
+  listarPorIdlogin: async (req, res, next) => {
     try {
-      const { id, type } = req.params
-
+      const { type } = req.params
+      const id = res.locals.usuario.Persona.ID
       let pastilleros
       if (type === 'cuidador') {
         pastilleros = await models.PastilleroAlarma.findAll({
@@ -68,7 +68,9 @@ export default {
           medicamento_imagen: pastillero.MedicamentoCuidador.medicamento_imagen,
           medicamentoNombre: pastillero.MedicamentoCuidador.Vademecum
             ? `${pastillero.MedicamentoCuidador.Vademecum.principio_activo} - ${pastillero.MedicamentoCuidador.marca}`
-            : pastillero.MedicamentoCuidador.marca
+            : pastillero.MedicamentoCuidador.marca,
+          marca: pastillero.MedicamentoCuidador.marca,
+          principio_activo: pastillero.MedicamentoCuidador.Vademecum.principio_activo
         }))
       )
     } catch (error) {
