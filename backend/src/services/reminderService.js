@@ -78,7 +78,6 @@ const sendSecondNotification = async (pushToken, historialId) => {
     'Confirmación: ¿Ha tomado su medicación?',
     { historialId } // Incluir historialId en los datos de la notificación
   )
-
   // Actualizar HistorialDosis con la hora de la segunda notificación
   await models.HistorialDosis.update(
     { horaSegundaNotificacion: new Date().toTimeString().slice(0, 5) },
