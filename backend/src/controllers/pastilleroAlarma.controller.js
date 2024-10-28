@@ -20,31 +20,62 @@ export default {
       })
     }
   },
-  listarPorIdCuidador: async (req, res, next) => {
+  listarPorId: async (req, res, next) => {
     try {
-      const { id } = req.params
-      const pastilleros = await models.PastilleroAlarma.findAll({
-        include: { model: models.MedicamentoCuidador, where: { Cuidador_ID: id } }
-      })
-      res.status(200).json(pastilleros)
+      const { id, type } = req.params
+
+      let pastilleros
+      if (type === 'cuidador') {
+        pastilleros = await models.PastilleroAlarma.findAll({
+          include: {
+            model: models.MedicamentoCuidador,
+            where: { Cuidador_ID: id },
+            include: [{
+              model: models.Vademecum,
+              attributes: ['principio_activo', 'presentacion']
+            }],
+            attributes: ['Cuidador_ID', 'medicamento_imagen', 'marca']
+          }
+        })
+      } else if (type === 'paciente') {
+        pastilleros = await models.PastilleroAlarma.findAll({
+          where: { Paciente_ID: id },
+          include: {
+            model: models.MedicamentoCuidador,
+            include: [{
+              model: models.Vademecum,
+              attributes: ['principio_activo', 'presentacion']
+            }],
+            attributes: ['Cuidador_ID', 'medicamento_imagen', 'marca']
+          }
+        })
+      } else {
+        return next({
+          ...errors.BadRequest,
+          details: 'Tipo de consulta no válido. Debe ser "cuidador" o "paciente".'
+        })
+      }
+      console.log('Pastilleros:', pastilleros)
+      res.status(200).json(
+        pastilleros.map(pastillero => ({
+          ID: pastillero.ID,
+          Medicamento_ID: pastillero.MedicamentoCuidador_ID,
+          Cuidador_ID: pastillero.MedicamentoCuidador.Cuidador_ID,
+          horario_diario: pastillero.horario_diario,
+          dosis: pastillero.dosis,
+          color_pastillero: pastillero.color_pastillero,
+          pastillero_imagen: pastillero.imagen_url,
+          medicamento_imagen: pastillero.MedicamentoCuidador.medicamento_imagen,
+          medicamentoNombre: pastillero.MedicamentoCuidador.Vademecum
+            ? `${pastillero.MedicamentoCuidador.Vademecum.principio_activo} - ${pastillero.MedicamentoCuidador.marca}`
+            : pastillero.MedicamentoCuidador.marca
+        }))
+      )
     } catch (error) {
+      console.log('Error al intentar listar los pastilleros:', error)
       next({
         ...errors.InternalServerError,
-        details: 'Error al intentar listar los pastilleros del cuidador - ' + error.message
-      })
-    }
-  },
-  listarPastilleroPaciente: async (req, res, next) => {
-    try {
-      const { id } = req.params
-      const pastilleros = await models.PastilleroAlarma.findAll({
-        where: { Paciente_ID: id }
-      })
-      res.status(200).json(pastilleros)
-    } catch (error) {
-      next({
-        ...errors.InternalServerError,
-        details: 'Error al intentar listar los pastilleros del paciente - ' + error.message
+        details: 'Error al intentar listar los pastilleros - ' + error
       })
     }
   },
