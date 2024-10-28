@@ -15,11 +15,22 @@ export const signIn = async (email, password) => {
     }
 };
 
-export const signUp = async (email, password, role) => {
+export const signUp = async (body) => {
+    console.log('---- Entre al signUp de axiosConfig');
+    const { email, password, confirmPassword, persona_id } = body;
     try {
-        const response = await api.post('/auth/sign-up', { email, password, role });
-        const { token } = response.data;
-        await AsyncStorage.setItem('token', token);
+        console.log('Valor de email en signUp:', email);
+        console.log('Valor de password en signUp:', password)
+        console.log('Valor de persona_id en signUp:', persona_id);
+        console.log('Valor de confirmPassword:', confirmPassword);
+        const response = await api.post('/auth/sign-up', { email, password, confirmPassword, persona_id });
+        const { token, id, tipo } = response.data.data;
+        if (tipo === 'C') {
+            console.log('Valor de token en signUp:', token);
+            await AsyncStorage.setItem('token', token);
+        }
+        console.log('Valor de id en signUp:', id);
+        console.log('Valor de tipo en signUp:', tipo);
         return response.data;
     } catch (error) {
         console.error('Error en signUp:', error);
