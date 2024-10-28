@@ -15,7 +15,7 @@ const GenerarCodigoQR = ({ isVisible, onPress }) => {
             onRequestClose={onPress}
         >
             <View style={styles.formsContainer}>
-                <Text style={styles.titleAddAlarm}>Por favor, escaneá el código QR para vincular la cuenta del paciente</Text>
+                <Text style={styles.titleQR}>Por favor, escaneá el código QR para vincular la cuenta del paciente</Text>
                 <QRCode value={link} />
                 <TouchableOpacity onPress={onPress}>
                     <FontAwesomeIcon icon={faCircleXmark} size={72} style={styles.iconoItem} />  
@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#CECAE8',
         padding: 12
     },
-    titleAddAlarm: {
+    titleQR: {
         fontSize: 30,
         marginBottom: 60,
         textAlign: 'center',
-        color: '#624D8A',
+        color: '#392C52',
         fontWeight: 'bold'
     },
     iconoItem: {

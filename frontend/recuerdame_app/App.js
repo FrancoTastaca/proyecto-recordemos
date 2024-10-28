@@ -128,6 +128,7 @@ function App() {
           component={ConfirmScreen}
           options={{
             headerTitle: '',
+            headerTintColor: '#CECAE8',
             headerStyle: {
               backgroundColor: '#624D8A',
             }

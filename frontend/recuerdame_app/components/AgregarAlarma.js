@@ -25,7 +25,7 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
         const getPermissions = async () => {
             const { status } = await Notifications.requestPermissionsAsync();
             if (status !== 'granted') {
-                alert('Permission not granted!');
+                alert('Permiso denegado, debe permitir las notificaciones para que funcione la alarma');
             }
         };
 
@@ -183,7 +183,7 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
             fontSize: 30,
             marginBottom: 50,
             textAlign: 'center',
-            color: '#624D8A',
+            color: '#392C52',
             fontWeight: 'bold'
         },
         imgAlarm: {
@@ -194,7 +194,7 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
         titleContentItem: {
             marginBottom: 5,
             fontSize: 22,
-            color: '#624D8A'
+            color: '#392C52'
         },
         pickerMedicineContainer:{
             borderRadius: 5
@@ -217,11 +217,11 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
         },
         searchMedicineInput: {
             padding: 10,
-            color: '#4f426d'
+            color: '#392C52'
         },
         noResultsText: {
             textAlign: 'center',
-            color: '#624D8A',
+            color: '#392C52',
             fontWeight: 'bold',
             padding: 12
         },

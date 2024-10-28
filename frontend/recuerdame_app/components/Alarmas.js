@@ -8,7 +8,7 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 const Alarmas = ({ marca, droga, estado, role, horario, dosis, fecha, color }) => {
   const route = useRoute(); // Utilizar la ruta de las pantallas
   const isEndDayScreen = route.name === 'EndDay';
-  const stateColour = estado === 'Tomada' ? '#63cd5b' : '#eb867e';
+  const stateColour = estado === 'Tomada' ? '#76F36D' : '#FEC1BB';
 
   const roles = {
     cuidador: 'Cuidador',

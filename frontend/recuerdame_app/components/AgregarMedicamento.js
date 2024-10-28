@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         marginBottom: 50,
         textAlign: 'center',
-        color: '#624D8A',
+        color: '#392C52',
         fontWeight: 'bold'
     },
     imgAlarm: {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     titleContentItem: {
         marginBottom: 5,
         fontSize: 22,
-        color: '#624D8A'
+        color: '#392C52'
     },
     pickerMedicineContainer:{
         borderRadius: 5
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     },
     searchMedicineInput: {
         padding: 10,
-        color: '#4f426d'
+        color: '#392C52'
     },
     noResultsText: {
         textAlign: 'center',

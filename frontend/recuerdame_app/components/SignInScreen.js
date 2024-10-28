@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   },
   signInTitle: {
     fontSize: 70,
-    color: '#624D8A',
+    color: '#392C52',
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 50
