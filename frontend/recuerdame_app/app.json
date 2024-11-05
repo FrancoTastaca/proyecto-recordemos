@@ -40,6 +40,12 @@
             }
           ]
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photoLibraryPermission": "Allow $(PRODUCT_NAME) to access your photo library"
+        }
       ]
     ]
   }

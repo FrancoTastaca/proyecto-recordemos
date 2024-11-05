@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Image } from "react-native";
 import DropDownPicker from 'react-native-dropdown-picker';
+import * as ImagePicker from 'expo-image-picker';
 
 const AgregarMedicamento = ({ isVisible, onPress }) => {
     const [selectedValueMed, setSelectedValueMed] = useState(''); //Estado del picker medicamento
@@ -12,6 +13,32 @@ const AgregarMedicamento = ({ isVisible, onPress }) => {
 
     const [inputBrandMed, setInputBrandMed] = useState(''); //Estado del input marca
     const [inputColourMed, setInputColourMed] = useState(''); //Estado del input color
+    const [imageLocation, setImageLocation] = useState(null);
+
+    const requestPermissions = async () => {
+        //Pide permisos para la cámara y la galería
+        const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+        const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (cameraStatus !== 'granted' || libraryStatus !== 'granted') {
+        alert('Se requieren permisos para acceder a la cámara o la galería.');
+        return;
+        }
+    };
+
+    const handleImageSelection = async () => {
+        await requestPermissions();
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,  //Permite solo imágenes
+        allowsEditing: true,  //Permite recortar la imagen
+        quality: 1,  //Calidad de la imagen
+        });
+
+        if (!result.canceled) {
+        setImageLocation(result.imageLocation);  //Se guarda la ubicación de la imagen seleccionada
+        }
+    };
 
     return (
         <Modal
@@ -23,7 +50,17 @@ const AgregarMedicamento = ({ isVisible, onPress }) => {
             <View style={styles.formsContainer}>
                 <View stlye={styles.formsContent}>
                     <Text style={styles.titleAddAlarm}>Agregar Medicamento</Text>
-                    <Image source={require('../assets/Configurar.png')} style={styles.imgAlarm} resizeMode='contain' />
+                    <TouchableOpacity style={styles.selectImageContainer} onPress={handleImageSelection}>
+                        <Text style={styles.selectImageText}>
+                        {imageLocation ? 'CAMBIAR IMAGEN' : 'SELECCIONAR IMAGEN'}
+                        </Text>
+                    </TouchableOpacity>
+
+                    {/* Si hay una imagen seleccionada, mostrarla */}
+                    {imageLocation && (
+                        <Image source={{ uri: imageLocation }} style={styles.imgAlarm} resizeMode="contain" />
+                    )}
+                    {/* <Image source={require('../assets/Configurar.png')} style={styles.imgAlarm} resizeMode='contain' /> */}
                     <Text style={styles.titleContentItem}>Droga</Text>
                     <DropDownPicker style={styles.pickerMedicine} 
                         open={open}
@@ -94,6 +131,23 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#392C52',
         fontWeight: 'bold'
+    },
+    selectImageContainer: {
+        backgroundColor: 'transparent',
+        padding: 10,
+        borderRadius: 5,
+        borderWidth: 2,
+        borderColor: '#624D8A',
+        marginBottom: 40,
+        width: '65%',
+        alignSelf: 'center'
+    },
+    selectImageText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#9a251a',
+        textAlign: 'center',
+        marginBottom: 10
     },
     imgAlarm: {
         width: '100',

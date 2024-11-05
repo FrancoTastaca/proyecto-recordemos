@@ -105,7 +105,7 @@ function RegisterCuidadorScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <FontAwesomeIcon icon={faUserCircle} size={64} color="#624d8a" style={styles.icon} />
+      <FontAwesomeIcon icon={faUserCircle} size={50} color="#624d8a" style={styles.icon} />
       <Text style={styles.titleIcon}>Cuidador</Text>
       <View style={styles.textInput}>
         <TextInput placeholder="Nombre" value={nombre} onChangeText={setNombre} />
@@ -167,7 +167,7 @@ const styles={
   },
   icon: {
     alignSelf:"center", 
-    marginBottom:20, 
+    marginBottom:10, 
     marginTop: 20
   },
   textInput: {

@@ -8,7 +8,7 @@ import * as Notifications from 'expo-notifications';
 import { useEffect } from 'react';
 import { Audio } from "expo-av";
 import { useNavigation } from "@react-navigation/native";
-
+import * as ImagePicker from 'expo-image-picker';
 
 const AgregarAlarma = ({ isVisible, onPress, screen }) => {
     const [selectedValue, setSelectedValue] = useState('');
@@ -20,6 +20,7 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
     const [showTimePicker, setShowTimePicker] = useState(false);
     const [inputColour, setInputColour] = useState('');
     const [isModalVisible, setModalVisible] = useState(isVisible);
+    const [imageLocation, setImageLocation] = useState(null);
 
     useEffect(() => {
         const getPermissions = async () => {
@@ -65,7 +66,7 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
             }
         });
 
-        // Segunda notificación (5 minutos después)
+        // Segunda notificación (7 minutos después)
         const fiveMinutesLater = new Date(date.getTime() + 7 * 60000);
         await Notifications.scheduleNotificationAsync({
             content: {
@@ -79,6 +80,31 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
                 date: fiveMinutesLater,
             }
         });
+    };
+
+    const requestPermissions = async () => {
+        //Pide permisos para la cámara y la galería
+        const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+        const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (cameraStatus !== 'granted' || libraryStatus !== 'granted') {
+        alert('Se requieren permisos para acceder a la cámara o la galería.');
+        return;
+        }
+    };
+
+    const handleImageSelection = async () => {
+        await requestPermissions();
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,  //Permite solo imágenes
+        allowsEditing: true,  //Permite recortar la imagen
+        quality: 1,  //Calidad de la imagen
+        });
+
+        if (!result.canceled) {
+        setImageLocation(result.imageLocation);  //Se guarda la ubicación de la imagen seleccionada
+        }
     };
 
     const handleAddAlarm = () => {
@@ -96,7 +122,17 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
             <View style={styles.formsContainer}>
                 <View stlye={styles.formsContent}>
                     <Text style={styles.titleAddAlarm}>Agregar Alarma</Text>
-                    <Image source={require('../assets/Controlar.png')} style={styles.imgAlarm} resizeMode='contain' />
+                    <TouchableOpacity style={styles.selectImageContainer} onPress={handleImageSelection}>
+                        <Text style={styles.selectImageText}>
+                        {imageLocation ? 'CAMBIAR IMAGEN' : 'SELECCIONAR IMAGEN'}
+                        </Text>
+                    </TouchableOpacity>
+
+                    {/* Si hay una imagen seleccionada, mostrarla */}
+                    {imageLocation && (
+                        <Image source={{ uri: imageLocation }} style={styles.imgAlarm} resizeMode="contain" />
+                    )}
+                    {/* <Image source={require('../assets/Controlar.png')} style={styles.imgAlarm} resizeMode='contain' /> */}
                     <Text style={styles.titleContentItem}>Medicamento</Text>
                     <DropDownPicker style={styles.pickerMedicine} 
                         open={open}
@@ -185,6 +221,23 @@ const AgregarAlarma = ({ isVisible, onPress, screen }) => {
             textAlign: 'center',
             color: '#392C52',
             fontWeight: 'bold'
+        },
+        selectImageContainer: {
+            backgroundColor: 'transparent',
+            padding: 10,
+            borderRadius: 5,
+            borderWidth: 2,
+            borderColor: '#624D8A',
+            marginBottom: 40,
+            width: '65%',
+            alignSelf: 'center'
+        },
+        selectImageText: {
+            fontSize: 20,
+            fontWeight: 'bold',
+            color: '#9a251a',
+            textAlign: 'center',
+            marginBottom: 10
         },
         imgAlarm: {
             width: '100',

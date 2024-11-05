@@ -41,7 +41,8 @@
     "react-native-toast-message": "^2.2.0",
     "react-native-vision-camera": "^4.5.2",
     "react-native-web": "~0.19.10",
-    "react-qr-code": "^2.0.15"
+    "react-qr-code": "^2.0.15",
+    "expo-image-picker": "~15.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
