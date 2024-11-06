@@ -55,7 +55,6 @@ export default {
           details: 'Tipo de consulta no válido. Debe ser "cuidador" o "paciente".'
         })
       }
-      console.log('Pastilleros:', pastilleros)
       res.status(200).json(
         pastilleros.map(pastillero => ({
           ID: pastillero.ID,

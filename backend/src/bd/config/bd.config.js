@@ -15,7 +15,7 @@ const sequelize = new Sequelize(database, user, password, {
   host,
   dialect: 'mysql',
   port,
-  logging: true // Desactivar con 'false' los logs para evitar sobre-información
+  logging: console.log
 })
 
 const connectDB = async () => {

@@ -23,7 +23,7 @@ const Alarmas = ({ marca, droga, estado, role, horario, dosis, fecha, color }) =
           <Text style={[styles.itemText, { fontWeight: 'bold' }]}>{horario}hs</Text>
           <Text style={styles.itemText} numberOfLines={2} ellipsizeMode="tail">{droga}</Text>
           <Text style={styles.itemText} numberOfLines={2} ellipsizeMode="tail">{marca}</Text>
-          <Text style={styles.itemText}>{dosis}mg</Text>
+          <Text style={styles.itemText}>Dosis: {dosis}mg</Text>
         </View>
       </View>
       {isEndDayScreen &&

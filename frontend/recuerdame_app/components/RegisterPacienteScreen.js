@@ -5,19 +5,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import { signUp } from "../shared/auth";
 import api from "../shared/axiosConfig";
-import { useRoute } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function RegisterPacienteScreen({ navigation }) {
-  const [nombrePaciente, setNombrePaciente] = useState('')
-  const [apellidoPaciente, setApellidoPaciente] = useState('')
-  const [correoPaciente, setCorreoPaciente] = useState('')
-  const [celularPaciente, setCelularPaciente] = useState('')
-  const [passwordPaciente, setPasswordPaciente] = useState('')
-  const [confirmPasswordPaciente, setConfirmPasswordPaciente] = useState('')
-  const [errorsPaciente, setErrorsPaciente] = useState({})
+function RegisterPacienteScreen({ navigation, route }) {
+  const { codVinculacion, userId, role, Cuidador } = route.params;
 
-  const [dniPaciente, setDniPaciente] = useState('')
+  useEffect(() => {
+    console.log('--- codVinculacion recibido en RegisterPacienteScreen:', codVinculacion);
+    console.log('--- userId recibido en RegisterPacienteScreen:', userId);
+    console.log('--- role recibido en RegisterPacienteScreen:', role);
+    console.log('--- Cuidador recibido en RegisterPacienteScreen:', Cuidador);
+  }, []);
+
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [celular, setCelular] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState({});
+  const [dni, setDni] = useState('');
 
   const validateDNI = (dni) => {
     const allowDni = /^\d+$/;
@@ -112,29 +118,21 @@ function RegisterPacienteScreen({ navigation }) {
           dni,
           codVinculacion
         });
+
         const paciente = pacienteResponse.data.data.datosPersonaPaciente;
         console.log('--- Entre a paciente en RegisterPacienteScreen antes de llamar al signUp');
         console.log('--- Paciente:', paciente);
         console.log('--- Correo:', correo);
         console.log('--- Password:', password);
         console.log('--- ConfirmPassword en signUp:', confirmPassword);
-        console.log('--- cuidador.ID:', paciente.ID);
+        console.log('--- Paciente.ID:', paciente.ID);
         // Registrar Usuario Paciente
-
         const response = await signUp({
           email: correo, password, confirmPassword, persona_id: paciente.ID
         });
-        if (response.success) {
+        if (response) {
           Alert.alert('Registro exitoso', 'El paciente ha sido registrado correctamente.');
-          const token = AsyncStorage.getItem('token');
-          const id = AsyncStorage.getItem('userId');
-          const Cuidador = await api.get(`/cuidador/`, { headers: { Authorization: `Bearer ${token}` } });
-          console.log('handleSignIn: navigate to ProfileCuidador');
-          console.log('--- Cuidador.data:', Cuidador.data);
-          const role = 'Cuidador';
-          console.log('--- Role:', role);
-          console.log('--- UserId:', id);
-          navigation.navigate('ProfileCuidador', { role, userId, Cuidador: Cuidador.data });
+          navigation.navigate('ProfileCuidador', { role: role, userId: userId, Cuidador: Cuidador });
         }
       } catch (error) {
         console.error('Error en el registro del paciente:' + error);

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
+import { signUp } from "../shared/auth";
+import api from "../shared/axiosConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function RegisterCuidadorScreen({ navigation }) {
   const [nombre, setNombre] = useState('')
@@ -22,11 +25,11 @@ function RegisterCuidadorScreen({ navigation }) {
 
   const handleDniChange = (text) => {
     setDni(text)
-    if(!validateDNI(text)){
+    if (!validateDNI(text)) {
       setErrors((prev) => ({
         ...prev, dni: 'El DNI solo admite números'
       }))
-    }else{
+    } else {
       setErrors((prev) => ({
         ...prev, dni: null
       }))
@@ -40,66 +43,107 @@ function RegisterCuidadorScreen({ navigation }) {
 
   const handlePasswordChange = (text) => {
     setPassword(text)
-    if(!validatePassword(text)){
+    if (!validatePassword(text)) {
       setErrors((prev) => ({
         ...prev, password: 'La contraseña debe tener al menos 8 caracteres, una mayúscula y un caracter especial'
       }))
-    }else{
+    } else {
       setErrors((prev) => ({
         ...prev, password: null
       }))
     }
   }
 
-  const handleConfirmPasswordChange = (text) =>{
+  const handleConfirmPasswordChange = (text) => {
     setConfirmPassword(text)
-    if(text !== password) {
+    if (text !== password) {
       setErrors((prev) => ({
         ...prev, confirmPassword: 'Las contraseñas no coinciden'
       }))
-    }else{
+    } else {
       setErrors((prev) => ({
         ...prev, confirmPassword: null
       }
       ))
     }
   }
-  
-  const handleRegister = () => {
+
+  const handleRegister = async () => {
     let valid = true
     let newErrors = {}
 
-    if(!nombre){
+    if (!nombre) {
       valid = false
       newErrors.nombre = 'Nombre es requerido'
     }
-    if(!apellido){
+    if (!apellido) {
       valid = false
       newErrors.apellido = 'Apellido es requerido'
     }
-    if(!correo){
+    if (!correo) {
       valid = false
       newErrors.correo = 'Email es requerido'
     }
-    if(!celular){
+    if (!celular) {
       valid = false
       newErrors.celular = 'Celular es requerido'
     }
-    if(!password){
+    if (!password) {
       valid = false
       newErrors.password = 'Contraseña es requerido'
     }
-    if(!confirmPassword){
+    if (!confirmPassword) {
       valid = false
       newErrors.confirmPassword = 'Confirmación de la contraseña es requerida'
     }
-    if(!dni){
+    if (!dni) {
       valid = false
       newErrors.dni = 'DNI es requerido'
     }
     setErrors(newErrors)
-    if(valid) {
-      navigation.navigate('RegisterPaciente')
+    if (valid) {
+      try {
+        // Crear Cuidador
+        const cuidadorResponse = await api.post('cuidador/crear', {
+          nombre,
+          apellido,
+          celular,
+          dni
+        });
+        const cuidador = cuidadorResponse.data.data.datosPersonaCuidador;
+        const codVinculacion = cuidador.codVinculacion;
+        console.log('--- Entre a paciente en RegisterCuidadorScreen antes de llamar al signUp');
+        console.log('--- Cuidador:', cuidador);
+        console.log('--- Correo:', correo);
+        console.log('--- Password:', password);
+        console.log('--- ConfirmPassword en signUp:', confirmPassword);
+        console.log('--- CodigoVinculacion:', codVinculacion);
+        const response = await signUp({
+          email: correo, password, confirmPassword, persona_id: cuidador.ID
+        });
+        if (response) {
+          console.log('POST /auth/sign-up response:', response);
+          console.log('Valor de id en signUp:', response.data.id);
+          const token = response.data.token;
+          Alert.alert('Registro exitoso', 'El paciente ha sido registrado correctamente.');
+          const tokenRecuperado = await AsyncStorage.getItem('token');
+          if (token === tokenRecuperado) {
+            console.log(`--- Token recuperado del AsyncStorege: ${token}`);
+            const Cuidador = await api.get(`/cuidador/`, { headers: { Authorization: `Bearer ${token}` } });
+            console.log('handleSignIn: navigate to ProfileCuidador');
+            console.log('--- Cuidador.data:', Cuidador.data);
+            const role = 'Cuidador';
+            console.log('--- Role:', role);
+            navigation.navigate('RegisterPaciente', { codVinculacion: codVinculacion, role, userId: response.data.id, Cuidador: Cuidador.data });
+          }
+        } else {
+          console.log('No coinciden los tokens recuperados y el token de la respuesta');
+          Alert.alert('Error', 'Ocurrió un error al registrar al cuidador. Por favor, inténtelo nuevamente.');
+        }
+      } catch (error) {
+        console.error('Error en el registro del cuidador:' + error);
+        Alert.alert('Error', 'Ocurrió un error al registrar al cuidador. Por favor, inténtelo nuevamente.');
+      }
     }
   }
 
@@ -122,7 +166,7 @@ function RegisterCuidadorScreen({ navigation }) {
       <View style={styles.textInput}>
         <TextInput placeholder="Celular" keyboardType="numeric" value={celular} onChangeText={setCelular} />
         {errors.celular && <Text style={styles.error}>{errors.celular}</Text>}
-      </View>    
+      </View>
       <View style={styles.textInput}>
         <TextInput placeholder="Aquí va tu contraseña" value={password} secureTextEntry onChangeText={handlePasswordChange} />
         {errors.password && <Text style={styles.error}>{errors.password}</Text>}
@@ -130,17 +174,17 @@ function RegisterCuidadorScreen({ navigation }) {
       <View style={styles.textInput}>
         <TextInput placeholder="Por favor, confirme su contraseña" value={confirmPassword} secureTextEntry onChangeText={handleConfirmPasswordChange} />
         {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
-      </View>   
+      </View>
       <View style={styles.textInput}>
         <TextInput placeholder="DNI"
           value={dni}
-          keyboardType="numeric" 
+          keyboardType="numeric"
           onChangeText={handleDniChange}
         />
         {errors.dni && <Text style={styles.error}>{errors.dni}</Text>}
       </View>
       <View style={styles.containerBoton}>
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={handleRegister}
           style={styles.boton}>
           <Text style={styles.textoBoton}>Registrar paciente</Text>
@@ -151,13 +195,13 @@ function RegisterCuidadorScreen({ navigation }) {
   );
 }
 
-const styles={   
+const styles = {
   container: {
     flex: 1,
     backgroundColor: '#CECAE8',
     justifyContent: 'center',
     paddingStart: 20,
-  }, 
+  },
   titleIcon: {
     fontSize: 26,
     color: '#392C52',
@@ -166,8 +210,8 @@ const styles={
     marginBottom: 10,
   },
   icon: {
-    alignSelf:"center", 
-    marginBottom:20, 
+    alignSelf: "center",
+    marginBottom: 20,
     marginTop: 20
   },
   textInput: {
@@ -175,12 +219,12 @@ const styles={
     borderColor: '#624D8A',
     width: '94%',
     height: 60,
-    paddingStart: 30, 
+    paddingStart: 30,
     marginTop: 10,
     borderRadius: 20,
     backgroundColor: '#fff',
     fontSize: 16,
-    justifyContent: "center"      
+    justifyContent: "center"
   },
   containerBoton: {
     paddingHorizontal: 20,

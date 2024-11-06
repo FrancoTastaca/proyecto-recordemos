@@ -28,9 +28,8 @@ export const signUp = async (body) => {
         if (tipo === 'C') {
             console.log('Valor de token en signUp:', token);
             await AsyncStorage.setItem('token', token);
+            console.log('Valor de token cargado en AsyncStorage en signUp:', token);
         }
-        console.log('Valor de id en signUp:', id);
-        console.log('Valor de tipo en signUp:', tipo);
         return response.data;
     } catch (error) {
         console.error('Error en signUp:', error);

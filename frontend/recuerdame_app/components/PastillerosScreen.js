@@ -27,7 +27,7 @@ function PastillerosScreen({ route }) {
       }
     };
     fetchPastilleros()
-  }, [role, userId])
+  }, [])
 
   return (
     <View style={styles.profileContainer}>

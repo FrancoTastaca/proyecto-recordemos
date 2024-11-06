@@ -15,6 +15,8 @@ import Header from "./shared/Header";
 import PastillerosScreen from './components/PastillerosScreen';
 import EndDayScreen from './components/EndDayScreen';
 import EscanearCodigoQr from './components/EscanearQR';
+import AgregarAlarma from './components/AgregarAlarma';
+import AgregarMedicamento from './components/AgregarMedicamento';
 import { useEffect } from 'react';
 import { setupNotificationListeners } from './shared/notificationService';
 
@@ -126,6 +128,28 @@ function App() {
         <Stack.Screen
           name="Confirm"
           component={ConfirmScreen}
+          options={{
+            headerTitle: '',
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A',
+            }
+          }}
+        />
+        <Stack.Screen
+          name="AgregarAlarma"
+          component={AgregarAlarma} // Agregar la pantalla AgregarAlarma
+          options={{
+            headerTitle: '',
+            headerTintColor: '#CECAE8',
+            headerStyle: {
+              backgroundColor: '#624D8A',
+            }
+          }}
+        />
+        <Stack.Screen
+          name="AgregarMedicamento"
+          component={AgregarMedicamento} // Agregar la pantalla AgregarAlarma
           options={{
             headerTitle: '',
             headerTintColor: '#CECAE8',

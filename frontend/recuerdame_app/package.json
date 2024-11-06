@@ -6,7 +6,8 @@
     "start": "npx expo start",
     "android": "npx expo start --android",
     "ios": "npx expo start --ios",
-    "web": "npx expo start --web"
+    "web": "npx expo start --web",
+    "lint": "eslint . --config .eslint.cjs"
   },
   "dependencies": {
     "@expo/config": "~9.0.0",
@@ -52,7 +53,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
-    "@types/react": "~18.2.79"
+    "@types/react": "~18.2.79",
+    "eslint-plugin-react-hooks": "^5.0.0"
   },
   "private": true
 }
