@@ -2,9 +2,7 @@ import Sequelize from 'sequelize';
 import pico from 'picocolors';
 import dotenv from 'dotenv';
 
-dotenv.config({
-  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
-});
+dotenv.config()
 
 const sequelize = new Sequelize(
   process.env.MYSQL_DATABASE,

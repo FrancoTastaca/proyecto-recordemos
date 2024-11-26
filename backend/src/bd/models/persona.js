@@ -6,7 +6,8 @@ const Persona = sequelize.define('Persona', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
-    autoIncrement: true
+    autoIncrement: true,
+    field: 'ID'
   },
   nombre: {
     type: DataTypes.STRING(45),
