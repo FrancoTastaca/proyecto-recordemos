@@ -1,34 +1,49 @@
-import Sequelize from 'sequelize'
-import pico from 'picocolors'
-import dotenv from 'dotenv'
+import Sequelize from 'sequelize';
+import pico from 'picocolors';
+import dotenv from 'dotenv';
 
-dotenv.config() // Cargar las variables de entorno desde el archivo .env
+dotenv.config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+});
 
-const host = process.env.MYSQL_IP
-const port = process.env.MYSQL_PUERTO
-const database = process.env.MYSQL_DATABASE
-const user = process.env.MYSQL_USER
-const password = process.env.MYSQL_PASSWORD
-
-// Crear una nueva instancia de Sequelize
-const sequelize = new Sequelize(database, user, password, {
-  host,
-  dialect: 'mysql',
-  port,
-  logging: true // Desactivar con 'false' los logs para evitar sobre-información
-})
+const sequelize = new Sequelize(
+  process.env.MYSQL_DATABASE,
+  process.env.MYSQL_USER,
+  process.env.MYSQL_PASSWORD,
+  {
+    host: process.env.MYSQL_IP,
+    port: process.env.MYSQL_PUERTO,
+    dialect: 'mysql',
+    logging: process.env.NODE_ENV !== 'test', // Desactivar logging en pruebas
+    dialectOptions: {
+      charset: 'utf8mb4',
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    },
+    define: {
+      timestamps: true,
+      underscored: true
+    }
+  }
+);
 
 const connectDB = async () => {
   try {
-    await sequelize.authenticate()
-    console.log(pico.yellow('Conexión establecida exitosamente.'))
-    await sequelize.sync() // Sincroniza todos los modelos definidos
-    console.log(pico.green('Base de datos sincronizada exitosamente.'))
+    await sequelize.authenticate();
+    console.log(pico.yellow('Conexión establecida exitosamente.'));
+    await sequelize.sync();
+    console.log(pico.green('Base de datos sincronizada exitosamente.'));
   } catch (err) {
-    console.error(pico.red('Error al conectarse a la base:'), pico.red(err))
+    console.error(pico.red('Error al conectarse a la base:'), pico.red(err));
+    throw err; // Re-throw the error so tests can catch it
   }
+};
+// Conectar a la base de datos solo si no estamos en el entorno de pruebas
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
 }
-
-connectDB()
-
-export default sequelize
+export { connectDB, sequelize };

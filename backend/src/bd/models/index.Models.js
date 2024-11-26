@@ -1,4 +1,4 @@
-import sequelize from '../config/bd.config.js'
+import { sequelize } from '../config/bd.config.js';
 import Cuidador from './cuidador.js'
 import Persona from './persona.js'
 import Paciente from './paciente.js'
