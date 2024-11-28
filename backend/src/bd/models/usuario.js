@@ -1,11 +1,12 @@
 import { DataTypes } from 'sequelize'
-import { sequelize } from '../config/bd.config.js';
+import { sequelize } from '../config/bd.config.js'
 
 const Usuario = sequelize.define('Usuario', {
   ID: {
     type: DataTypes.CHAR(36),
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
+    field: 'ID'
   },
   password: {
     type: DataTypes.STRING(60),
@@ -21,6 +22,19 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING(255),
     allowNull: true,
     field: 'push_token'
+  },
+  deviceId: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    field: 'deviceId'
+  },
+  Persona_ID: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Persona',
+      key: 'ID'
+    }
   }
 }, {
   tableName: 'Usuario',
