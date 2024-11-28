@@ -7,8 +7,6 @@ import app from '../../app.js';
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
 
-const { MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, MYSQL_IP, MYSQL_PUERTO } = process.env;
-console.log('Variables de entorno:', MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD, MYSQL_IP, MYSQL_PUERTO);
 let server;
 
 // Configuración global de tests
