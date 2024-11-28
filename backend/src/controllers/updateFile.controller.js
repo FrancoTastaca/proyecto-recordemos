@@ -267,16 +267,3 @@ export const obtenerImagen = async (req, res, next) => {
     })
   }
 }
-
-export const deleteFile = async (req, res, next) => {
-  const { id } = req.params
-  try {
-    await driveService.deleteFile(id, next)
-    res.status(204).end()
-  } catch (error) {
-    next({
-      ...errors.InternalServerError,
-      details: 'Error al intentar eliminar la imagen - ' + error.message
-    })
-  }
-}
