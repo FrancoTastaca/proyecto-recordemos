@@ -45,8 +45,8 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
       // Si es una actualización
       if (id) {
         console.log(pico.bgRed(`---- ID del medicamento en controller: ${id}`))
-        console.log(pico.bgRed(`---- ID de la persona LOGUEADA en controller: ${res.locals.usuario.persona.ID}`))
-        const medicamento = await models.MedicamentoCuidador.findOne({ where: { ID: id, Cuidador_ID: res.locals.usuario.persona.ID } })
+        console.log(pico.bgRed(`---- ID de la persona LOGUEADA en controller: ${res.locals.usuario.Persona.ID}`))
+        const medicamento = await models.MedicamentoCuidador.findOne({ where: { ID: id, Cuidador_ID: res.locals.usuario.Persona.ID } })
         if (!medicamento) {
           return next({ ...errors.NotFoundError, details: `El medicamento con ID ${id} no existe.` })
         }
@@ -59,7 +59,7 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
               const oldFileId = driveService.extractFileIdFromLink(medicamento.medicamento_imagen)
               await driveService.deleteFile(oldFileId)
             }
-            const codVinculacion = res.locals.usuario.persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
+            const codVinculacion = res.locals.usuario.Persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(file.path)
@@ -82,7 +82,7 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
         const nuevoMedicamento = await handleTransaction(async (transaction) => {
           let imagenUrl
           if (file) {
-            const codVinculacion = res.locals.usuario.persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
+            const codVinculacion = res.locals.usuario.Persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(file.path)
@@ -139,7 +139,7 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
               const oldFileId = driveService.extractFileIdFromLink(pastillero.imagen_url)
               await driveService.deleteFile(oldFileId)
             }
-            const codVinculacion = res.locals.usuario.persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
+            const codVinculacion = res.locals.usuario.Persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(file.path)
@@ -166,7 +166,7 @@ export const handleFileCreateOrUpdate = async (req, res, next) => {
         const nuevoPastillero = await handleTransaction(async (transaction) => {
           let imagenUrl = null
           if (req.file) {
-            const codVinculacion = res.locals.usuario.persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
+            const codVinculacion = res.locals.usuario.Persona.codVinculacion // Valor de la columna 'codVinculacion' de la tabla 'Persona'
             const mainFolderId = process.env.GOOGLE_DRIVE_MAIN_FOLDER_ID // ID de la carpeta principal en Google Drive
             const subFolderId = await driveService.getOrCreateFolder(mainFolderId, codVinculacion, next) // Crear o obtener la subcarpeta
             const fileStream = fs.createReadStream(req.file.path)

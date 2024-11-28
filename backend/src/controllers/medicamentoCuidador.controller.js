@@ -27,7 +27,7 @@ export default {
   listarPorIdCuidador: async (req, res, next) => {
     try {
       const medicamentos = await models.MedicamentoCuidador.findAll({
-        where: { Cuidador_ID: res.locals.usuario.persona.ID },
+        where: { Cuidador_ID: res.locals.usuario.Persona.ID },
         attributes: ['ID', 'notas', 'marca', 'medicamento_imagen', 'Vademecum_ID', 'Cuidador_ID']
       })
 
@@ -53,7 +53,7 @@ export default {
       const medicamento = await models.MedicamentoCuidador.findOne({
         where: {
           ID: id,
-          Cuidador_ID: res.locals.usuario.persona.ID
+          Cuidador_ID: res.locals.usuario.Persona.ID
         }
       })
       if (!medicamento) {

@@ -7,7 +7,7 @@ import { uploadImagenes } from '../middlewares/multerConfig.js'
 const router = express.Router()
 
 router.get('/', pastilleroController.listar)
-router.get('/persona/:id', validate(pastilleroScheme.validateId), pastilleroController.listarPorIdPersona)
+router.get('/:type', validate(pastilleroScheme.validateType, 'params'), pastilleroController.listarPorIdlogin) // type debe ser 'cuidador' o 'paciente'
 router.post('/', uploadImagenes, validate(pastilleroScheme.save, 'body'), checkRoleCuidador, pastilleroController.create)
 router.put('/:id', uploadImagenes, validate(pastilleroScheme.validateId, 'params'), validate(pastilleroScheme.save, 'body'), checkRoleCuidador, pastilleroController.update)
 router.delete('/:id', validate(pastilleroScheme.validateId), checkRoleCuidador, pastilleroController.remove)

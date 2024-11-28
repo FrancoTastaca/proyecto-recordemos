@@ -39,10 +39,12 @@ export default {
     }
   },
 
-  crearPersona: async (datosPersona, tipo, transaction, codVinculacion) => {
+  crearPersona: async (nombre, apellido, dni, tipo, transaction, codVinculacion, next) => {
     try {
       const nuevaPersona = await models.Persona.create({
-        ...datosPersona,
+        nombre,
+        apellido,
+        dni,
         tipo,
         codVinculacion
       }, { transaction })
@@ -50,10 +52,7 @@ export default {
       return nuevaPersona
     } catch (error) {
       console.log(pc.red('Error al crear la persona:'), error)
-      throw {
-        ...errors.InternalServerError,
-        details: 'Error al crear la persona'
-      }
+      next({ ...errors.InternalServerError, details: `Error al crear la persona: ${error}` })
     }
   },
 

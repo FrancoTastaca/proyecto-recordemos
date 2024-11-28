@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 import pc from 'picocolors'
 import QrCode from 'qrcode-reader'
 import jimp from 'jimp'
+import { handleTransaction } from '../utils/transactionHelper.js'
 
 export default {
   login: async (req, res, next) => {
@@ -19,8 +20,8 @@ export default {
           attributes: ['tipo']
         }]
       })
-
       if (user) {
+        console.log('Usuario encontrado:', user.toJSON()) // Agregar log para depuración
         const coincide = bcrypt.compareSync(req.body.password, user.password)
         if (!coincide) {
           return next({
@@ -37,13 +38,14 @@ export default {
 
       try {
         const tokens = signJWT(user, user.Persona.tipo)
-        console.log(`Tokens generados en login: ${JSON.stringify(tokens)}`) // Agregar log para depuración
+        console.log(`Tokens generados en login: ${JSON.stringify(tokens)}`)
+        res.cookie('jwt', tokens.token, { httpOnly: true, secure: true });
         res.status(200).json({
           success: true,
           message: 'Inicio de sesión exitoso',
           data: {
             id: user.ID,
-            tipo: user.persona.tipo,
+            tipo: user.Persona.tipo,
             token: tokens.token, // Devolver solo el token
             refreshToken: tokens.refreshToken
           }
@@ -61,6 +63,7 @@ export default {
   },
 
   registrarse: async (req, res, next) => {
+    console.log(pc.blue('---- Datos recibidos en /registrarse:'), req.body)
     try {
       const persona = await models.Persona.findOne({
         where: {
@@ -75,8 +78,7 @@ export default {
         })
       }
 
-      const transaction = await models.sequelize.transaction()
-      try {
+      await handleTransaction(async (transaction) => {
         const hashedPassword = bcrypt.hashSync(req.body.password, 10)
         const userId = uuidv4()
         const user = await models.Usuario.create({
@@ -85,38 +87,35 @@ export default {
           password: hashedPassword,
           Persona_ID: req.body.persona_id
         }, { transaction })
-
+        console.log(pc.blue('---- Persona.tipo:'), persona.tipo)
+        console.log(pc.blue('---- No voy a generar el token porque soy Paciente:'), persona.tipo === 'P')
         if (persona.tipo === 'C') {
-          try {
-            const tokens = signJWT(user, persona.tipo)
-            console.log(`Tokens generados en registrarse: ${JSON.stringify(tokens)}`) // Agregar log para depuración
-            res.cookie('jwt', tokens)
-            res.status(201).json({
-              success: true,
-              message: 'Usuario creado correctamente',
-              data: {
-                id: user.ID,
-                email: user.email,
-                tipo: persona.tipo,
-                token: tokens.token, // Devolver solo el token
-                refreshToken: tokens.refreshToken
-              }
-            })
-          } catch (err) {
-            await transaction.rollback()
-            return next(err)
-          }
+          const tokens = signJWT(user, persona.tipo)
+          console.log(`Tokens generados en registrarse: ${JSON.stringify(tokens)}`) // Agregar log para depuración
+          res.cookie('jwt', tokens.token, { httpOnly: true, secure: true });
+          res.status(201).json({
+            success: true,
+            message: 'Usuario Cuidador creado correctamente',
+            data: {
+              id: user.ID,
+              email: user.email,
+              tipo: persona.tipo,
+              token: tokens.token, // Devolver solo el token
+              refreshToken: tokens.refreshToken
+            }
+          })
+        } else {
+          res.status(201).json({
+            success: true,
+            message: 'Usuario Paciente creado correctamente',
+            data: {
+              id: user.ID,
+              email: user.email,
+              tipo: persona.tipo
+            }
+          })
         }
-
-        await transaction.commit()
-      } catch (err) {
-        await transaction.rollback()
-        console.log(pc.red('Error en el proceso de registro:'), err)
-        return next({
-          ...errors.InternalServerError,
-          details: `Error en el proceso de registro: ${err.message}`
-        })
-      }
+      }, next)
     } catch (err) {
       console.log(pc.red('Error en el proceso de verificación de persona:'), err)
       return next({
@@ -170,7 +169,7 @@ export default {
       try {
         const tokens = signJWT(usuarioPaciente, 'P')
         console.log(`Tokens generados en loginPacienteConQR: ${JSON.stringify(tokens)}`) // Agregar log para depuración
-        res.cookie('jwt', tokens)
+        res.cookie('jwt', tokens.token, { httpOnly: true, secure: true });
         res.status(200).json({
           success: true,
           message: 'Login exitoso',
