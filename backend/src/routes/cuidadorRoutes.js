@@ -1,64 +1,25 @@
-import express from 'express'
-import cuidadorController from '../controllers/cuidador.controller.js'
-import { checkRoleCuidador } from '../middlewares/checkRole.js'
+import express from 'express';
+import cuidadorController from '../controllers/cuidador.controller.js';
+import { checkRoleCuidador } from '../middlewares/checkRole.js';
 
-const router = express.Router()
+const router = express.Router();
 
 /**
  * @swagger
- * /api/cuidador/:
- *   get:
- *     summary: Listar todos los cuidadores
+ * tags:
+ *   name: Cuidador
+ *   description: Endpoints de cuidadores
+ */
+
+/**
+ * @swagger
+ * /api/cuidador/generarQR:
+ *   post:
+ *     summary: Generar un código QR para el cuidador
+ *     tags: [Cuidador]
  *     responses:
  *       200:
- *         description: Lista de cuidadores
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     example: 1
- *                   nombre:
- *                     type: string
- *                     example: "Juan Pérez"
- */
-/**
- * @swagger
- * /api/cuidador/crear:
- *   post:
- *     summary: Crear un nuevo cuidador
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *                 example: "Juan Pérez"
- *               email:
- *                 type: string
- *                 example: "juan.perez@example.com"
- *               password:
- *                 type: string
- *                 example: "password123"
- *               relacion_paciente:
- *                 type: string
- *                 example: "Padre"
- *               especialidad:
- *                 type: string
- *                 example: "Geriatría"
- *               contacto:
- *                 type: string
- *                 example: "123456789"
- *     responses:
- *       201:
- *         description: Cuidador creado
+ *         description: Código QR generado correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -66,52 +27,73 @@ const router = express.Router()
  *               properties:
  *                 success:
  *                   type: boolean
- *                   example: true
  *                 message:
  *                   type: string
- *                   example: "Cuidador creado correctamente"
  *                 data:
  *                   type: object
  *                   properties:
- *                     cuidador:
- *                       type: object
- *                       properties:
- *                         ID:
- *                           type: integer
- *                           example: 1
- *                         relacion_paciente:
- *                           type: string
- *                           example: "Padre"
- *                         especialidad:
- *                           type: string
- *                           example: "Geriatría"
- *                         contacto:
- *                           type: string
- *                           example: "123456789"
- *                     datosPersonaCuidador:
- *                       type: object
- *                       properties:
- *                         ID:
- *                           type: integer
- *                           example: 1
- *                         nombre:
- *                           type: string
- *                           example: "Juan Pérez"
- *                         email:
- *                           type: string
- *                           example: "juan.perez@example.com"
+ *                     qrCode:
+ *                       type: string
  */
+router.post('/generarQR', checkRoleCuidador, cuidadorController.generarQR);
+
 /**
  * @swagger
- * /api/cuidador/{id}:
- *   put:
- *     summary: Actualizar un cuidador
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
+ * /api/cuidador/listarCuidadores:
+ *   get:
+ *     summary: Listar todos los cuidadores
+ *     tags: [Cuidador]
+ *     responses:
+ *       200:
+ *         description: Lista de cuidadores obtenida correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Cuidador'
+ */
+router.get('/listarCuidadores', cuidadorController.listar);
+
+/**
+ * @swagger
+ * /api/cuidador:
+ *   get:
+ *     summary: Obtener la información del cuidador autenticado
+ *     tags: [Cuidador]
+ *     responses:
+ *       200:
+ *         description: Información del cuidador obtenida correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 nombre:
+ *                   type: string
+ *                 apellido:
+ *                   type: string
+ *                 dni:
+ *                   type: string
+ *                 tipo:
+ *                   type: string
+ *                 codVinculacion:
+ *                   type: string
+ *                 relacion_paciente:
+ *                   type: string
+ *                 especialidad:
+ *                   type: string
+ *                 contacto:
+ *                   type: string
+ */
+router.get('/', checkRoleCuidador, cuidadorController.getCuidador);
+
+/**
+ * @swagger
+ * /api/cuidador/crear:
+ *   post:
+ *     summary: Crear un nuevo cuidador
+ *     tags: [Cuidador]
  *     requestBody:
  *       required: true
  *       content:
@@ -121,22 +103,69 @@ const router = express.Router()
  *             properties:
  *               nombre:
  *                 type: string
- *                 example: "Juan Pérez"
- *               email:
+ *               apellido:
  *                 type: string
- *                 example: "juan.perez@example.com"
+ *               dni:
+ *                 type: string
  *               relacion_paciente:
  *                 type: string
- *                 example: "Padre"
  *               especialidad:
  *                 type: string
- *                 example: "Geriatría"
+ *               celular:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Cuidador creado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     cuidador:
+ *                       $ref: '#/components/schemas/Cuidador'
+ *                     datosPersonaCuidador:
+ *                       $ref: '#/components/schemas/Persona'
+ *       400:
+ *         description: Error de validación
+ */
+router.post('/crear', cuidadorController.crearCuidador);
+
+/**
+ * @swagger
+ * /api/cuidador/{id}:
+ *   put:
+ *     summary: Actualizar un cuidador existente
+ *     tags: [Cuidador]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del cuidador
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               relacion_paciente:
+ *                 type: string
+ *               especialidad:
+ *                 type: string
  *               contacto:
  *                 type: string
- *                 example: "123456789"
  *     responses:
  *       200:
- *         description: Cuidador actualizado
+ *         description: Cuidador actualizado correctamente
  *         content:
  *           application/json:
  *             schema:
@@ -144,70 +173,34 @@ const router = express.Router()
  *               properties:
  *                 mensaje:
  *                   type: string
- *                   example: "Cuidador actualizado exitosamente"
  *                 data:
- *                   type: object
- *                   properties:
- *                     ID:
- *                       type: integer
- *                       example: 1
- *                     relacion_paciente:
- *                       type: string
- *                       example: "Padre"
- *                     especialidad:
- *                       type: string
- *                       example: "Geriatría"
- *                     contacto:
- *                       type: string
- *                       example: "123456789"
+ *                   $ref: '#/components/schemas/Cuidador'
+ *       400:
+ *         description: Error de validación
+ *       404:
+ *         description: Cuidador no encontrado
  */
+router.put('/:id', checkRoleCuidador, cuidadorController.update);
+
 /**
  * @swagger
  * /api/cuidador/{id}:
  *   delete:
- *     summary: Eliminar un cuidador
+ *     summary: Eliminar un cuidador existente
+ *     tags: [Cuidador]
  *     parameters:
  *       - in: path
  *         name: id
- *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *         required: true
+ *         description: ID del cuidador
  *     responses:
  *       204:
- *         description: Cuidador eliminado
+ *         description: Cuidador eliminado correctamente
+ *       404:
+ *         description: Cuidador no encontrado
  */
-/**
- * @swagger
- * /api/cuidador/generarQR:
- *   post:
- *     summary: Generar un código QR para el cuidador
- *     responses:
- *       200:
- *         description: Código QR generado
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Código QR generado correctamente"
- *                 data:
- *                   type: object
- *                   properties:
- *                     qrCode:
- *                       type: string
- *                       example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
- */
+router.delete('/:id', cuidadorController.remove);
 
-router.get('/listarCuidadores', cuidadorController.listar)
-router.get('/', checkRoleCuidador, cuidadorController.getCuidador)
-router.post('/crear', cuidadorController.crearCuidador)
-router.put('/:id', checkRoleCuidador, cuidadorController.update)
-router.delete('/:id', cuidadorController.remove)
-router.post('/generarQR', checkRoleCuidador, cuidadorController.generarQR)
-
-export default router
+export default router;
