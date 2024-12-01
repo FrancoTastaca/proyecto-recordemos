@@ -1,5 +1,5 @@
 import express from 'express';
-import { obtenerImagen, handleFileCreateOrUpdate, deleteFile } from '../controllers/updateFile.controller.js';
+import { obtenerImagen} from '../controllers/updateFile.controller.js';
 
 const router = express.Router();
 
