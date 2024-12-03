@@ -1,6 +1,9 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import express from 'express';
+import puppeteer from 'puppeteer';
+import fs from 'fs';
+import path from 'path';
 
 const router = express.Router();
 
@@ -129,4 +132,63 @@ const specs = swaggerJsdoc(options);
 
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-export default router;
+// PDF Generation Function
+export async function generateSwaggerPDF() {
+    let browser;
+    let serverInstance;
+  
+    try {
+      // Launch Puppeteer with some additional options
+      browser = await puppeteer.launch({
+        headless: 'new', // Use the new headless mode
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
+      const page = await browser.newPage();
+      
+      // Start your Express server
+      const server = express();
+      server.use('/api', router);
+      const serverPort = 3000;
+      serverInstance = server.listen(serverPort);
+  
+      // Navigate to Swagger UI
+      await page.goto(`http://localhost:${serverPort}/api/docs`, { 
+        waitUntil: 'networkidle0',
+        timeout: 60000
+      });
+  
+      // Expand sections using page.evaluate
+      await page.evaluate(() => {
+        // Seleccionar todos los botones de operaciones
+        const operationButtons = document.querySelectorAll(
+          '.opblock-summary-get, .opblock-summary-post, .opblock-summary-put, .opblock-summary-delete'
+        );
+  
+        // Hacer clic en cada botón
+        operationButtons.forEach(button => button.click());
+      });
+  
+      // Wait for a short time to ensure all sections are expanded
+      await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)));
+  
+      // Generate PDF
+      await page.pdf({ 
+        path: 'swagger-documentation.pdf', 
+        format: 'A4',
+        printBackground: true,
+        margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
+      });
+  
+      console.log('PDF documentation generated successfully');
+  
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      throw error;
+    } finally {
+      // Ensure browser and server are closed
+      if (browser) await browser.close();
+      if (serverInstance) serverInstance.close();
+    }
+  }
+  
+  export default router;
