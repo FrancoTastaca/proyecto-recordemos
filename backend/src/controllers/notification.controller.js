@@ -9,7 +9,7 @@ export const sendTestNotification = async (req, res) => {
     res.status(200).json({ success: true, message: 'Notificación enviada correctamente' })
   } catch (error) {
     console.error('Error al enviar la notificación de prueba:', error)
-    res.status(500).json({ success: false, message: 'Error al enviar la notificación de prueba' })
+    res.status(500).json({ success: false, message: 'Error al enviar la notificación de prueba', details: error.message })
   }
 }
 export const scheduleTestReminders = async (req, res) => {

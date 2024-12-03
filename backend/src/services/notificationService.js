@@ -7,7 +7,7 @@ const expo = new Expo()
 export const sendPushNotification = async (pushToken, message, data = {}) => {
   if (!Expo.isExpoPushToken(pushToken)) {
     console.error(`Push token ${pushToken} is not a valid Expo push token`)
-    return
+    throw new Error('Token de notificación inválido... No se pudo enviar la notificación')
   }
 
   const messages = [{
