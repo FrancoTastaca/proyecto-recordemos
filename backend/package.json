@@ -3,17 +3,56 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "test:coverage": "node --test --coverage"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "expo-server-sdk": "^3.11.0",
     "express": "^4.19.2",
-    "mysql2": "^3.10.1",
+    "google-auth-library": "^9.14.1",
+    "googleapis": "^144.0.0",
+    "jimp": "^0.22.12",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "jsqr": "^1.4.0",
+    "moment": "^2.30.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.10.3",
+    "node-cron": "^3.0.3",
+    "picocolors": "^1.0.1",
+    "qrcode": "^1.5.4",
+    "qrcode-reader": "^1.0.4",
     "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.30.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.6.0",
+    "eslint-plugin-standard": "^5.0.0",
+    "nodemon": "^3.1.4",
+    "standard": "^17.1.0",
+    "supertest": "^7.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "eslintConfig": {
+    "extends": "standard"
   }
 }

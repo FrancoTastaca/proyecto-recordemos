@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "recuerdame_app",
+    "slug": "recuerdame_app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "notification": {
+      "vapidPublicKey": "BOPmSSqg9P17A6E4-F_v_ogvkC5ANRHlC--y37UKWFXtCCOSlpyzv3timzEPDsTyu5gqpbBqhE7X9-KWVw9XPMI"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            {
+              "name": "alarma",
+              "path": "./assets/sounds/alarma.wav"
+            }
+          ]
+        }
+      ],
+      [
+        "expo-updates",
+        {
+          "enabled": true
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "f939e368-f319-4f7b-bca7-4938dbf381a4"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f939e368-f319-4f7b-bca7-4938dbf381a4"
+    }
+  }
+}
+
