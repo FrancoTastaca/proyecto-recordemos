@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  # Backend API
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=recuerdame_db
+      - DB_USER=root
+      - DB_PASSWORD=recuerdame123
+      - JWT_SECRET=supersecretjwtkey_development_only
+      - FRONTEND_URL=http://localhost:3001
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - uploads:/usr/src/app/uploads
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    networks:
+      - recuerdame-network
+
+  # Base de datos MySQL
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: recuerdame123
+      MYSQL_DATABASE: recuerdame_db
+      MYSQL_USER: recuerdame_user
+      MYSQL_PASSWORD: recuerdame123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+      - recuerdame-network
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Redis para caché y sesiones
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - recuerdame-network
+
+  # phpMyAdmin para administración de BD (opcional)
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: recuerdame123
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - recuerdame-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  uploads:
+
+networks:
+  recuerdame-network:
+    driver: bridge
